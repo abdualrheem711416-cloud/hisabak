@@ -1779,5 +1779,29 @@ document.addEventListener("click", function(e) {
 window.addEventListener("load", setupIntegratedCustNav);
 </script>
 
+
+<script>
+function enforceCustomersLink() {
+  document.querySelectorAll("div, .card, a, button").forEach(el => {
+    if (el.children.length <= 2 && el.textContent.trim().includes("العملاء")) {
+      el.style.cursor = "pointer";
+      el.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = "customers.html";
+      };
+      el.ontouchend = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = "customers.html";
+      };
+    }
+  });
+}
+window.addEventListener("DOMContentLoaded", enforceCustomersLink);
+window.addEventListener("load", enforceCustomersLink);
+setInterval(enforceCustomersLink, 800);
+</script>
+
 </body>
 </html>
