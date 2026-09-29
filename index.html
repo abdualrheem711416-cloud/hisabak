@@ -363,5 +363,41 @@ window.alert = function(msg) {
 };
 </script>
 
+
+<script>
+// إصلاح شامل لإغلاق النوافذ المنبثقة
+function closeCurrentModal() {
+  const modals = document.querySelectorAll(".modal, [id*="modal"], [class*="modal"], .popup, [id*="popup"], [class*="popup"]");
+  modals.forEach(m => {
+    if (m.style.display !== "none") {
+      m.style.display = "none";
+    }
+  });
+  // إزالة أي طبقة تعتيم خلفية
+  document.querySelectorAll(".modal-backdrop, .backdrop, .overlay").forEach(b => b.remove());
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. ربط أي زر يحمل علامة X أو زر إغلاق
+  document.body.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target.textContent.trim() === "×" || target.textContent.trim() === "✕" || target.classList.contains("close") || target.getAttribute("data-dismiss") === "modal") {
+      e.preventDefault();
+      e.stopPropagation();
+      closeCurrentModal();
+    }
+    // 2. إغلاق عند الضغط خارج المربع الأبيض
+    if (target.classList.contains("modal") || target.classList.contains("modal-overlay") || target.classList.contains("backdrop")) {
+      closeCurrentModal();
+    }
+  }, true);
+
+  // 3. ربط زر الرجوع في الهاتف بإغلاق النافذة المنبثقة
+  window.addEventListener("popstate", () => {
+    closeCurrentModal();
+  });
+});
+</script>
+
 </body>
 </html>
