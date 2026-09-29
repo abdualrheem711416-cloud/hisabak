@@ -1,16 +1,22 @@
 {
   "name": "حسابك",
   "short_name": "حسابك",
-  "id": "/",
-  "start_url": "/",
+  "start_url": "/hisabak/index.html",
+  "scope": "/hisabak/",
   "display": "standalone",
-  "background_color": "#0b5cab",
-  "theme_color": "#0b5cab",
+  "background_color": "#0d62b3",
+  "theme_color": "#0d62b3",
   "icons": [
     {
-      "src": "/icon-512.png",
+      "src": "/hisabak/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/hisabak/icon-512.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
