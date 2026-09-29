@@ -497,5 +497,132 @@ document.addEventListener("click", function(e) {
 }, true);
 </script>
 
+
+<script>
+// تحديث نافذة إدارة العملاء مع رقم الهاتف والرسائل الفورية
+window.openCustomersModal = function() {
+  window.closeAnyModal();
+
+  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  if (customers.length === 0) {
+    customers = [
+      { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
+      { id: 2, name: "شركة النور", phone: "777000000", balance: 150000 }
+    ];
+    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+  }
+
+  const modalHtml = `
+    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.3); max-height:90vh; display:flex; flex-direction:column;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee; background:#fafafa;">
+          <button id="close-cust-btn" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; color:#555;">✕</button>
+          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
+        </div>
+
+        <div style="padding:16px; overflow-y:auto; flex:1;">
+          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          
+          <input type="tel" id="cust-phone-input" placeholder="رقم الهاتف (واتساب / اتصالات)" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          
+          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          
+          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
+
+          <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
+          <div id="cust-list" style="max-height:240px; overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  function sendAutoMsg(c) {
+    if (!c.phone) {
+      alert("لا يوجد رقم هاتف مسجل لهذا العميل!");
+      return;
+    }
+    const cleanPhone = c.phone.replace(/[^0-9]/g, "");
+    const msg = encodeURIComponent(`مرحباً أستاذ ${c.name}،
+إشعار من تطبيق (حسابك):
+رصيد حسابكم الحالي هو: ${Number(c.balance).toLocaleString()} ر.ي.
+شكراً لتعاملكم معنا.`);
+    window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
+  }
+
+  function renderCusts() {
+    const list = document.getElementById("cust-list");
+    list.innerHTML = "";
+    customers.forEach((c, idx) => {
+      const item = document.createElement("div");
+      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px 4px; border-bottom:1px solid #eee;";
+      item.innerHTML = `
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:5px 8px; font-size:12px; cursor:pointer;">حذف</button>
+          <button data-msg="${idx}" style="background:#25D366; color:#fff; border:none; border-radius:6px; padding:5px 8px; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:2px;" title="إرسال رسالة تلقائية">
+            💬 رسالة
+          </button>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
+          <div style="font-size:12px; color:#666;">${c.phone ? "📞 " + c.phone : "بدون هاتف"}</div>
+          <div style="color:#27ae60; font-size:12px; font-weight:bold;">${Number(c.balance).toLocaleString()} ر.ي</div>
+        </div>
+      `;
+      list.appendChild(item);
+    });
+
+    list.querySelectorAll("[data-del]").forEach(btn => {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        const i = this.getAttribute("data-del");
+        customers.splice(i, 1);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        renderCusts();
+      };
+    });
+
+    list.querySelectorAll("[data-msg]").forEach(btn => {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        const i = this.getAttribute("data-msg");
+        sendAutoMsg(customers[i]);
+      };
+    });
+  }
+
+  renderCusts();
+
+  document.getElementById("close-cust-btn").onclick = (e) => { e.stopPropagation(); window.closeAnyModal(); };
+  document.getElementById("customers-modal-root").onclick = (e) => {
+    if (e.target.id === "customers-modal-root") window.closeAnyModal();
+  };
+
+  document.getElementById("add-cust-btn").onclick = (e) => {
+    e.stopPropagation();
+    const name = document.getElementById("cust-name-input").value.trim();
+    const phone = document.getElementById("cust-phone-input").value.trim();
+    const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
+    if (!name) return alert("يرجى إدخال اسم العميل");
+
+    const newCust = { id: Date.now(), name: name, phone: phone, balance: bal };
+    customers.push(newCust);
+    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    
+    // إذا وُجد رقم هاتف، يُتاح إرسال إشعار فوري
+    if (phone && confirm("تمت إضافة العميل بنجاح. هل ترغب بإرسال إشعار ترحيبي برصيد الحساب عبر واتساب فوراً؟")) {
+      sendAutoMsg(newCust);
+    }
+
+    document.getElementById("cust-name-input").value = "";
+    document.getElementById("cust-phone-input").value = "";
+    document.getElementById("cust-bal-input").value = "";
+    renderCusts();
+  };
+};
+</script>
+
 </body>
 </html>
