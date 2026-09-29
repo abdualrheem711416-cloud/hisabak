@@ -1233,5 +1233,119 @@ window.addEventListener("load", bindTxButtons);
 setInterval(bindTxButtons, 1200);
 </script>
 
+
+<script>
+// فتح نافذة تسجيل مردود جديد (مبيعات / مشتريات)
+window.openReturnsModal = function() {
+  if (window.closeTxModal) window.closeTxModal();
+  const old = document.getElementById("tx-modal-root");
+  if (old) old.remove();
+
+  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  const suppliers = JSON.parse(localStorage.getItem("hisabak_suppliers") || "[]");
+
+  const modalHtml = `
+    <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); max-height:90vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee; background:#fafafa;">
+          <button onclick="document.getElementById('tx-modal-root').remove()" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer;">✕</button>
+          <h3 style="margin:0; font-size:18px; color:#c0392b; font-weight:bold;">تسجيل مردودات</h3>
+        </div>
+        <div style="padding:16px; overflow-y:auto;">
+          <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <label style="flex:1; text-align:center; padding:8px; border:1px solid #c0392b; border-radius:8px; cursor:pointer; background:#fdf2f2;">
+              <input type="radio" name="ret_type" value="sales_return" checked> مردود مبيعات (عميل)
+            </label>
+            <label style="flex:1; text-align:center; padding:8px; border:1px solid #d35400; border-radius:8px; cursor:pointer;">
+              <input type="radio" name="ret_type" value="purchase_return"> مردود مشتريات (مورد)
+            </label>
+          </div>
+
+          <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">اسم الحساب:</label>
+          <select id="ret_party_name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;"></select>
+
+          <input type="text" id="ret_item_desc" placeholder="بيان الأصناف المرجعة" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="number" id="ret_amount" placeholder="قيمة المردود (ر.ي)" style="width:100%; padding:10px; margin-bottom:14px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+
+          <button id="ret_submit_btn" style="width:100%; background:#c0392b; color:#fff; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">حفظ المردود وتحديث الرصيد</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  const partySel = document.getElementById("ret_party_name");
+  const radios = document.querySelectorAll("input[name="ret_type"]");
+
+  function refreshParties() {
+    partySel.innerHTML = "";
+    const isSalesRet = document.querySelector("input[name="ret_type"]:checked").value === "sales_return";
+    const list = isSalesRet ? customers : suppliers;
+
+    if (list.length === 0) {
+      partySel.innerHTML = "<option value="">لا يوجد حسابات مسجلة</option>";
+      return;
+    }
+    list.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.name;
+      opt.textContent = `${p.name} (${Number(p.balance).toLocaleString()} ر.ي)`;
+      partySel.appendChild(opt);
+    });
+  }
+
+  radios.forEach(r => r.onchange = refreshParties);
+  refreshParties();
+
+  document.getElementById("ret_submit_btn").onclick = function() {
+    const isSalesRet = document.querySelector("input[name="ret_type"]:checked").value === "sales_return";
+    const amount = parseFloat(document.getElementById("ret_amount").value) || 0;
+    const name = partySel.value;
+    const desc = document.getElementById("ret_item_desc").value.trim();
+
+    if (!name) return alert("يرجى اختيار الحساب");
+    if (amount <= 0) return alert("يرجى إدخال مبلغ صحيح");
+
+    const storageKey = isSalesRet ? "hisabak_customers" : "hisabak_suppliers";
+    const dataList = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    const item = dataList.find(x => x.name === name);
+
+    if (item) {
+      item.balance = Number(item.balance) - amount;
+      localStorage.setItem(storageKey, JSON.stringify(dataList));
+
+      const typeTitle = isSalesRet ? "مردود مبيعات" : "مردود مشتريات";
+      alert(`تم قيد ${typeTitle} بقيمة ${amount.toLocaleString()} ر.ي وخصمها من الحساب بنجاح!`);
+
+      if (item.phone) {
+        if (confirm("هل ترغب بإرسال إشعار المردود عبر واتساب؟")) {
+          const cleanPhone = item.phone.replace(/[^0-9]/g, "");
+          const msg = encodeURIComponent(`مرحباً أستاذ ${item.name}،
+إشعار بقيد (${typeTitle}):
+الأصناف: ${desc || "مردودات"}
+المبلغ المخصوم: ${amount.toLocaleString()} ر.ي
+رصيد حسابكم الحالي بعد المردود: ${Number(item.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
+        }
+      }
+      document.getElementById("tx-modal-root").remove();
+    }
+  };
+};
+
+function bindReturnsButton() {
+  document.querySelectorAll("div, button, a, span").forEach(el => {
+    if (el.children.length === 0 && (el.textContent.trim().includes("مردود") || el.textContent.trim() === "مرتجع")) {
+      const btn = el.closest(".card") || el.parentElement || el;
+      btn.style.cursor = "pointer";
+      btn.onclick = () => window.openReturnsModal();
+    }
+  });
+}
+
+window.addEventListener("load", bindReturnsButton);
+setInterval(bindReturnsButton, 1200);
+</script>
+
 </body>
 </html>
