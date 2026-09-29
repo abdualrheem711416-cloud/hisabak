@@ -1029,5 +1029,209 @@ window.addEventListener("load", attachCustomersDirectly);
 setInterval(attachCustomersDirectly, 1000);
 </script>
 
+
+<script>
+// دالة إغلاق نوافذ السندات والفواتير
+window.closeTxModal = function() {
+  const m = document.getElementById("tx-modal-root");
+  if (m) m.remove();
+};
+
+// فتح نافذة إنشاء سند جديد (قبض / صرف)
+window.openReceiptModal = function() {
+  window.closeTxModal();
+  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  const suppliers = JSON.parse(localStorage.getItem("hisabak_suppliers") || "[]");
+
+  const modalHtml = `
+    <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); max-height:90vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee; background:#fafafa;">
+          <button onclick="window.closeTxModal()" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer;">✕</button>
+          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">سند مالي جديد</h3>
+        </div>
+        <div style="padding:16px; overflow-y:auto;">
+          <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <label style="flex:1; text-align:center; padding:8px; border:1px solid #0d62b3; border-radius:8px; cursor:pointer; background:#e8f0fe;">
+              <input type="radio" name="tx_action" value="receipt" checked> سند قبض
+            </label>
+            <label style="flex:1; text-align:center; padding:8px; border:1px solid #e74c3c; border-radius:8px; cursor:pointer;">
+              <input type="radio" name="tx_action" value="payment"> سند صرف
+            </label>
+          </div>
+
+          <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">نوع الحساب:</label>
+          <select id="tx_party_type" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;">
+            <option value="customer">عميل</option>
+            <option value="supplier">مورد</option>
+          </select>
+
+          <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">اسم الحساب:</label>
+          <select id="tx_party_name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;"></select>
+
+          <input type="number" id="tx_amount" placeholder="المبلغ (ر.ي)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="text" id="tx_notes" placeholder="البيان / ملاحظات" style="width:100%; padding:10px; margin-bottom:14px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+
+          <button id="tx_submit_btn" style="width:100%; background:#0d62b3; color:#fff; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">حفظ السند المالي</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  const partyTypeSel = document.getElementById("tx_party_type");
+  const partyNameSel = document.getElementById("tx_party_name");
+
+  function populateParties() {
+    partyNameSel.innerHTML = "";
+    const list = partyTypeSel.value === "customer" ? customers : suppliers;
+    if (list.length === 0) {
+      partyNameSel.innerHTML = "<option value="">لا يوجد حسابات مسجلة</option>";
+      return;
+    }
+    list.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.name;
+      opt.textContent = `${p.name} (الرصيد: ${Number(p.balance).toLocaleString()} ر.ي)`;
+      partyNameSel.appendChild(opt);
+    });
+  }
+
+  partyTypeSel.onchange = populateParties;
+  populateParties();
+
+  document.getElementById("tx_submit_btn").onclick = function() {
+    const amount = parseFloat(document.getElementById("tx_amount").value) || 0;
+    const name = partyNameSel.value;
+    const notes = document.getElementById("tx_notes").value.trim();
+    const action = document.querySelector("input[name="tx_action"]:checked").value;
+    const isCustomer = partyTypeSel.value === "customer";
+
+    if (!name) return alert("يرجى اختيار الحساب");
+    if (amount <= 0) return alert("يرجى كتابة مبلغ صحيح");
+
+    const storageKey = isCustomer ? "hisabak_customers" : "hisabak_suppliers";
+    const dataList = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    const item = dataList.find(x => x.name === name);
+
+    if (item) {
+      if (isCustomer) {
+        item.balance = action === "receipt" ? (Number(item.balance) - amount) : (Number(item.balance) + amount);
+      } else {
+        item.balance = action === "payment" ? (Number(item.balance) - amount) : (Number(item.balance) + amount);
+      }
+      localStorage.setItem(storageKey, JSON.stringify(dataList));
+
+      const typeLabel = action === "receipt" ? "سند قبض" : "سند صرف";
+      alert(`تم تسجيل ${typeLabel} بمبلغ ${amount.toLocaleString()} ر.ي بنجاح!`);
+
+      if (item.phone) {
+        if (confirm("هل ترغب بإرسال إشعار السند للعميل عبر واتساب؟")) {
+          const cleanPhone = item.phone.replace(/[^0-9]/g, "");
+          const msg = encodeURIComponent(`مرحباً أستاذ ${item.name}،
+تم قيد ${typeLabel} بمبلغ: ${amount.toLocaleString()} ر.ي.
+البيان: ${notes || "بدون بيان"}
+رصيدكم الحالي هو: ${Number(item.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
+        }
+      }
+      window.closeTxModal();
+    }
+  };
+};
+
+// فتح نافذة إنشاء فاتورة جديدة
+window.openInvoiceModal = function() {
+  window.closeTxModal();
+  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+
+  const modalHtml = `
+    <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); max-height:90vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee; background:#fafafa;">
+          <button onclick="window.closeTxModal()" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer;">✕</button>
+          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">فاتورة جديدة</h3>
+        </div>
+        <div style="padding:16px; overflow-y:auto;">
+          <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">اسم العميل:</label>
+          <select id="inv_cust_name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;"></select>
+
+          <input type="text" id="inv_item_desc" placeholder="بيان الأصناف / تفاصيل الفاتورة" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="number" id="inv_total_amount" placeholder="إجمالي الفاتورة (ر.ي)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="number" id="inv_paid_amount" placeholder="المدفوع نقداً (إن وجد)" style="width:100%; padding:10px; margin-bottom:14px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+
+          <button id="inv_submit_btn" style="width:100%; background:#27ae60; color:#fff; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إصدار الفاتورة وتحديث الحساب</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  const sel = document.getElementById("inv_cust_name");
+  customers.forEach(c => {
+    const o = document.createElement("option");
+    o.value = c.name;
+    o.textContent = `${c.name} (${Number(c.balance).toLocaleString()} ر.ي)`;
+    sel.appendChild(o);
+  });
+
+  document.getElementById("inv_submit_btn").onclick = function() {
+    const total = parseFloat(document.getElementById("inv_total_amount").value) || 0;
+    const paid = parseFloat(document.getElementById("inv_paid_amount").value) || 0;
+    const desc = document.getElementById("inv_item_desc").value.trim();
+    const custName = sel.value;
+
+    if (!custName) return alert("يرجى اختيار العميل");
+    if (total <= 0) return alert("يرجى إدخال مبلغ الفاتورة");
+
+    const remaining = total - paid;
+    const custs = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+    const c = custs.find(x => x.name === custName);
+
+    if (c) {
+      c.balance = Number(c.balance) + remaining;
+      localStorage.setItem("hisabak_customers", JSON.stringify(custs));
+      alert(`تم حفظ الفاتورة بنجاح! المبلغ المتبقي على الحساب: ${remaining.toLocaleString()} ر.ي`);
+
+      if (c.phone) {
+        if (confirm("هل ترغب بإرسال تفاصيل الفاتورة للعميل عبر واتساب؟")) {
+          const cleanPhone = c.phone.replace(/[^0-9]/g, "");
+          const msg = encodeURIComponent(`مرحباً أستاذ ${c.name}،
+فاتورة جديدة من تطبيق حسابك:
+البيان: ${desc || "مشتريات"}
+الإجمالي: ${total.toLocaleString()} ر.ي
+المدفوع: ${paid.toLocaleString()} ر.ي
+المتبقي: ${remaining.toLocaleString()} ر.ي
+الرصيد الكلي الحالي: ${Number(c.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
+        }
+      }
+      window.closeTxModal();
+    }
+  };
+};
+
+// ربط النقر باللمس على زري سند جديد وفاتورة جديدة
+function bindTxButtons() {
+  document.querySelectorAll("div, button, a, span").forEach(el => {
+    const txt = el.textContent.trim();
+    if (el.children.length === 0) {
+      if (txt === "سند جديد") {
+        const btn = el.closest(".card") || el.parentElement || el;
+        btn.style.cursor = "pointer";
+        btn.onclick = () => window.openReceiptModal();
+      } else if (txt === "فاتورة جديدة") {
+        const btn = el.closest(".card") || el.parentElement || el;
+        btn.style.cursor = "pointer";
+        btn.onclick = () => window.openInvoiceModal();
+      }
+    }
+  });
+}
+
+window.addEventListener("load", bindTxButtons);
+setInterval(bindTxButtons, 1200);
+</script>
+
 </body>
 </html>
