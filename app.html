@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<script>
+  // تجاوز الكاش تلقائيا عند اول فتح
+  (function() {
+    if (!window.location.search.includes("v=10")) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("v", "10");
+      window.location.replace(url.href);
+    }
+  })();
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><div style="display:flex; align-items:center; gap:8px;"><span style="background:#ffffff; color:#0d62b5; font-weight:900; font-size:13px; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1.5px solid #e0f2fe; letter-spacing:0.5px;">AR</span><span style="font-size:1.15rem; font-weight:bold;">حسابك</span></div></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: #f0f4f8; padding-bottom: 70px; }
+        .top-bar { background-color: #0b5cab; color: white; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 1.15rem; font-weight: bold; }
+        .top-icons { display: flex; gap: 18px; font-size: 1.1rem; }
+        .quick-actions { padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .btn-action { border: none; padding: 10px 4px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: white; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .btn-blue { background-color: #0d62b5; }
+        .btn-orange { background-color: #f28b00; }
+        .cards-grid { padding: 8px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: white; border: 1.5px solid #0d62b5; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card-icon { width: 48px; height: 48px; border-radius: 50%; background-color: #eef5fc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #0d62b5; margin-bottom: 8px; border: 1px solid #c8dcf2; }
+        .card-title { font-size: 0.95rem; font-weight: bold; color: #222; margin-bottom: 4px; }
+        .card-amount { font-size: 0.9rem; font-weight: bold; color: #d32f2f; }
+        .fab { position: fixed; bottom: 45px; left: 20px; background-color: #f28b00; color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; }
+        .footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #0b5cab; color: white; display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; font-size: 0.8rem; }
+        .footer-icons { display: flex; gap: 12px; font-size: 1.1rem; }
+    </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * {
+  }
+  body {
+  }
+  /* تكبير عناوين البطاقات الرئيسية */
+  .card-title {
+  }
+  .card-amount {
+  }
+  /* أزرار الوصول السريع العلوية */
+  .btn-action {
+  }
+  /* الشريط العلوي */
+  .top-bar {
+  }
+</style>
+
+
+<style id="icons-resize-style">
+  /* تكبير الأيقونات داخل البطاقات الدائرية الرئيسية */
+  .card-icon {
+  }
+  .card-icon i, .card-icon svg {
+  }
+
+  /* تكبير أيقونات الشريط العلوي (الترس، القائمة، البحث) */
+  .top-icons, .top-bar i, .top-bar svg {
+  }
+  .top-icons {
+  }
+
+  /* تكبير أيقونات أزرار الإجراءات والشريط السفلي */
+  .footer-icons i, .footer-icons svg {
+  }
+  .fab {
+  }
+</style>
+
+
+<style>
+  /* تكبير قسري وشامل لكل الأيقونات والصناديق */
+  .card-icon {
+  }
+  .card-icon svg, .card-icon i, .card-icon img {
+  }
+  .top-bar svg, .top-bar i {
+  }
+  .footer-bar svg, .footer-bar i {
+  }
+</style>
+
+
+<style>
+  /* تكبير أيقونات FontAwesome والبطاقات بصورة مباشرة */
+  i.fa-solid, i.fa-brands, i.fa-regular, .card-icon i {
+    font-size: 34px;
+    display: inline-block;
+  }
+  .card-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .top-bar i, .top-icons i {
+    font-size: 26px;
+  }
+  .footer-icons i {
+    font-size: 26px;
+  }
+</style>
+
+</head>
+<body>
+    <div class="top-bar" style="position:relative; display:flex; justify-content:space-between; align-items:center;">
+    <div onclick="document.getElementById('excelModalOfficial').style.display='flex'" style="font-size:22px; cursor:pointer; padding:0 8px;">⚙️</div>
+        <div><i class="fa-solid fa-bars"></i></div>
+        <div><div style="display:flex; align-items:center; gap:8px;"><span style="background:#ffffff; color:#0d62b5; font-weight:900; font-size:13px; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1.5px solid #e0f2fe; letter-spacing:0.5px;">AR</span><span style="font-size:1.15rem; font-weight:bold;">حسابك</span></div></div>
+        <div class="top-icons">
+            <i class="fa-solid fa-plus"></i>
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <i class="fa-solid fa-bell"></i>
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
+    <div class="quick-actions">
+        <button class="btn-action btn-blue">سند جديد</button>
+        <button class="btn-action btn-blue">حوالة جديدة</button>
+        <button class="btn-action btn-blue">كشف حساب</button>
+        <button class="btn-action btn-orange">قيد بسيط</button>
+        <button class="btn-action btn-orange">الحركة اليومية</button>
+        <button class="btn-action btn-orange">صناديق النقدية</button>
+        <button class="btn-action btn-blue">فاتورة جديدة</button>
+        <button class="btn-action btn-blue">صرف عملات</button>
+        <button class="btn-action btn-blue">البحث السريع</button>
+    </div>
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="card-title">العملاء</div>
+            <div class="card-amount">0 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-truck-field"></i></div>
+            <div class="card-title">الموردين</div>
+            <div class="card-amount">3,507,845 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="card-title">الموظفين</div>
+            <div class="card-amount">0 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <div class="card-title">الديون</div>
+            <div class="card-amount">0 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <div class="card-title">الصرفيات</div>
+            <div class="card-amount">0 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="card-title">أخرى</div>
+            <div class="card-amount">0 ر.ي</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-tape"></i></div>
+            <div class="card-title">تمتير ومقاسات</div>
+        </div>
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+            <div class="card-title">مقاس جديد</div>
+        </div>
+    </div>
+    <button class="fab">+</button>
+    <div class="footer-bar">
+        <div>رقم الإصدار: 135.0.1</div>
+        <div class="footer-icons">
+            <i class="fa-brands fa-whatsapp"></i>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-youtube"></i>
+            <i class="fa-brands fa-telegram"></i>
+        </div>
+    </div>
+
+<div id="excelModalOfficial" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:9999999; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif;">
+  <div style="background:#fff; width:88%; max-width:380px; padding:20px; border-radius:14px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3); color:#333;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; font-size:17px; color:#0d62b5;">⚙️ استيراد الأصناف (Excel)</h3>
+      <span onclick="document.getElementById('excelModalOfficial').style.display='none'" style="font-size:24px; cursor:pointer; color:#888;">&times;</span>
+    </div>
+    <p style="font-size:13px; color:#555; margin-bottom:15px;">حدد ملف Excel لإضافة الأصناف تلقائياً للنظام</p>
+    <input type="file" id="excelCustomFile" accept=".xlsx, .xls" style="display:block; width:100%; padding:10px; border:2px dashed #0d62b5; border-radius:8px; background:#f0f7ff; margin-bottom:15px; box-sizing:border-box;">
+    <div id="excelStatus" style="font-size:13px; margin-bottom:12px; font-weight:bold;"></div>
+    <div style="display:flex; gap:10px;">
+      <button onclick="processExcel()" style="flex:1; background:#0d62b5; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">استيراد</button>
+      <button onclick="document.getElementById('excelModalOfficial').style.display='none'" style="flex:1; background:#e2e8f0; color:#333; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">إلغاء</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+function processExcel() {
+  const f = document.getElementById('excelCustomFile');
+  const st = document.getElementById('excelStatus');
+    st.style.color = 'red'; st.textContent = 'يرجى اختيار ملف أولاً'; return;
+  }
+  st.style.color = '#0d62b5'; st.textContent = 'جاري المعالجة...';
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type: 'array'});
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      st.style.color = 'green';
+      st.textContent = 'تم استيراد ' + rows.length + ' صنف بنجاح!';
+      setTimeout(() => { document.getElementById('excelModalOfficial').style.display = 'none'; }, 2000);
+    } catch(err) {
+      st.style.color = 'red'; st.textContent = 'فشل قراءة الملف';
+    }
+  };
+  reader.readAsArrayBuffer(f.files[0]);
+}
+</script>
+</body>
+</html>
