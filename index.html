@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+
+<script>
+// إجبار المتصفح على مسح Service Worker والكاش القديم
+if ("serviceWorker" in navigator) {
+  caches.keys().then(names => {
+    for (let name of names) caches.delete(name);
+  });
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    for (let reg of regs) reg.update();
+  });
+}
+</script>
+
   <link rel="icon" type="image/png" href="icon-512.png">
 
   <!-- إعدادات تثبيت التطبيق PWA -->
