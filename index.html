@@ -1555,5 +1555,229 @@ document.addEventListener("click", function(e) {
 }, true);
 </script>
 
+
+<!-- حاوية شاشة العملاء المدمجة كلياً داخل التطبيق -->
+<div id="integrated-customers-view" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#f4f6f9; z-index:999999; flex-direction:column; direction:rtl; overflow:hidden;">
+
+
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <div class="title-box">
+      <a href="index.html">➔</a>
+      <span>العملاء</span>
+    </div>
+    <div class="icons">
+      <span onclick="alert('البحث قيد التفعيل')">🔍</span>
+      <span onclick="window.print()">🖨️</span>
+      <span onclick="alert('خيارات التصفية')">🔻</span>
+    </div>
+  </div>
+
+  <!-- لوحة الخيارات والفلاتر -->
+  <div class="filter-card">
+    <div class="periods">
+      <label><input type="radio" name="p"> يومي</label>
+      <label><input type="radio" name="p"> شهري</label>
+      <label style="color:#d35400; font-weight:bold;"><input type="radio" name="p" checked> الكل</label>
+      <label><input type="radio" name="p"> سنوي</label>
+    </div>
+    <div class="sorting">
+      <div class="date-dropdown">
+        <span>ترتيب حسب التاريخ</span> <span>▼</span>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <label><input type="radio" name="s"> تصاعدي</label>
+        <label style="color:#d35400; font-weight:bold;"><input type="radio" name="s" checked> تنازلي</label>
+      </div>
+    </div>
+    <div class="currency-row">
+      <span style="color:#777;">العملة</span>
+      <span style="font-weight:bold;">محلي</span>
+      <label style="color:#555;"><input type="checkbox"> حسب العملة</label>
+    </div>
+    <div class="date-range-bar">
+      <div style="display:flex; align-items:center;">
+        <span class="arrow-circle">➜</span>
+        <span style="margin-right:4px;">من</span>
+        <span class="date-tag">1/1/2026</span>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <span>الى</span>
+        <span class="date-tag">29/9/2026</span>
+        <span class="arrow-circle" style="margin-right:4px;">➔</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- قائمة العملاء -->
+  <div class="cust-list" id="cust-container"></div>
+
+  <!-- زر الإضافة العائم -->
+  <button class="fab" id="fab-add">+</button>
+
+  <!-- الشريط السفلي -->
+  <div class="bottom-bar">
+    <span style="font-size:20px; cursor:pointer;">☰</span>
+    <div id="totals-text">عليه : 0  له : 0  الرصيد له : 0 ر.ي</div>
+    <div class="bottom-btn" id="bottom-add">+</div>
+  </div>
+
+  <script>
+    let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+    if (customers.length === 0) {
+      customers = [
+        { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
+        { id: 2, name: "عبدالرحيم", phone: "776332929", balance: 100000 }
+      ];
+      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    }
+
+    function render() {
+      const c = document.getElementById("cust-container");
+      c.innerHTML = "";
+      let total = 0;
+      customers.forEach((item, idx) => {
+        total += Number(item.balance || 0);
+        const div = document.createElement("div");
+        div.className = "cust-item";
+        div.innerHTML = `
+          <div style="display:flex; gap:6px;">
+            <button onclick="deleteCust(${idx})" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer;">حذف</button>
+            <button onclick="sendWA(${idx})" style="background:#25D366; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer;">💬 واتساب</button>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-weight:bold; font-size:15px; color:#222;">${item.name}</div>
+            <div style="font-size:12px; color:#666;">${item.phone ? '📞 ' + item.phone : 'بدون هاتف'}</div>
+            <div style="font-weight:bold; font-size:13px; color:#27ae60;">الرصيد: ${Number(item.balance).toLocaleString()} ر.ي</div>
+          </div>
+        `;
+        c.appendChild(div);
+      });
+      document.getElementById("totals-text").textContent = `عليه : 0  له : ${total.toLocaleString()}  الرصيد له : ${total.toLocaleString()} ر.ي`;
+    }
+
+    window.deleteCust = function(i) {
+      customers.splice(i, 1);
+      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+      render();
+    };
+
+    window.sendWA = function(i) {
+      const itm = customers[i];
+      if (!itm.phone) return alert("يرجى إدخال رقم الهاتف أولاً");
+      const clean = itm.phone.replace(/[^0-9]/g, "");
+      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،\nكشف حساب من تطبيق حسابك:\nرصيدكم الحالي: ${Number(itm.balance).toLocaleString()} ر.ي.`);
+      window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
+    };
+
+    function handleActions() {
+      const act = prompt("اختر العملية المطلوبة:\n1 - إضافة عميل جديد\n2 - سند قبض\n3 - سند صرف\n4 - فاتورة مبيعات\n5 - مردود مبيعات", "1");
+      if (act === "1") {
+        const n = prompt("اسم العميل:");
+        if (!n) return;
+        const p = prompt("رقم الهاتف (واتساب):", "");
+        const b = parseFloat(prompt("الرصيد الافتتاحي (ر.ي):", "0")) || 0;
+        customers.push({ id: Date.now(), name: n, phone: p, balance: b });
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        render();
+      } else if (act === "2" || act === "3") {
+        const name = prompt("اكتب اسم العميل بدقة:");
+        const cust = customers.find(x => x.name === name);
+        if (!cust) return alert("العميل غير موجود");
+        const amt = parseFloat(prompt("المبلغ (ر.ي):", "0")) || 0;
+        if (amt <= 0) return;
+        cust.balance = act === "2" ? (Number(cust.balance) - amt) : (Number(cust.balance) + amt);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم حفظ السند وتحديث الرصيد!");
+        render();
+      } else if (act === "4") {
+        const name = prompt("اكتب اسم العميل بدقة:");
+        const cust = customers.find(x => x.name === name);
+        if (!cust) return alert("العميل غير موجود");
+        const tot = parseFloat(prompt("إجمالي الفاتورة:", "0")) || 0;
+        const paid = parseFloat(prompt("المدفوع نقداً:", "0")) || 0;
+        cust.balance = Number(cust.balance) + (tot - paid);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم قيد الفاتورة وتحديث الرصيد!");
+        render();
+      } else if (act === "5") {
+        const name = prompt("اكتب اسم العميل بدقة:");
+        const cust = customers.find(x => x.name === name);
+        if (!cust) return alert("العميل غير موجود");
+        const ret = parseFloat(prompt("قيمة المردود (ر.ي):", "0")) || 0;
+        cust.balance = Number(cust.balance) - ret;
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم تسجيل المردود وخصمه من الرصيد!");
+        render();
+      }
+    }
+
+    document.getElementById("fab-add").onclick = handleActions;
+    document.getElementById("bottom-add").onclick = handleActions;
+    render();
+  </script>
+
+</div>
+
+<script>
+// تعديل زر الرجوع ليعود للشاشة الرئيسية للتطبيق
+function setupIntegratedCustNav() {
+  const view = document.getElementById("integrated-customers-view");
+  if (!view) return;
+
+  // تعديل سهم الرجوع
+  const backLinks = view.querySelectorAll("a, button, [class*="title-box"] *");
+  backLinks.forEach(el => {
+    if (el.textContent.includes("➔") || el.getAttribute("href") === "index.html") {
+      el.removeAttribute("href");
+      el.style.cursor = "pointer";
+      el.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        view.style.display = "none";
+      };
+    }
+  });
+
+  // ربط الأزرار المحدثة
+  const fab = view.querySelector("#fab-add");
+  const bottomAdd = view.querySelector("#bottom-add");
+  if (fab && window.handleActions) fab.onclick = window.handleActions;
+  if (bottomAdd && window.handleActions) bottomAdd.onclick = window.handleActions;
+}
+
+// دالة فتح الشاشة المدمجة
+window.showIntegratedCustomers = function() {
+  const view = document.getElementById("integrated-customers-view");
+  if (view) {
+    view.style.display = "flex";
+    if (typeof render === "function") render();
+    setupIntegratedCustNav();
+  }
+};
+
+// الاستماع للضغط على بطاقة العملاء في الشاشة الرئيسية
+document.addEventListener("pointerdown", function(e) {
+  const card = e.target.closest("div, .card, button, a");
+  if (card && card.textContent.trim().includes("العملاء") && !e.target.closest("#integrated-customers-view")) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.showIntegratedCustomers();
+  }
+}, true);
+
+// ربط النقر العادي للأجهزة
+document.addEventListener("click", function(e) {
+  const card = e.target.closest("div, .card, button, a");
+  if (card && card.textContent.trim().includes("العملاء") && !e.target.closest("#integrated-customers-view")) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.showIntegratedCustomers();
+  }
+}, true);
+
+window.addEventListener("load", setupIntegratedCustNav);
+</script>
+
 </body>
 </html>
