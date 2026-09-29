@@ -11,751 +11,31 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="حسابك">
   <link rel="apple-touch-icon" href="icon-512.png">
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js");
-      });
-    }
-  </script>
+  
 
 
-<script>
-  // تجاوز الكاش تلقائيا عند اول فتح
-  (function() {
-    if (!window.location.search.includes("v=10")) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("v", "10");
-      window.location.replace(url.href);
-    }
-  })();
-</script>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حسابك</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: #f0f4f8; padding-bottom: 70px; }
-        .top-bar { background-color: #0b5cab; color: white; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 1.15rem; font-weight: bold; }
-        .top-icons { display: flex; gap: 18px; font-size: 1.1rem; }
-        .quick-actions { padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-        .btn-action { border: none; padding: 10px 4px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: white; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-        .btn-blue { background-color: #0d62b5; }
-        .btn-orange { background-color: #f28b00; }
-        .cards-grid { padding: 8px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: white; border: 1.5px solid #0d62b5; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card-icon { width: 48px; height: 48px; border-radius: 50%; background-color: #eef5fc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #0d62b5; margin-bottom: 8px; border: 1px solid #c8dcf2; }
-        .card-title { font-size: 0.95rem; font-weight: bold; color: #222; margin-bottom: 4px; }
-        .card-amount { font-size: 0.9rem; font-weight: bold; color: #d32f2f; }
-        .fab { position: fixed; bottom: 45px; left: 20px; background-color: #f28b00; color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; }
-        .footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #0b5cab; color: white; display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; font-size: 0.8rem; }
-        .footer-icons { display: flex; gap: 12px; font-size: 1.1rem; }
-    </style>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&display=swap" rel="stylesheet">
-<style>
-  * {
-  }
-  body {
-  }
-  /* تكبير عناوين البطاقات الرئيسية */
-  .card-title {
-  }
-  .card-amount {
-  }
-  /* أزرار الوصول السريع العلوية */
-  .btn-action {
-  }
-  /* الشريط العلوي */
-  .top-bar {
-  }
-</style>
 
 
-<style id="icons-resize-style">
-  /* تكبير الأيقونات داخل البطاقات الدائرية الرئيسية */
-  .card-icon {
-  }
-  .card-icon i, .card-icon svg {
-  }
-
-  /* تكبير أيقونات الشريط العلوي (الترس، القائمة، البحث) */
-  .top-icons, .top-bar i, .top-bar svg {
-  }
-  .top-icons {
-  }
-
-  /* تكبير أيقونات أزرار الإجراءات والشريط السفلي */
-  .footer-icons i, .footer-icons svg {
-  }
-  .fab {
-  }
-</style>
 
 
-<style>
-  /* تكبير قسري وشامل لكل الأيقونات والصناديق */
-  .card-icon {
-  }
-  .card-icon svg, .card-icon i, .card-icon img {
-  }
-  .top-bar svg, .top-bar i {
-  }
-  .footer-bar svg, .footer-bar i {
-  }
-</style>
 
 
-<style>
-  /* تكبير أيقونات FontAwesome والبطاقات بصورة مباشرة */
-  i.fa-solid, i.fa-brands, i.fa-regular, .card-icon i {
-    font-size: 34px;
-    display: inline-block;
-  }
-  .card-icon {
-    width: 65px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .top-bar i, .top-icons i {
-    font-size: 26px;
-  }
-  .footer-icons i {
-    font-size: 26px;
-  }
-</style>
 
-</head>
-<body>
-    <div class="top-bar" style="position:relative; display:flex; justify-content:space-between; align-items:center;">
-    <div onclick="document.getElementById('excelModalOfficial').style.display='flex'" style="font-size:22px; cursor:pointer; padding:0 8px;">⚙️</div>
-        <div><i class="fa-solid fa-bars"></i></div>
-        <div><div style="display:flex; align-items:center; gap:8px;"><span style="background:#ffffff; color:#0d62b5; font-weight:900; font-size:13px; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1.5px solid #e0f2fe; letter-spacing:0.5px;">AR</span><span style="font-size:1.15rem; font-weight:bold;">حسابك</span></div></div>
-        <div class="top-icons">
-            <i class="fa-solid fa-plus"></i>
-            <i class="fa-solid fa-arrows-rotate"></i>
-            <i class="fa-solid fa-bell"></i>
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-    </div>
-    <div class="quick-actions">
-        <button class="btn-action btn-blue">سند جديد</button>
-        <button class="btn-action btn-blue">حوالة جديدة</button>
-        <button class="btn-action btn-blue">كشف حساب</button>
-        <button class="btn-action btn-orange">قيد بسيط</button>
-        <button class="btn-action btn-orange">الحركة اليومية</button>
-        <button class="btn-action btn-orange">صناديق النقدية</button>
-        <button class="btn-action btn-blue">فاتورة جديدة</button>
-        <button class="btn-action btn-blue">صرف عملات</button>
-        <button class="btn-action btn-blue">البحث السريع</button>
-    </div>
-    <div class="cards-grid">
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-users"></i></div>
-            <div class="card-title">العملاء</div>
-            <div class="card-amount">0 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-truck-field"></i></div>
-            <div class="card-title">الموردين</div>
-            <div class="card-amount">3,507,845 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-user-tie"></i></div>
-            <div class="card-title">الموظفين</div>
-            <div class="card-amount">0 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-            <div class="card-title">الديون</div>
-            <div class="card-amount">0 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
-            <div class="card-title">الصرفيات</div>
-            <div class="card-amount">0 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <div class="card-title">أخرى</div>
-            <div class="card-amount">0 ر.ي</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-tape"></i></div>
-            <div class="card-title">تمتير ومقاسات</div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i class="fa-solid fa-ruler-combined"></i></div>
-            <div class="card-title">مقاس جديد</div>
-        </div>
-    </div>
-    <button class="fab">+</button>
-    <div class="footer-bar">
-        <div>رقم الإصدار: 135.0.1</div>
-        <div class="footer-icons">
-            <i class="fa-brands fa-whatsapp"></i>
-            <i class="fa-brands fa-facebook"></i>
-            <i class="fa-brands fa-youtube"></i>
-            <i class="fa-brands fa-telegram"></i>
-        </div>
-    </div>
-
-<div id="excelModalOfficial" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:9999999; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif;">
-  <div style="background:#fff; width:88%; max-width:380px; padding:20px; border-radius:14px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3); color:#333;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h3 style="margin:0; font-size:17px; color:#0d62b5;">⚙️ استيراد الأصناف (Excel)</h3>
-      <span onclick="document.getElementById('excelModalOfficial').style.display='none'" style="font-size:24px; cursor:pointer; color:#888;">&times;</span>
-    </div>
-    <p style="font-size:13px; color:#555; margin-bottom:15px;">حدد ملف Excel لإضافة الأصناف تلقائياً للنظام</p>
-    <input type="file" id="excelCustomFile" accept=".xlsx, .xls" style="display:block; width:100%; padding:10px; border:2px dashed #0d62b5; border-radius:8px; background:#f0f7ff; margin-bottom:15px; box-sizing:border-box;">
-    <div id="excelStatus" style="font-size:13px; margin-bottom:12px; font-weight:bold;"></div>
-    <div style="display:flex; gap:10px;">
-      <button onclick="processExcel()" style="flex:1; background:#0d62b5; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">استيراد</button>
-      <button onclick="document.getElementById('excelModalOfficial').style.display='none'" style="flex:1; background:#e2e8f0; color:#333; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">إلغاء</button>
-    </div>
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-function processExcel() {
-  const f = document.getElementById('excelCustomFile');
-  const st = document.getElementById('excelStatus');
-    st.style.color = 'red'; st.textContent = 'يرجى اختيار ملف أولاً'; return;
-  }
-  st.style.color = '#0d62b5'; st.textContent = 'جاري المعالجة...';
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, {type: 'array'});
-      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-      st.style.color = 'green';
-      st.textContent = 'تم استيراد ' + rows.length + ' صنف بنجاح!';
-      setTimeout(() => { document.getElementById('excelModalOfficial').style.display = 'none'; }, 2000);
-    } catch(err) {
-      st.style.color = 'red'; st.textContent = 'فشل قراءة الملف';
-    }
-  };
-  reader.readAsArrayBuffer(f.files[0]);
-}
-</script>
-
-<!-- Suppliers Modal -->
-<div id="suppliers-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; direction:rtl;">
-  <div style="background:#fff; width:90%; max-width:400px; border-radius:12px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.2); max-height:85vh; overflow-y:auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:10px;">
-      <h3 style="margin:0; color:#0b5cab;">إدارة الموردين</h3>
-      <button onclick="closeSuppliersModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-    </div>
-    
-    <div style="margin-top:15px;">
-      <input type="text" id="sup-name" placeholder="اسم المورد" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-      <input type="number" id="sup-balance" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-      <button onclick="addSupplier()" style="width:100%; background:#0b5cab; color:#fff; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">إضافة مورد</button>
-    </div>
-
-    <div style="margin-top:20px;">
-      <h4 style="margin:0 0 10px 0; color:#333;">قائمة الموردين:</h4>
-      <div id="suppliers-list" style="max-height:200px; overflow-y:auto;"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-function openSuppliers() {
-  document.getElementById('suppliers-modal').style.display = 'flex';
-  renderSuppliers();
-}
-
-function closeSuppliersModal() {
-  document.getElementById('suppliers-modal').style.display = 'none';
-}
-
-function getSuppliers() {
-  const data = localStorage.getItem('hisabak_suppliers');
-  return data ? JSON.parse(data) : [
-    { name: 'شركة الأمل للتوريدات', balance: 3507845 }
-  ];
-}
-
-function renderSuppliers() {
-  const list = getSuppliers();
-  const container = document.getElementById('suppliers-list');
-  if (list.length === 0) {
-    container.innerHTML = '<p style="color:#888; font-size:14px; text-align:center;">لا يوجد موردين مسجلين</p>';
-    return;
-  }
-  let html = '';
-  list.forEach((s, idx) => {
-    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #eee;">' +
-      '<div>' +
-        '<strong>' + s.name + '</strong>' +
-        '<div style="font-size:12px; color:#d9534f;">' + Number(s.balance).toLocaleString() + ' ر.ي</div>' +
-      '</div>' +
-      '<button onclick="deleteSupplier(' + idx + ')" style="background:#ff4d4d; color:white; border:none; border-radius:4px; padding:4px 8px; font-size:12px; cursor:pointer;">حذف</button>' +
-    '</div>';
-  });
-  container.innerHTML = html;
-}
-
-function addSupplier() {
-  const name = document.getElementById('sup-name').value.trim();
-  const bal = parseFloat(document.getElementById('sup-balance').value) || 0;
-  if (!name) {
-    alert('يرجى كتابة اسم المورد');
-    return;
-  }
-  const list = getSuppliers();
-  list.unshift({ name: name, balance: bal });
-  localStorage.setItem('hisabak_suppliers', JSON.stringify(list));
-  document.getElementById('sup-name').value = '';
-  document.getElementById('sup-balance').value = '';
-  renderSuppliers();
-}
-
-function deleteSupplier(idx) {
-  const list = getSuppliers();
-  list.splice(idx, 1);
-  localStorage.setItem('hisabak_suppliers', JSON.stringify(list));
-  renderSuppliers();
-}
-</script>
-
-<div id="fix-suppliers-override"></div>
-
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-  // اعتراض أي عنصر يحتوي على كلمة الموردين وتحويله لفتح النافذة
-  document.querySelectorAll('*').forEach(el => {
-    if (el.children.length === 0 && el.innerText && el.innerText.includes('الموردين')) {
-      const card = el.closest('.card') || el.parentElement;
-      if (card) {
-        card.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (typeof openSuppliers === 'function') {
-            openSuppliers();
-          } else {
-            alert('جاري تجهيز قسم الموردين');
-          }
-        };
-      }
-    }
-  });
-});
-
-// تعطيل نافذة التنبيه المزعجة في حال استدعائها
-const _oldAlert = window.alert;
-window.alert = function(msg) {
-  if (typeof msg === 'string' && msg.includes('الموردين')) {
-    if (typeof openSuppliers === 'function') {
-      openSuppliers();
-      return;
-    }
-  }
-  _oldAlert(msg);
-};
-</script>
 
 
 <script>
-// إصلاح شامل لإغلاق النوافذ المنبثقة
-function closeCurrentModal() {
-  const modals = document.querySelectorAll(".modal, [id*="modal"], [class*="modal"], .popup, [id*="popup"], [class*="popup"]");
-  modals.forEach(m => {
-    if (m.style.display !== "none") {
-      m.style.display = "none";
-    }
-  });
-  // إزالة أي طبقة تعتيم خلفية
-  document.querySelectorAll(".modal-backdrop, .backdrop, .overlay").forEach(b => b.remove());
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  // 1. ربط أي زر يحمل علامة X أو زر إغلاق
-  document.body.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.textContent.trim() === "×" || target.textContent.trim() === "✕" || target.classList.contains("close") || target.getAttribute("data-dismiss") === "modal") {
-      e.preventDefault();
-      e.stopPropagation();
-      closeCurrentModal();
-    }
-    // 2. إغلاق عند الضغط خارج المربع الأبيض
-    if (target.classList.contains("modal") || target.classList.contains("modal-overlay") || target.classList.contains("backdrop")) {
-      closeCurrentModal();
-    }
-  }, true);
-
-  // 3. ربط زر الرجوع في الهاتف بإغلاق النافذة المنبثقة
-  window.addEventListener("popstate", () => {
-    closeCurrentModal();
-  });
-});
-</script>
-
-
-<script>
-// دالة إغلاق قسرية فورية لجميع النوافذ المنبثقة
-window.forceCloseSuppliersModal = function() {
-    // 1. البحث عن أي عنصر يحتوي على نافذة إدارة الموردين وإزالته
-    const elements = document.querySelectorAll("div, section");
-    elements.forEach(el => {
-        if (el.textContent.includes("إدارة الموردين") && (el.style.position === "fixed" || el.style.position === "absolute" || window.getComputedStyle(el).position === "fixed")) {
-            el.remove();
-        }
-    });
-
-    // 2. إخفاء أي نافذة عامة أو طبقة تعتيم
-    document.querySelectorAll(".modal, .popup, [id*="modal"], [class*="modal"], .backdrop, .overlay").forEach(m => {
-        m.style.display = "none";
-        m.remove();
-    });
+// دالة إغلاق أي نافذة مفتوحة
+window.dismissAllModals = function() {
+  const m = document.getElementById("customers-modal-box");
+  if (m) m.remove();
+  const s = document.getElementById("suppliers-modal-root");
+  if (s) s.remove();
+  document.querySelectorAll(".modal, [id*="modal"]").forEach(el => el.style.display = "none");
 };
 
-// الاستماع المباشر لحدث اللمس والنقر على الشاشة بالكامل
-document.addEventListener("pointerdown", function(e) {
-    const t = e.target;
-    // إذا ضغط المستخدم على علامة الإغلاق أو ما يجاورها
-    if (t.innerText === "✕" || t.innerText === "×" || t.innerText === "X" || t.classList.contains("close") || t.id === "close-btn") {
-        e.preventDefault();
-        e.stopPropagation();
-        window.forceCloseSuppliersModal();
-    }
-}, true);
-
-// دعم زر الرجوع في الهاتف لإغلاق النافذة
-window.addEventListener("popstate", function() {
-    window.forceCloseSuppliersModal();
-});
-</script>
-
-
-<script>
-// دالة فتح وإدارة نافذة العملاء
-window.openCustomersModal = function() {
-  let existing = document.getElementById("customers-modal-root");
-  if (existing) existing.remove();
-
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-  if (customers.length === 0) {
-    customers = [
-      { id: 1, name: "عميل نقدي عام", balance: 0 },
-      { id: 2, name: "شركة النور", balance: 150000 }
-    ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-  }
-
-  const modalHtml = `
-    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif;">
-      <div style="background:#fff; width:90%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.2); animation:popIn 0.2s ease;">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee;">
-          <button id="close-customers-btn" style="background:none; border:none; font-size:22px; cursor:pointer; color:#777; font-weight:bold;">✕</button>
-          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
-        </div>
-        <div style="padding:16px;">
-          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
-
-          <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
-          <div id="cust-list" style="max-height:220px; overflow-y:auto;"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-
-  function renderList() {
-    const listEl = document.getElementById("cust-list");
-    listEl.innerHTML = "";
-    customers.forEach((c, idx) => {
-      const row = document.createElement("div");
-      row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px 6px; border-bottom:1px solid #f0f0f0;";
-      row.innerHTML = `
-        <button data-idx="${idx}" class="del-cust-btn" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">حذف</button>
-        <div style="text-align:left;">
-          <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
-          <div style="color:#e74c3c; font-size:12px;">${Number(c.balance).toLocaleString()} ر.ي</div>
-        </div>
-      `;
-      listEl.appendChild(row);
-    });
-
-    listEl.querySelectorAll(".del-cust-btn").forEach(btn => {
-      btn.onclick = function() {
-        const i = this.getAttribute("data-idx");
-        customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        renderList();
-      };
-    });
-  }
-
-  renderList();
-
-  // إغلاق مباشر ومؤكد
-  document.getElementById("close-customers-btn").onclick = function() {
-    document.getElementById("customers-modal-root").remove();
-  };
-  document.getElementById("customers-modal-root").onclick = function(e) {
-    if (e.target === this) this.remove();
-  };
-
-  // إضافة عميل جديد
-  document.getElementById("add-cust-btn").onclick = function() {
-    const n = document.getElementById("cust-name-input").value.trim();
-    const b = parseFloat(document.getElementById("cust-bal-input").value) || 0;
-    if (!n) return alert("يرجى إدخال اسم العميل");
-    customers.push({ id: Date.now(), name: n, balance: b });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-    document.getElementById("cust-name-input").value = "";
-    document.getElementById("cust-bal-input").value = "";
-    renderList();
-  };
-};
-
-// ربط النقر على بطاقة العملاء
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.addEventListener("click", (e) => {
-    const card = e.target.closest(".card, div, button");
-    if (card && card.textContent.includes("العملاء") && !e.target.closest("#customers-modal-root")) {
-      e.preventDefault();
-      e.stopPropagation();
-      window.openCustomersModal();
-    }
-  }, true);
-});
-</script>
-
-
-<script>
-// دالة فتح وإدارة نافذة العملاء المتكاملة
-window.openCustomersModal = function() {
-  const oldModal = document.getElementById("customers-modal-root");
-  if (oldModal) oldModal.remove();
-
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-  if (customers.length === 0) {
-    customers = [
-      { id: 1, name: "عميل نقدي عام", balance: 0 },
-      { id: 2, name: "شركة النور", balance: 150000 }
-    ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-  }
-
-  const modalHtml = `
-    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
-      <div style="background:#fff; width:100%; max-width:400px; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee;">
-          <button id="close-customers-x" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:20px; font-weight:bold; cursor:pointer; color:#444; display:flex; align-items:center; justify-content:center;">✕</button>
-          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
-        </div>
-        <div style="padding:16px;">
-          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
-
-          <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
-          <div id="cust-list" style="max-height:200px; overflow-y:auto;"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-
-  function renderCusts() {
-    const list = document.getElementById("cust-list");
-    list.innerHTML = "";
-    customers.forEach((c, idx) => {
-      const item = document.createElement("div");
-      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:9px 4px; border-bottom:1px solid #eee;";
-      item.innerHTML = `
-        <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">حذف</button>
-        <div style="text-align:left;">
-          <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
-          <div style="color:#27ae60; font-size:12px;">${Number(c.balance).toLocaleString()} ر.ي</div>
-        </div>
-      `;
-      list.appendChild(item);
-    });
-
-    list.querySelectorAll("[data-del]").forEach(btn => {
-      btn.onclick = function() {
-        const i = this.getAttribute("data-del");
-        customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        renderCusts();
-      };
-    });
-  }
-
-  renderCusts();
-
-  // إغلاق فوري سلس ومؤكد
-  const root = document.getElementById("customers-modal-root");
-  document.getElementById("close-customers-x").onclick = () => root.remove();
-  root.onclick = (e) => { if (e.target === root) root.remove(); };
-
-  // إضافة عميل
-  document.getElementById("add-cust-btn").onclick = () => {
-    const name = document.getElementById("cust-name-input").value.trim();
-    const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
-    if (!name) return alert("يرجى إدخال اسم العميل");
-    customers.push({ id: Date.now(), name: name, balance: bal });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-    document.getElementById("cust-name-input").value = "";
-    document.getElementById("cust-bal-input").value = "";
-    renderCusts();
-  };
-};
-
-// مراقبة النقر بقوة على بطاقة العملاء
-function bindCustomersClick() {
-  document.querySelectorAll("*").forEach(el => {
-    if (el.children.length === 0 && el.textContent.trim() === "العملاء") {
-      const card = el.closest("div") || el;
-      card.style.cursor = "pointer";
-      card.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        window.openCustomersModal();
-      }, true);
-    }
-  });
-}
-
-window.addEventListener("DOMContentLoaded", bindCustomersClick);
-setTimeout(bindCustomersClick, 1000);
-setTimeout(bindCustomersClick, 2500);
-</script>
-
-
-<script>
-// إغلاق أي نافذة منبثقة فوراً
-window.closeAnyModal = function() {
-  document.querySelectorAll("#customers-modal-root, #suppliers-modal-root, .modal, [id*="modal"]").forEach(el => {
-    el.style.display = "none";
-    el.remove();
-  });
-  document.querySelectorAll(".backdrop, .overlay").forEach(b => b.remove());
-};
-
-// فتح نافذة إدارة العملاء المستقلة
-window.openCustomersModal = function() {
-  window.closeAnyModal();
-
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-  if (customers.length === 0) {
-    customers = [
-      { id: 1, name: "عميل نقدي عام", balance: 0 },
-      { id: 2, name: "شركة النور", balance: 150000 }
-    ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-  }
-
-  const modalHtml = `
-    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:15px; box-sizing:border-box;">
-      <div style="background:#fff; width:100%; max-width:400px; border-radius:14px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.25);">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee;">
-          <button id="close-cust-btn" style="background:#f1f2f6; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; color:#555;">✕</button>
-          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
-        </div>
-        <div style="padding:16px;">
-          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
-
-          <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
-          <div id="cust-list" style="max-height:190px; overflow-y:auto;"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-
-  function renderCusts() {
-    const list = document.getElementById("cust-list");
-    list.innerHTML = "";
-    customers.forEach((c, idx) => {
-      const item = document.createElement("div");
-      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:9px 4px; border-bottom:1px solid #eee;";
-      item.innerHTML = `
-        <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">حذف</button>
-        <div style="text-align:left;">
-          <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
-          <div style="color:#27ae60; font-size:12px;">${Number(c.balance).toLocaleString()} ر.ي</div>
-        </div>
-      `;
-      list.appendChild(item);
-    });
-
-    list.querySelectorAll("[data-del]").forEach(btn => {
-      btn.onclick = function(e) {
-        e.stopPropagation();
-        const i = this.getAttribute("data-del");
-        customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        renderCusts();
-      };
-    });
-  }
-
-  renderCusts();
-
-  document.getElementById("close-cust-btn").onclick = (e) => { e.stopPropagation(); window.closeAnyModal(); };
-  document.getElementById("customers-modal-root").onclick = (e) => {
-    if (e.target.id === "customers-modal-root") window.closeAnyModal();
-  };
-
-  document.getElementById("add-cust-btn").onclick = (e) => {
-    e.stopPropagation();
-    const name = document.getElementById("cust-name-input").value.trim();
-    const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
-    if (!name) return alert("يرجى إدخال اسم العميل");
-    customers.push({ id: Date.now(), name: name, balance: bal });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-    document.getElementById("cust-name-input").value = "";
-    document.getElementById("cust-bal-input").value = "";
-    renderCusts();
-  };
-};
-
-// الاستماع للنقر وفصل بطاقة العملاء عن الموردين تماماً
-document.addEventListener("click", function(e) {
-  const target = e.target;
-
-  // زر الإغلاق X لأي نافذة مفتوحة
-  if (target.innerText === "✕" || target.innerText === "×" || target.id === "close-cust-btn" || target.classList.contains("close")) {
-    e.preventDefault();
-    e.stopPropagation();
-    window.closeAnyModal();
-    return;
-  }
-
-  // كشف الضغط على بطاقة العملاء
-  const card = target.closest("div, .card, a, button");
-  if (card && card.innerText && card.innerText.includes("العملاء") && !target.closest("#customers-modal-root")) {
-    e.preventDefault();
-    e.stopPropagation();
-    window.openCustomersModal();
-  }
-}, true);
-</script>
-
-
-<script>
-// تحديث نافذة إدارة العملاء مع رقم الهاتف والرسائل الفورية
-window.openCustomersModal = function() {
-  window.closeAnyModal();
+// دالة فتح نافذة العملاء متضمنة الهاتف ورسائل الواتساب الفورية
+window.showCustomersDialog = function() {
+  window.dismissAllModals();
 
   let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
   if (customers.length === 0) {
@@ -767,25 +47,23 @@ window.openCustomersModal = function() {
   }
 
   const modalHtml = `
-    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
-      <div style="background:#fff; width:100%; max-width:420px; border-radius:14px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.3); max-height:90vh; display:flex; flex-direction:column;">
+    <div id="customers-modal-box" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:15px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:400px; border-radius:14px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.3); max-height:88vh; display:flex; flex-direction:column;">
         
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee; background:#fafafa;">
-          <button id="close-cust-btn" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; color:#555;">✕</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #eee; background:#fafafa;">
+          <button id="cust-x-btn" style="background:#eee; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; color:#444;">✕</button>
           <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
         </div>
 
         <div style="padding:16px; overflow-y:auto; flex:1;">
-          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="text" id="c-name" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="tel" id="c-phone" placeholder="رقم الهاتف (واتساب)" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="number" id="c-bal" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
           
-          <input type="tel" id="cust-phone-input" placeholder="رقم الهاتف (واتساب / اتصالات)" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          
-          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
-          
-          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
+          <button id="c-save-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
 
           <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
-          <div id="cust-list" style="max-height:240px; overflow-y:auto;"></div>
+          <div id="c-list-box" style="max-height:220px; overflow-y:auto;"></div>
         </div>
       </div>
     </div>
@@ -793,31 +71,16 @@ window.openCustomersModal = function() {
 
   document.body.insertAdjacentHTML("beforeend", modalHtml);
 
-  function sendAutoMsg(c) {
-    if (!c.phone) {
-      alert("لا يوجد رقم هاتف مسجل لهذا العميل!");
-      return;
-    }
-    const cleanPhone = c.phone.replace(/[^0-9]/g, "");
-    const msg = encodeURIComponent(`مرحباً أستاذ ${c.name}،
-إشعار من تطبيق (حسابك):
-رصيد حسابكم الحالي هو: ${Number(c.balance).toLocaleString()} ر.ي.
-شكراً لتعاملكم معنا.`);
-    window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
-  }
-
-  function renderCusts() {
-    const list = document.getElementById("cust-list");
-    list.innerHTML = "";
+  function renderRows() {
+    const box = document.getElementById("c-list-box");
+    box.innerHTML = "";
     customers.forEach((c, idx) => {
-      const item = document.createElement("div");
-      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px 4px; border-bottom:1px solid #eee;";
-      item.innerHTML = `
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px 4px; border-bottom:1px solid #eee;";
+      row.innerHTML = `
         <div style="display:flex; gap:6px; align-items:center;">
-          <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:5px 8px; font-size:12px; cursor:pointer;">حذف</button>
-          <button data-msg="${idx}" style="background:#25D366; color:#fff; border:none; border-radius:6px; padding:5px 8px; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:2px;" title="إرسال رسالة تلقائية">
-            💬 رسالة
-          </button>
+          <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer;">حذف</button>
+          <button data-ws="${idx}" style="background:#25D366; color:#fff; border:none; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer;">💬 واتساب</button>
         </div>
         <div style="text-align:left;">
           <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
@@ -825,57 +88,74 @@ window.openCustomersModal = function() {
           <div style="color:#27ae60; font-size:12px; font-weight:bold;">${Number(c.balance).toLocaleString()} ر.ي</div>
         </div>
       `;
-      list.appendChild(item);
+      box.appendChild(row);
     });
 
-    list.querySelectorAll("[data-del]").forEach(btn => {
-      btn.onclick = function(e) {
+    box.querySelectorAll("[data-del]").forEach(b => {
+      b.onclick = (e) => {
         e.stopPropagation();
-        const i = this.getAttribute("data-del");
-        customers.splice(i, 1);
+        customers.splice(b.getAttribute("data-del"), 1);
         localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        renderCusts();
+        renderRows();
       };
     });
 
-    list.querySelectorAll("[data-msg]").forEach(btn => {
-      btn.onclick = function(e) {
+    box.querySelectorAll("[data-ws]").forEach(b => {
+      b.onclick = (e) => {
         e.stopPropagation();
-        const i = this.getAttribute("data-msg");
-        sendAutoMsg(customers[i]);
+        const item = customers[b.getAttribute("data-ws")];
+        if (!item.phone) return alert("يرجى إدخال رقم هاتف العميل أولاً");
+        const clean = item.phone.replace(/[^0-9]/g, "");
+        const txt = encodeURIComponent(`مرحباً أستاذ ${item.name}،
+إشعار من تطبيق حسابك:
+رصيد حسابكم الحالي: ${Number(item.balance).toLocaleString()} ر.ي.`);
+        window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
       };
     });
   }
 
-  renderCusts();
+  renderRows();
 
-  document.getElementById("close-cust-btn").onclick = (e) => { e.stopPropagation(); window.closeAnyModal(); };
-  document.getElementById("customers-modal-root").onclick = (e) => {
-    if (e.target.id === "customers-modal-root") window.closeAnyModal();
+  // إغلاق النافذة
+  document.getElementById("cust-x-btn").onclick = () => window.dismissAllModals();
+  document.getElementById("customers-modal-box").onclick = (e) => {
+    if (e.target.id === "customers-modal-box") window.dismissAllModals();
   };
 
-  document.getElementById("add-cust-btn").onclick = (e) => {
-    e.stopPropagation();
-    const name = document.getElementById("cust-name-input").value.trim();
-    const phone = document.getElementById("cust-phone-input").value.trim();
-    const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
+  // زر الإضافة
+  document.getElementById("c-save-btn").onclick = () => {
+    const name = document.getElementById("c-name").value.trim();
+    const phone = document.getElementById("c-phone").value.trim();
+    const bal = parseFloat(document.getElementById("c-bal").value) || 0;
     if (!name) return alert("يرجى إدخال اسم العميل");
 
-    const newCust = { id: Date.now(), name: name, phone: phone, balance: bal };
-    customers.push(newCust);
+    const newEntry = { id: Date.now(), name, phone, balance: bal };
+    customers.push(newEntry);
     localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-    
-    // إذا وُجد رقم هاتف، يُتاح إرسال إشعار فوري
-    if (phone && confirm("تمت إضافة العميل بنجاح. هل ترغب بإرسال إشعار ترحيبي برصيد الحساب عبر واتساب فوراً؟")) {
-      sendAutoMsg(newCust);
-    }
 
-    document.getElementById("cust-name-input").value = "";
-    document.getElementById("cust-phone-input").value = "";
-    document.getElementById("cust-bal-input").value = "";
-    renderCusts();
+    document.getElementById("c-name").value = "";
+    document.getElementById("c-phone").value = "";
+    document.getElementById("c-bal").value = "";
+    renderRows();
   };
 };
+
+// الاستماع المباشر باللمس والنقر على بطاقة العملاء
+document.addEventListener("pointerdown", function(e) {
+  const target = e.target;
+  if (target.id === "cust-x-btn" || target.innerText === "✕") {
+    e.preventDefault();
+    window.dismissAllModals();
+    return;
+  }
+  
+  const el = target.closest("div, .card, a, button");
+  if (el && el.innerText && el.innerText.includes("العملاء") && !target.closest("#customers-modal-box")) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.showCustomersDialog();
+  }
+}, true);
 </script>
 
 </body>
