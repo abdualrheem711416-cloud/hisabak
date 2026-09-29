@@ -1003,5 +1003,31 @@ document.addEventListener("click", function(e) {
 }, true);
 </script>
 
+
+<script>
+function attachCustomersDirectly() {
+  const allElements = document.querySelectorAll("div, button, a, span, p");
+  allElements.forEach(el => {
+    // التأكد من أن العنصر يحتوي على كلمة العملاء فقط وليس نافذة داخلية
+    if (el.children.length === 0 && el.textContent.trim() === "العملاء") {
+      const card = el.closest(".card") || el.parentElement || el;
+      card.style.cursor = "pointer";
+      card.setAttribute("onclick", "window.openCustomersModalView();");
+      
+      // دعم شاشات اللمس للهواتف
+      card.ontouchend = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openCustomersModalView();
+      };
+    }
+  });
+}
+
+// تشغيل الربط عند تحميل الصفحة وبشكل متكرر لضمان التقاط العنصر
+window.addEventListener("load", attachCustomersDirectly);
+setInterval(attachCustomersDirectly, 1000);
+</script>
+
 </body>
 </html>
