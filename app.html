@@ -383,5 +383,119 @@ setTimeout(bindCustomersClick, 1000);
 setTimeout(bindCustomersClick, 2500);
 </script>
 
+
+<script>
+// إغلاق أي نافذة منبثقة فوراً
+window.closeAnyModal = function() {
+  document.querySelectorAll("#customers-modal-root, #suppliers-modal-root, .modal, [id*="modal"]").forEach(el => {
+    el.style.display = "none";
+    el.remove();
+  });
+  document.querySelectorAll(".backdrop, .overlay").forEach(b => b.remove());
+};
+
+// فتح نافذة إدارة العملاء المستقلة
+window.openCustomersModal = function() {
+  window.closeAnyModal();
+
+  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  if (customers.length === 0) {
+    customers = [
+      { id: 1, name: "عميل نقدي عام", balance: 0 },
+      { id: 2, name: "شركة النور", balance: 150000 }
+    ];
+    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+  }
+
+  const modalHtml = `
+    <div id="customers-modal-root" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:15px; box-sizing:border-box;">
+      <div style="background:#fff; width:100%; max-width:400px; border-radius:14px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.25);">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #eee;">
+          <button id="close-cust-btn" style="background:#f1f2f6; border:none; width:34px; height:34px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; color:#555;">✕</button>
+          <h3 style="margin:0; font-size:18px; color:#0d62b3; font-weight:bold;">إدارة العملاء</h3>
+        </div>
+        <div style="padding:16px;">
+          <input type="text" id="cust-name-input" placeholder="اسم العميل" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <input type="number" id="cust-bal-input" placeholder="الرصيد الافتتاحي (ر.ي)" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-size:14px;">
+          <button id="add-cust-btn" style="width:100%; background:#0d62b3; color:#fff; padding:11px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">إضافة عميل</button>
+
+          <h4 style="margin:16px 0 8px; color:#333; font-size:15px;">قائمة العملاء:</h4>
+          <div id="cust-list" style="max-height:190px; overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  function renderCusts() {
+    const list = document.getElementById("cust-list");
+    list.innerHTML = "";
+    customers.forEach((c, idx) => {
+      const item = document.createElement("div");
+      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:9px 4px; border-bottom:1px solid #eee;";
+      item.innerHTML = `
+        <button data-del="${idx}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">حذف</button>
+        <div style="text-align:left;">
+          <div style="font-weight:bold; color:#222; font-size:14px;">${c.name}</div>
+          <div style="color:#27ae60; font-size:12px;">${Number(c.balance).toLocaleString()} ر.ي</div>
+        </div>
+      `;
+      list.appendChild(item);
+    });
+
+    list.querySelectorAll("[data-del]").forEach(btn => {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        const i = this.getAttribute("data-del");
+        customers.splice(i, 1);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        renderCusts();
+      };
+    });
+  }
+
+  renderCusts();
+
+  document.getElementById("close-cust-btn").onclick = (e) => { e.stopPropagation(); window.closeAnyModal(); };
+  document.getElementById("customers-modal-root").onclick = (e) => {
+    if (e.target.id === "customers-modal-root") window.closeAnyModal();
+  };
+
+  document.getElementById("add-cust-btn").onclick = (e) => {
+    e.stopPropagation();
+    const name = document.getElementById("cust-name-input").value.trim();
+    const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
+    if (!name) return alert("يرجى إدخال اسم العميل");
+    customers.push({ id: Date.now(), name: name, balance: bal });
+    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    document.getElementById("cust-name-input").value = "";
+    document.getElementById("cust-bal-input").value = "";
+    renderCusts();
+  };
+};
+
+// الاستماع للنقر وفصل بطاقة العملاء عن الموردين تماماً
+document.addEventListener("click", function(e) {
+  const target = e.target;
+
+  // زر الإغلاق X لأي نافذة مفتوحة
+  if (target.innerText === "✕" || target.innerText === "×" || target.id === "close-cust-btn" || target.classList.contains("close")) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.closeAnyModal();
+    return;
+  }
+
+  // كشف الضغط على بطاقة العملاء
+  const card = target.closest("div, .card, a, button");
+  if (card && card.innerText && card.innerText.includes("العملاء") && !target.closest("#customers-modal-root")) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.openCustomersModal();
+  }
+}, true);
+</script>
+
 </body>
 </html>
