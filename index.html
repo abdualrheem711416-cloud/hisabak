@@ -399,5 +399,41 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+
+<script>
+// دالة إغلاق قسرية فورية لجميع النوافذ المنبثقة
+window.forceCloseSuppliersModal = function() {
+    // 1. البحث عن أي عنصر يحتوي على نافذة إدارة الموردين وإزالته
+    const elements = document.querySelectorAll("div, section");
+    elements.forEach(el => {
+        if (el.textContent.includes("إدارة الموردين") && (el.style.position === "fixed" || el.style.position === "absolute" || window.getComputedStyle(el).position === "fixed")) {
+            el.remove();
+        }
+    });
+
+    // 2. إخفاء أي نافذة عامة أو طبقة تعتيم
+    document.querySelectorAll(".modal, .popup, [id*="modal"], [class*="modal"], .backdrop, .overlay").forEach(m => {
+        m.style.display = "none";
+        m.remove();
+    });
+};
+
+// الاستماع المباشر لحدث اللمس والنقر على الشاشة بالكامل
+document.addEventListener("pointerdown", function(e) {
+    const t = e.target;
+    // إذا ضغط المستخدم على علامة الإغلاق أو ما يجاورها
+    if (t.innerText === "✕" || t.innerText === "×" || t.innerText === "X" || t.classList.contains("close") || t.id === "close-btn") {
+        e.preventDefault();
+        e.stopPropagation();
+        window.forceCloseSuppliersModal();
+    }
+}, true);
+
+// دعم زر الرجوع في الهاتف لإغلاق النافذة
+window.addEventListener("popstate", function() {
+    window.forceCloseSuppliersModal();
+});
+</script>
+
 </body>
 </html>
