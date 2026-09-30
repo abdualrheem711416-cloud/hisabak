@@ -1,4 +1,4 @@
-// CacheUpdate_1790800830\nconst CACHE_NAME = 'hisabak-cache-v1';
+// CacheUpdate_1790800830\n// Fix404_1790801269\nconst CACHE_NAME = 'hisabak-cache-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

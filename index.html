@@ -1955,5 +1955,36 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function fixDashboardLinks() {
+    document.querySelectorAll("a, button, div, span").forEach(function(el) {
+      const text = el.textContent || "";
+      
+      // السندات (سند قبض / صرف)
+      if (text.includes("السندات") || text.includes("سند قبض") || text.includes("سند صرف")) {
+        const link = el.closest("a") || el;
+        link.onclick = function(e) { e.preventDefault(); window.location.href = "./vouchers.html"; };
+      }
+      
+      // سجل الفواتير السابقة
+      if (text.includes("سجل الفواتير") || text.includes("الفواتير السابقة") || text.includes("فواتير سابقة")) {
+        const link = el.closest("a") || el;
+        link.onclick = function(e) { e.preventDefault(); window.location.href = "./invoices_list.html"; };
+      }
+      
+      // كشف الحساب والتقارير
+      if (text.includes("كشف حساب") || text.includes("كشف الحساب") || text.includes("التقارير")) {
+        const link = el.closest("a") || el;
+        link.onclick = function(e) { e.preventDefault(); window.location.href = "./statement.html"; };
+      }
+    });
+  }
+  fixDashboardLinks();
+  setTimeout(fixDashboardLinks, 500);
+});
+</script>
+
 </body>
 </html>
