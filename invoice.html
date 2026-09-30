@@ -92,7 +92,7 @@
 
   <!-- Invoice Title & Number -->
   <div class="invoice-title-row">
-    <div class="inv-title" id="inv-type-label">فاتورة بيع نقدا</div>
+    <div class="inv-title" id="inv-type-label" style="color:#d81b60; font-size:18px; font-weight:bold;">فاتورة</div>
     <div class="inv-num-box">
       رقم الفاتوره <input type="text" id="inv-no" value="101" readonly>
     </div>
@@ -148,18 +148,21 @@
         <button class="btn-free">مجانيه</button>
       </div>
 
-      <div class="line-row" style="margin-top:6px;">
-        <span style="font-size:20px;">&#9647;&#9647;&#9647;</span>
-        <input type="text" id="item-name" class="line-input" placeholder="بحث عن صنف" style="text-align:center; color:#2b7de9;">
-        <div class="num-input-group">
-          <label>العدد</label>
-          <input type="number" id="item-qty" value="1" min="1">
+      <div style="display:flex; align-items:center; gap:6px; margin-top:6px; width:100%;">
+        <span style="font-size:18px; cursor:pointer;" title="باركود">&#9647;&#9647;&#9647;</span>
+        <input type="text" id="item-name" class="line-input" placeholder="بحث عن صنف" style="flex:1; min-width:80px; text-align:right; font-size:13px; color:#2b7de9;">
+        
+        <div class="num-input-group" style="width:48px; flex-shrink:0;">
+          <label style="font-size:9px;">العدد</label>
+          <input type="number" id="item-qty" value="1" min="1" style="width:100%; font-size:13px;">
         </div>
-        <div class="num-input-group">
-          <label>السعر</label>
-          <input type="number" id="item-price" value="0">
+
+        <div class="num-input-group" style="width:55px; flex-shrink:0;">
+          <label style="font-size:9px; color:#d81b60; font-weight:bold;">السعر</label>
+          <input type="number" id="item-price" value="0" style="width:100%; font-size:13px; color:#d81b60; font-weight:bold;">
         </div>
-        <span style="font-size:16px; cursor:pointer;" onclick="calcPopup()">&#128425;</span>
+
+        <button type="button" onclick="openCalculatorModal()" style="background:#eaf2fb; border:1px solid #2b7de9; border-radius:6px; padding:4px 6px; font-size:16px; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;" title="آلة حاسبة">🖩</button>
       </div>
 
       <!-- Add to Invoice Bar with Arrows -->
@@ -241,15 +244,7 @@
   <script>
     let invoiceItems = [];
 
-    function updateTitle() {
-      const op = document.querySelector('input[name="op_type"]:checked').value;
-      const pay = document.querySelector('input[name="pay_type"]:checked').value;
-      const isRet = document.getElementById("is-return").checked;
-      let title = isRet ? "مرتجع " : "فاتورة ";
-      title += (op === "sale" ? "بيع " : "شراء ");
-      title += (pay === "cash" ? "نقدا" : "اجل");
-      document.getElementById("inv-type-label").innerText = title;
-    }
+    function updateTitle() { /* ثابت فاتورة */ }
 
     function addItemToInvoice() {
       const name = document.getElementById("item-name").value.trim();
@@ -336,6 +331,97 @@ window.alert = function(msg) {
     setTimeout(function() { t.style.display = "none"; }, 300);
   }, 2000);
 };
+</script>
+
+
+<!-- آلة حاسبة متكاملة -->
+<div id="calc-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:280px; border-radius:12px; padding:14px; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-family:sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <span style="font-weight:bold; color:#0b5cab; font-size:15px;">الآلة الحاسبة</span>
+      <button onclick="closeCalculatorModal()" style="border:none; background:#eee; width:28px; height:28px; border-radius:50%; font-size:16px; cursor:pointer;">✕</button>
+    </div>
+    <div id="calc-screen" style="background:#f2f5f9; border:1.5px solid #2b7de9; border-radius:8px; padding:10px; font-size:22px; font-weight:bold; text-align:left; min-height:45px; word-break:break-all; margin-bottom:12px; color:#222; direction:ltr;">0</div>
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; direction:ltr;">
+      <button class="calc-btn" onclick="calcInput('C')" style="background:#ffcdd2; color:#c62828;">C</button>
+      <button class="calc-btn" onclick="calcInput('(')">(</button>
+      <button class="calc-btn" onclick="calcInput(')')">)</button>
+      <button class="calc-btn" onclick="calcInput('/')" style="background:#e3f2fd; color:#1565c0;">÷</button>
+      
+      <button class="calc-btn" onclick="calcInput('7')">7</button>
+      <button class="calc-btn" onclick="calcInput('8')">8</button>
+      <button class="calc-btn" onclick="calcInput('9')">9</button>
+      <button class="calc-btn" onclick="calcInput('*')" style="background:#e3f2fd; color:#1565c0;">×</button>
+      
+      <button class="calc-btn" onclick="calcInput('4')">4</button>
+      <button class="calc-btn" onclick="calcInput('5')">5</button>
+      <button class="calc-btn" onclick="calcInput('6')">6</button>
+      <button class="calc-btn" onclick="calcInput('-')" style="background:#e3f2fd; color:#1565c0;">-</button>
+      
+      <button class="calc-btn" onclick="calcInput('1')">1</button>
+      <button class="calc-btn" onclick="calcInput('2')">2</button>
+      <button class="calc-btn" onclick="calcInput('3')">3</button>
+      <button class="calc-btn" onclick="calcInput('+')" style="background:#e3f2fd; color:#1565c0;">+</button>
+      
+      <button class="calc-btn" onclick="calcInput('0')">0</button>
+      <button class="calc-btn" onclick="calcInput('.')">.</button>
+      <button class="calc-btn" onclick="calcInput('=')" style="background:#c8e6c9; color:#2e7d32; font-weight:bold;">=</button>
+      <button class="calc-btn" onclick="applyCalcToPrice()" style="background:#2b7de9; color:#fff; font-size:12px; font-weight:bold;">إدراج</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.calc-btn {
+  padding: 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+}
+.calc-btn:active { background: #e0e0e0; }
+</style>
+
+<script>
+let calcExpr = "";
+function openCalculatorModal() {
+  calcExpr = document.getElementById("item-price").value || "";
+  if (calcExpr === "0") calcExpr = "";
+  document.getElementById("calc-screen").innerText = calcExpr || "0";
+  document.getElementById("calc-modal").style.display = "flex";
+}
+function closeCalculatorModal() {
+  document.getElementById("calc-modal").style.display = "none";
+}
+function calcInput(char) {
+  const screen = document.getElementById("calc-screen");
+  if (char === "C") {
+    calcExpr = "";
+    screen.innerText = "0";
+  } else if (char === "=") {
+    try {
+      calcExpr = String(eval(calcExpr));
+      screen.innerText = calcExpr;
+    } catch(e) {
+      screen.innerText = "خطأ";
+      calcExpr = "";
+    }
+  } else {
+    calcExpr += char;
+    screen.innerText = calcExpr;
+  }
+}
+function applyCalcToPrice() {
+  try {
+    if (calcExpr) {
+      const res = eval(calcExpr);
+      document.getElementById("item-price").value = res;
+    }
+  } catch(e) {}
+  closeCalculatorModal();
+}
 </script>
 
 </body>
