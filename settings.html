@@ -21,7 +21,7 @@
 <body>
 
   <div class="top-bar">
-    <a href="index.html" class="back-btn">&#10005;</a>
+    <a href="settings_menu.html" class="back-btn">&#10005;</a>
     <span>الإعدادات العامة للنظام</span>
     <span style="cursor:pointer;" onclick="saveAllSettings()">💾 حفظ</span>
   </div>
@@ -200,7 +200,7 @@
       };
       localStorage.setItem("hisabak_settings", JSON.stringify(data));
       alert("تم حفظ الإعدادات بنجاح!");
-      window.location.href = "index.html";
+      window.location.href = "settings_menu.html";
     }
   </script>
 </body>
