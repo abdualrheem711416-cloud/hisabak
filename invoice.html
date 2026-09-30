@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>فاتورة جديدة - حسابك</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f7f9fc; color: #333; padding-bottom: 160px; }
+    
+    /* Top Navigation Bar */
+    .top-bar { background-color: #2b7de9; color: white; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .btn-close-inv { color: #ff3366; font-size: 26px; font-weight: bold; background: none; border: none; cursor: pointer; text-decoration: none; }
+    .top-center { display: flex; flex-direction: column; align-items: center; font-size: 13px; font-weight: bold; }
+    .print-options { display: flex; gap: 8px; align-items: center; margin-top: 2px; font-size: 12px; }
+    .top-left-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-save-floppy { background: none; border: none; font-size: 26px; cursor: pointer; color: white; }
+    
+    /* Invoice Header Info */
+    .invoice-title-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px; background: #eaf2fb; }
+    .inv-title { color: #d81b60; font-size: 17px; font-weight: bold; }
+    .inv-num-box { font-size: 13px; color: #555; }
+    .inv-num-box input { width: 75px; border: none; border-bottom: 1px solid #777; background: transparent; text-align: center; }
+    
+    .form-section { padding: 4px 10px; display: flex; flex-direction: column; gap: 6px; }
+    .bordered-box { border: 1.5px solid #2b7de9; border-radius: 12px; padding: 6px 10px; background: white; margin-bottom: 4px; }
+    
+    /* Radio Rows */
+    .radio-row { display: flex; justify-content: space-around; align-items: center; font-size: 13px; font-weight: bold; }
+    .radio-item { display: flex; align-items: center; gap: 4px; color: #222; }
+    .checkbox-item { display: flex; align-items: center; gap: 4px; color: #d81b60; }
+    
+    /* Input Lines */
+    .line-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+    .line-input { flex: 1; border: none; border-bottom: 1.5px solid #2b7de9; outline: none; padding: 4px 6px; font-size: 14px; background: transparent; }
+    .btn-add-circle { background: none; border: none; font-size: 22px; color: #2b7de9; font-weight: bold; cursor: pointer; }
+    
+    .notes-box { display: flex; align-items: center; gap: 6px; border: 1px solid #bbb; border-radius: 6px; padding: 4px 8px; background: white; }
+    .notes-box input { border: none; outline: none; flex: 1; font-size: 13px; }
+    
+    /* Item Entry Section */
+    .item-entry-card { background: white; border-radius: 8px; padding: 8px; border: 1px solid #ddd; margin-top: 4px; display: flex; flex-direction: column; gap: 6px; }
+    .item-controls-row { display: flex; align-items: center; gap: 6px; }
+    .num-input-group { border: 1px solid #ccc; border-radius: 6px; text-align: center; padding: 4px; position: relative; }
+    .num-input-group label { position: absolute; top: -7px; right: 8px; background: white; font-size: 10px; color: #666; padding: 0 2px; }
+    .num-input-group input { width: 55px; border: none; text-align: center; font-weight: bold; outline: none; }
+    
+    .btn-free { border: 1px solid #aaa; background: #fff; padding: 5px 8px; border-radius: 6px; font-size: 12px; }
+    
+    /* Add Button Action Bar */
+    .add-to-inv-bar { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; }
+    .btn-add-item { flex: 1; margin: 0 8px; border: 1.5px solid #2b7de9; background: white; color: #2b7de9; font-weight: bold; padding: 8px; border-radius: 8px; font-size: 14px; cursor: pointer; text-align: center; }
+    .arrow-icon { color: #2b7de9; font-size: 20px; font-weight: bold; cursor: pointer; }
+    
+    /* Items Table */
+    .table-header { background-color: #2b7de9; color: white; display: flex; border-radius: 8px 8px 0 0; font-size: 12px; font-weight: bold; padding: 8px 4px; text-align: center; }
+    .col-name { flex: 3; text-align: right; padding-right: 6px; }
+    .col-unit { flex: 1.5; }
+    .col-qty { flex: 1; }
+    .col-price { flex: 1.5; }
+    .col-total { flex: 2; }
+    
+    .items-body { background: white; min-height: 120px; border: 1px solid #e0e0e0; border-top: none; }
+    .item-row { display: flex; font-size: 12px; padding: 8px 4px; border-bottom: 1px solid #eee; text-align: center; align-items: center; }
+    
+    /* Bottom Summary Floating Footer */
+    .footer-summary { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #2b7de9; padding: 6px 12px; z-index: 100; font-size: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; }
+    .summary-box { border: 1px solid #2b7de9; border-radius: 5px; width: 65px; text-align: center; padding: 2px 4px; font-weight: bold; }
+    .adj-control { display: flex; align-items: center; gap: 4px; }
+    .btn-circle-adj { background: #d0e2ff; border: none; width: 18px; height: 18px; border-radius: 4px; color: #0b5cab; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Blue Bar -->
+  <div class="top-bar">
+    <a href="index.html" class="btn-close-inv">&#10005;</a>
+    <div class="top-center">
+      <span id="current-clock">18:43 30/09/2026</span>
+      <div class="print-options">
+        <label><input type="radio" name="paper_size" checked> A4</label>
+        <label><input type="radio" name="paper_size"> 80m</label>
+      </div>
+    </div>
+    <div class="top-left-actions">
+      <button class="btn-save-floppy" onclick="saveInvoice()">&#128190;</button>
+      <span style="font-size:20px;">&#8942;</span>
+    </div>
+  </div>
+
+  <!-- Invoice Title & Number -->
+  <div class="invoice-title-row">
+    <div class="inv-title" id="inv-type-label">فاتورة بيع نقدا</div>
+    <div class="inv-num-box">
+      رقم الفاتوره <input type="text" id="inv-no" value="101" readonly>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <!-- Box 1: الصندوق و خيارات الفاتورة -->
+    <div class="bordered-box">
+      <div class="line-row">
+        <span style="color:#d81b60; font-size:13px; font-weight:bold;">حساب الصندوق</span>
+        <select class="line-input" id="cash-account" style="text-align:center;">
+          <option>الصندوق</option>
+          <option>البنك</option>
+        </select>
+        <span>&#9660;</span>
+      </div>
+    </div>
+
+    <!-- Box 2: بيع / شراء - نقدا / آجل -->
+    <div class="bordered-box">
+      <div class="radio-row">
+        <label class="radio-item"><input type="radio" name="op_type" value="sale" checked onchange="updateTitle()"> بيع</label>
+        <label class="radio-item"><input type="radio" name="op_type" value="buy" onchange="updateTitle()"> شراء</label>
+        <label class="radio-item"><input type="radio" name="pay_type" value="cash" checked onchange="updateTitle()"> نقدا</label>
+        <label class="radio-item"><input type="radio" name="pay_type" value="credit" onchange="updateTitle()"> اجل</label>
+        <label class="checkbox-item"><input type="checkbox" id="is-return" onchange="updateTitle()"> مرتجع</label>
+      </div>
+    </div>
+
+    <!-- البحث عن حساب -->
+    <div class="line-row" style="padding: 0 4px;">
+      <button class="btn-add-circle" onclick="window.location.href='customers.html'">+</button>
+      <input type="text" id="account-search" class="line-input" placeholder="بحث عن حساب" style="text-align:center; color:#2b7de9;">
+      <span style="color:#d81b60; font-size:13px; font-weight:bold;" id="account-bal">0.00 &#9660;</span>
+    </div>
+
+    <!-- ملاحظات والعملة والكاميرا -->
+    <div class="line-row">
+      <span>&#128247;</span>
+      <div class="notes-box" style="flex:1;">
+        <input type="text" id="notes" placeholder="ملاحظات" style="text-align:center;">
+      </div>
+      <span style="font-size:13px; font-weight:bold;">ر.ي &#9660;</span>
+    </div>
+
+    <!-- اختيار المخزن والصنف -->
+    <div class="item-entry-card">
+      <div class="line-row">
+        <span class="btn-add-circle">+</span>
+        <span style="font-size:13px; font-weight:bold;">المخزن الرئيسي &#9660;</span>
+        <span style="font-size:16px;">&#127908;</span>
+        <span style="color:#d81b60; font-weight:bold;">/ /</span>
+        <button class="btn-free">مجانيه</button>
+      </div>
+
+      <div class="line-row" style="margin-top:6px;">
+        <span style="font-size:20px;">&#9647;&#9647;&#9647;</span>
+        <input type="text" id="item-name" class="line-input" placeholder="بحث عن صنف" style="text-align:center; color:#2b7de9;">
+        <div class="num-input-group">
+          <label>العدد</label>
+          <input type="number" id="item-qty" value="1" min="1">
+        </div>
+        <div class="num-input-group">
+          <label>السعر</label>
+          <input type="number" id="item-price" value="0">
+        </div>
+        <span style="font-size:16px; cursor:pointer;" onclick="calcPopup()">&#128425;</span>
+      </div>
+
+      <!-- Add to Invoice Bar with Arrows -->
+      <div class="add-to-inv-bar">
+        <span class="arrow-icon">&#9664;</span>
+        <span class="arrow-icon">&#10094;</span>
+        <button class="btn-add-item" onclick="addItemToInvoice()">اضافة الصنف الى الفاتوره</button>
+        <span class="arrow-icon">&#10095;</span>
+        <span class="arrow-icon">&#9654;</span>
+      </div>
+    </div>
+
+    <!-- Items Table Header -->
+    <div class="table-header">
+      <div class="col-name">اسم الصنف</div>
+      <div class="col-unit">الوحده</div>
+      <div class="col-qty">العدد</div>
+      <div class="col-price">السعر</div>
+      <div class="col-total">الاجمالي</div>
+    </div>
+    <div class="items-body" id="invoice-items-table">
+      <!-- Items will be appended here -->
+    </div>
+  </div>
+
+  <!-- Bottom Floating Summary -->
+  <div class="footer-summary">
+    <div style="text-align:left; font-size:12px; font-weight:bold; margin-bottom:2px;">
+      عدد القطع <span id="lbl-total-qty">0.00</span>
+    </div>
+    <div class="summary-grid">
+      <div>
+        <div class="summary-row">
+          <span>الاجمالي</span>
+          <div class="summary-box" id="sum-subtotal">0.00</div>
+        </div>
+        <div class="summary-row">
+          <span>الخصم</span>
+          <div class="summary-box" id="sum-discount">0.00</div>
+        </div>
+        <div class="summary-row">
+          <span>الضريبه</span>
+          <div class="summary-box" id="sum-tax">0.00</div>
+        </div>
+        <div class="summary-row">
+          <span>اجور النقل</span>
+          <div class="summary-box" id="sum-transport">0.00</div>
+        </div>
+        <div class="summary-row" style="color:#d81b60;">
+          <span style="font-weight:bold;">صافي الفاتوره</span>
+          <div class="summary-box" id="sum-net" style="border-color:#d81b60; color:#d81b60;">0.00</div>
+        </div>
+      </div>
+      <div>
+        <div class="summary-row">
+          <div class="adj-control">
+            <button class="btn-circle-adj">+</button>
+            <span style="margin:0 4px;">0</span>
+            <button class="btn-circle-adj">-</button>
+          </div>
+          <span>نسبة الخصم%</span>
+        </div>
+        <div class="summary-row" style="margin-top:6px; color:#2e7d32; font-weight:bold;">
+          <input type="number" id="paid-amount" value="0.00" style="width:70px; border:none; border-bottom:1px solid #2e7d32; text-align:center; color:#2e7d32; font-weight:bold;">
+          <span>المبلغ المستلم</span>
+        </div>
+        <div class="summary-row" style="margin-top:6px;">
+          <div class="adj-control">
+            <button class="btn-circle-adj">+</button>
+            <span style="margin:0 4px;">0</span>
+            <button class="btn-circle-adj">-</button>
+          </div>
+          <span>نسبة الضريبه%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let invoiceItems = [];
+
+    function updateTitle() {
+      const op = document.querySelector('input[name="op_type"]:checked').value;
+      const pay = document.querySelector('input[name="pay_type"]:checked').value;
+      const isRet = document.getElementById("is-return").checked;
+      let title = isRet ? "مرتجع " : "فاتورة ";
+      title += (op === "sale" ? "بيع " : "شراء ");
+      title += (pay === "cash" ? "نقدا" : "اجل");
+      document.getElementById("inv-type-label").innerText = title;
+    }
+
+    function addItemToInvoice() {
+      const name = document.getElementById("item-name").value.trim();
+      const qty = parseFloat(document.getElementById("item-qty").value) || 0;
+      const price = parseFloat(document.getElementById("item-price").value) || 0;
+
+      if (!name) {
+        alert("يرجى إدخال اسم الصنف");
+        return;
+      }
+      if (qty <= 0) {
+        alert("يرجى إدخال كمية صحيحة");
+        return;
+      }
+
+      invoiceItems.push({ name, unit: "حبه", qty, price, total: (qty * price) });
+      renderItems();
+
+      document.getElementById("item-name").value = "";
+      document.getElementById("item-qty").value = "1";
+      document.getElementById("item-price").value = "0";
+    }
+
+    function renderItems() {
+      const container = document.getElementById("invoice-items-table");
+      if (invoiceItems.length === 0) {
+        container.innerHTML = "";
+      } else {
+        container.innerHTML = invoiceItems.map((item, idx) => `
+          <div class="item-row">
+            <div class="col-name">${item.name}</div>
+            <div class="col-unit">${item.unit}</div>
+            <div class="col-qty">${item.qty}</div>
+            <div class="col-price">${item.price.toFixed(2)}</div>
+            <div class="col-total">${item.total.toFixed(2)}</div>
+          </div>
+        `).join("");
+      }
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      let totalQty = 0;
+      let subTotal = 0;
+      invoiceItems.forEach(i => {
+        totalQty += i.qty;
+        subTotal += i.total;
+      });
+      document.getElementById("lbl-total-qty").innerText = totalQty.toFixed(2);
+      document.getElementById("sum-subtotal").innerText = subTotal.toFixed(2);
+      document.getElementById("sum-net").innerText = subTotal.toFixed(2);
+      document.getElementById("paid-amount").value = subTotal.toFixed(2);
+    }
+
+    function saveInvoice() {
+      if (invoiceItems.length === 0) {
+        alert("يرجى إضافة صنف واحد على الأقل للفاتورة");
+        return;
+      }
+      alert("تم حفظ الفاتورة بنجاح!");
+      window.location.href = "index.html";
+    }
+
+    function calcPopup() {
+      const p = prompt("أدخل العملية الحسابية:", "");
+      if (p) {
+        try {
+          document.getElementById("item-price").value = eval(p);
+        } catch(e) {}
+      }
+    }
+  </script>
+</body>
+</html>

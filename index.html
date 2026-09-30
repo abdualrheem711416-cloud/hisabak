@@ -1913,5 +1913,26 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function bindInvoiceCard() {
+    document.querySelectorAll("*").forEach(function(el) {
+      if (el.children.length === 0 && (el.textContent.trim() === "فاتورة جديدة" || el.textContent.trim() === "فاتورة جديده")) {
+        var card = el.closest(".card") || el.parentElement || el;
+        card.style.cursor = "pointer";
+        card.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = "invoice.html";
+        };
+      }
+    });
+  }
+  bindInvoiceCard();
+  setInterval(bindInvoiceCard, 500);
+});
+</script>
+
 </body>
 </html>
