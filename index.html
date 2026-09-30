@@ -2138,5 +2138,45 @@ document.addEventListener("click", function(e) {
   <span style="font-size:16px !important; font-weight:bold !important; color:#0b5cab !important;">العملات</span>
 </a>
 </div>
+
+<script>
+// مراقبة ظهور النوافذ المنبثقة وتعبئة العملات فورا
+(function() {
+  function fillCurrencyInModals() {
+    const currencies = [
+      { name: "عمله محليه", symbol: "YER" },
+      { name: "ريال سعودي", symbol: "SAR" },
+      { name: "دولار", symbol: "USD" }
+    ];
+    
+    // البحث عن أي حقل select داخل النوافذ المنبثقة
+    const selects = document.querySelectorAll("#customers-modal-box select, #tx-modal-root select, select");
+    selects.forEach(sel => {
+      const textContext = (sel.outerHTML + (sel.parentElement ? sel.parentElement.innerText : "")).toLowerCase();
+      if (textContext.includes("عمل") || textContext.includes("curr") || sel.options.length <= 4) {
+        if (!sel.getAttribute("data-currency-synced")) {
+          const val = sel.value;
+          sel.innerHTML = "";
+          currencies.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c.symbol;
+            opt.textContent = `${c.name} (${c.symbol})`;
+            if (c.symbol === val) opt.selected = true;
+            sel.appendChild(opt);
+          });
+          sel.setAttribute("data-currency-synced", "true");
+        }
+      }
+    });
+  }
+
+  // فحص مستمر عند النقر لفتح النوافذ المنبثقة
+  document.addEventListener("click", function() {
+    setTimeout(fillCurrencyInModals, 100);
+    setTimeout(fillCurrencyInModals, 400);
+  });
+})();
+</script>
+
 </body>
 </html>
