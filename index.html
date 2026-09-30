@@ -2216,5 +2216,43 @@ window.addEventListener("load", function() {
 });
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const currencyOptions = [
+    { name: "عمله محليه", symbol: "YER" },
+    { name: "ريال سعودي", symbol: "SAR" },
+    { name: "دولار", symbol: "USD" }
+  ];
+
+  function populateAllCurrencySelects() {
+    const selects = document.querySelectorAll("select");
+    selects.forEach(sel => {
+      const isCurr = (sel.id + " " + sel.name + " " + sel.className).toLowerCase().includes("curr") ||
+                     sel.innerHTML.includes("عمل") || sel.innerHTML.includes("YER") || sel.innerHTML.includes("ريال");
+      if (isCurr) {
+        const val = sel.value;
+        sel.innerHTML = "";
+        currencyOptions.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c.symbol;
+          opt.textContent = `${c.name} (${c.symbol})`;
+          if (c.symbol === val) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      }
+    });
+  }
+
+  // التقاط النقر على زر (+) أو الشاشة وتشغيل التغذية فوراً بعد ظهور النافذة
+  document.addEventListener("click", function(e) {
+    // التأكد من استجابة زر الإضافة إن كان معلقاً
+    const target = e.target.closest("button, .btn, [onclick], .fab");
+    setTimeout(populateAllCurrencySelects, 60);
+    setTimeout(populateAllCurrencySelects, 250);
+  });
+});
+</script>
+
 </body>
 </html>
