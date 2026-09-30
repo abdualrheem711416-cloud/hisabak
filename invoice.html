@@ -563,5 +563,45 @@ function resetForNewInvoice() {
 }
 </script>
 
+
+<script>
+// وظيفة مزامنة العملات في كافة شاشات التطبيق
+(function() {
+  function getAppCurrencies() {
+    const saved = localStorage.getItem("hisabak_currencies");
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+    return [
+      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
+      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
+      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
+    ];
+  }
+
+  function applyCurrenciesToSelects() {
+    const currencies = getAppCurrencies();
+    // البحث عن كافة حقول اختيار العملة في الشاشة
+    const selectElements = document.querySelectorAll("select[name*='curr'], select[id*='curr'], select.currency-select, select[name='currency']");
+    
+    selectElements.forEach(select => {
+      const currentVal = select.value;
+      select.innerHTML = "";
+      currencies.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.symbol;
+        opt.textContent = `${c.name} (${c.symbol})`;
+        opt.setAttribute("data-rate", c.rate);
+        if (opt.value === currentVal) opt.selected = true;
+        select.appendChild(opt);
+      });
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", applyCurrenciesToSelects);
+  window.addEventListener("load", applyCurrenciesToSelects);
+})();
+</script>
+
 </body>
 </html>
