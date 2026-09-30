@@ -1,4 +1,5 @@
 // Updated 1790789687.8868246
+// Updated 1790790837.1800249
 const CACHE_NAME = "hisabak-v" + Date.now();
 self.addEventListener("install", (e) => {
   self.skipWaiting();

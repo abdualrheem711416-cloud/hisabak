@@ -71,6 +71,19 @@
     .adj-control { display: flex; align-items: center; gap: 4px; }
     .btn-circle-adj { background: #d0e2ff; border: none; width: 18px; height: 18px; border-radius: 4px; color: #0b5cab; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   </style>
+
+<style>
+@media print {
+  body { padding: 0 !important; background: white !important; }
+  .top-bar, .invoice-title-row, .form-section, .footer-summary, #calc-modal, #toast-msg { display: none !important; }
+  #print-area { display: block !important; }
+}
+#print-area { display: none; font-family: monospace, system-ui; direction: rtl; }
+.receipt-80mm { width: 78mm; margin: 0 auto; padding: 5px; font-size: 12px; }
+.receipt-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.receipt-table th, .receipt-table td { border-bottom: 1px dashed #444; padding: 4px 2px; text-align: center; }
+</style>
+
 </head>
 <body>
 
@@ -299,14 +312,7 @@
       document.getElementById("paid-amount").value = subTotal.toFixed(2);
     }
 
-    function saveInvoice() {
-      if (invoiceItems.length === 0) {
-        alert("يرجى إضافة صنف واحد على الأقل للفاتورة");
-        return;
-      }
-      alert("تم حفظ الفاتورة بنجاح!");
-      window.location.href = "index.html";
-    }
+    
 
     function calcPopup() {
       const p = prompt("أدخل العملية الحسابية:", "");
@@ -421,6 +427,139 @@ function applyCalcToPrice() {
     }
   } catch(e) {}
   closeCalculatorModal();
+}
+</script>
+
+
+<!-- حاوية الطباعة -->
+<div id="print-area"></div>
+
+<!-- نافذة المشاركة والطباعة بعد الحفظ -->
+<div id="post-save-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:300px; border-radius:12px; padding:16px; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.3);">
+    <h3 style="color:#2e7d32; margin-bottom:12px;">✓ تم حفظ الفاتورة بنجاح</h3>
+    <p style="font-size:13px; color:#555; margin-bottom:15px;" id="saved-inv-summary"></p>
+    
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button onclick="printCurrentInvoice()" style="background:#2b7de9; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">🖨️ طباعة الفاتورة</button>
+      <button onclick="shareViaWhatsApp()" style="background:#25d366; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">📲 مشاركة عبر واتساب</button>
+      <button onclick="resetForNewInvoice()" style="background:#f0f0f0; color:#333; border:none; padding:8px; border-radius:6px; cursor:pointer;">فاتورة جديدة</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+let lastSavedInvoice = null;
+
+// ضبط رقم الفاتورة التلقائي عند التحميل
+document.addEventListener("DOMContentLoaded", function() {
+  const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
+  document.getElementById("inv-no").value = invoices.length + 101;
+});
+
+function saveInvoice() {
+  if (invoiceItems.length === 0) {
+    alert("يرجى إضافة صنف واحد على الأقل للفاتورة");
+    return;
+  }
+
+  const invNumber = document.getElementById("inv-no").value;
+  const opType = document.querySelector('input[name="op_type"]:checked').value;
+  const payType = document.querySelector('input[name="pay_type"]:checked').value;
+  const accountName = document.getElementById("account-search").value.trim() || "عميل نقدي";
+  const subTotal = parseFloat(document.getElementById("sum-subtotal").innerText) || 0;
+  const discount = parseFloat(document.getElementById("sum-discount").innerText) || 0;
+  const netTotal = parseFloat(document.getElementById("sum-net").innerText) || 0;
+  const paid = parseFloat(document.getElementById("paid-amount").value) || 0;
+  const paper = document.querySelector('input[name="paper_size"]:checked')?.parentElement.innerText.trim() || "80m";
+
+  lastSavedInvoice = {
+    id: Date.now(),
+    number: invNumber,
+    date: new Date().toLocaleString("ar-YE"),
+    account: accountName,
+    opType: opType === "sale" ? "بيع" : "شراء",
+    payType: payType === "cash" ? "نقداً" : "آجل",
+    items: [...invoiceItems],
+    subTotal: subTotal,
+    discount: discount,
+    net: netTotal,
+    paid: paid,
+    paper: paper
+  };
+
+  // الحفظ في قاعدة بيانات localStorage المحلية
+  let invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
+  invoices.unshift(lastSavedInvoice);
+  localStorage.setItem("hisabak_invoices", JSON.stringify(invoices));
+
+  // إظهار نافذة الخيارات
+  document.getElementById("saved-inv-summary").innerText = `فاتورة رقم #${invNumber} للعميل: ${accountName}\nالصافي: ${netTotal.toFixed(2)} ر.ي`;
+  document.getElementById("post-save-modal").style.display = "flex";
+}
+
+function printCurrentInvoice() {
+  if (!lastSavedInvoice) return;
+  const pArea = document.getElementById("print-area");
+  
+  let rows = lastSavedInvoice.items.map(i => `
+    <tr>
+      <td style="text-align:right;">${i.name}</td>
+      <td>${i.qty}</td>
+      <td>${i.price.toFixed(2)}</td>
+      <td>${i.total.toFixed(2)}</td>
+    </tr>
+  `).join("");
+
+  pArea.innerHTML = `
+    <div class="receipt-80mm">
+      <h2 style="text-align:center; margin:0;">تطبيق حسابك</h2>
+      <p style="text-align:center; margin:2px 0;">فاتورة ${lastSavedInvoice.opType} (${lastSavedInvoice.payType})</p>
+      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
+      <div>رقم الفاتورة: #${lastSavedInvoice.number}</div>
+      <div>التاريخ: ${lastSavedInvoice.date}</div>
+      <div>الحساب: ${lastSavedInvoice.account}</div>
+      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
+      <table class="receipt-table">
+        <thead><tr><th style="text-align:right;">الصنف</th><th>العدد</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
+      <div style="display:flex; justify-content:space-between;"><span>الإجمالي:</span><span>${lastSavedInvoice.subTotal.toFixed(2)} ر.ي</span></div>
+      <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;"><span>الصافي:</span><span>${lastSavedInvoice.net.toFixed(2)} ر.ي</span></div>
+      <p style="text-align:center; margin-top:10px;">شكراً لتعاملكم معنا</p>
+    </div>
+  `;
+  window.print();
+}
+
+function shareViaWhatsApp() {
+  if (!lastSavedInvoice) return;
+  let text = `*فاتورة ${lastSavedInvoice.opType} (${lastSavedInvoice.payType})*\n`;
+  text += `رقم: #${lastSavedInvoice.number}\n`;
+  text += `الحساب: ${lastSavedInvoice.account}\n`;
+  text += `التاريخ: ${lastSavedInvoice.date}\n`;
+  text += `-----------------------\n`;
+  lastSavedInvoice.items.forEach((item, idx) => {
+    text += `${idx + 1}. ${item.name} | العدد: ${item.qty} | السعر: ${item.price} | الإجمالي: ${item.total}\n`;
+  });
+  text += `-----------------------\n`;
+  text += `*الصافي المطلوب: ${lastSavedInvoice.net.toFixed(2)} ر.ي*\n`;
+  text += `تمت بالعملية عبر تطبيق حسابك 📱`;
+
+  const url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+function resetForNewInvoice() {
+  invoiceItems = [];
+  renderItems();
+  document.getElementById("post-save-modal").style.display = "none";
+  const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
+  document.getElementById("inv-no").value = invoices.length + 101;
+  document.getElementById("account-search").value = "";
+  document.getElementById("notes").value = "";
 }
 </script>
 
