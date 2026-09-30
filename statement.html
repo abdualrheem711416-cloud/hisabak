@@ -94,5 +94,68 @@
 })();
 </script>
 
+
+<!-- مزامنة شاملة للعملات في جميع الشاشات -->
+<script>
+(function() {
+  function fetchActiveCurrencies() {
+    try {
+      const data = localStorage.getItem("hisabak_currencies");
+      if (data) return JSON.parse(data);
+    } catch(e) {}
+    return [
+      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
+      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
+      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
+    ];
+  }
+
+  function syncAllCurrencySelects() {
+    const currencies = fetchActiveCurrencies();
+    // استهداف كافة حقول الاختيار المحتملة للعملة
+    const selects = document.querySelectorAll("select");
+
+    selects.forEach(sel => {
+      const idOrName = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
+      const parentText = (sel.parentElement ? sel.parentElement.innerText : "").toLowerCase();
+      
+      // الكشف التلقائي عن أي قائمة لاختيار العملة سواء بالاسم أو بالخيارات الحالية
+      let isCurrencySelect = idOrName.includes("curr") || idOrName.includes("عملة") || 
+                             parentText.includes("عملة") || parentText.includes("العملة");
+
+      if (!isCurrencySelect && sel.options.length > 0) {
+        for (let i = 0; i < sel.options.length; i++) {
+          const t = sel.options[i].text;
+          if (t.includes("ريال") || t.includes("دولار") || t.includes("YER") || t.includes("SAR") || t.includes("USD")) {
+            isCurrencySelect = true;
+            break;
+          }
+        }
+      }
+
+      if (isCurrencySelect) {
+        const selectedVal = sel.value;
+        sel.innerHTML = "";
+        currencies.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c.symbol;
+          opt.textContent = `${c.name} (${c.symbol})`;
+          opt.setAttribute("data-rate", c.rate);
+          if (c.symbol === selectedVal || c.name === selectedVal) {
+            opt.selected = true;
+          }
+          sel.appendChild(opt);
+        });
+      }
+    });
+  }
+
+  // تفعيل المزامنة فوراً وعند فتح أي نافذة إضافة (Modal)
+  document.addEventListener("DOMContentLoaded", syncAllCurrencySelects);
+  window.addEventListener("load", syncAllCurrencySelects);
+  setInterval(syncAllCurrencySelects, 800); // يغطي النوافذ المنبثقة عند الضغط على إضافة عميل/مورد/صندوق
+})();
+</script>
+
 </body>
 </html>
