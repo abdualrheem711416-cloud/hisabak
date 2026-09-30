@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ملف العملات - حسابك</title>
+  <style>
+    :root {
+      --primary: #0b5cab;
+      --accent: #d81b60;
+      --bg: #f0f4f9;
+      --card-bg: #ffffff;
+      --border: #dbe4ee;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); padding-bottom: 90px; }
+
+    /* الشريط العلوي بهوية التطبيق الملكية */
+    .top-bar {
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(11, 92, 171, 0.2);
+    }
+    .top-bar-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .top-icons {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .top-icons span {
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0.95;
+      transition: opacity 0.2s;
+    }
+    .top-icons span:hover {
+      opacity: 1;
+    }
+
+    /* قائمة كروت العملات */
+    .currencies-list {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .currency-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(11, 92, 171, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .currency-card:active {
+      transform: scale(0.99);
+    }
+
+    .curr-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      min-width: 110px;
+    }
+    .curr-center {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-weight: 700;
+    }
+    .curr-symbol {
+      color: var(--primary);
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      min-width: 45px;
+      text-align: center;
+    }
+    .curr-rate {
+      color: var(--success);
+      font-size: 15px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .curr-subrate {
+      color: var(--text-muted);
+      font-size: 15px;
+      min-width: 25px;
+      text-align: center;
+    }
+    .curr-left {
+      display: flex;
+      align-items: center;
+    }
+    .edit-icon-box {
+      width: 36px;
+      height: 36px;
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.2s;
+    }
+    .edit-icon-box:active {
+      background: #fce7f3;
+    }
+
+    /* الزر العائم للإضافة بلون الهوية الوردي/الماجنتا */
+    .fab-add {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background-color: var(--accent);
+      color: white;
+      font-size: 28px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(216, 27, 96, 0.4);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .fab-add:active {
+      transform: scale(0.92);
+      box-shadow: 0 2px 8px rgba(216, 27, 96, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <div class="top-bar-title">
+      <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+      <span>ملف العملات</span>
+    </div>
+    <div class="top-icons">
+      <span onclick="searchCurrency()" title="بحث">🔍</span>
+      <span onclick="window.print()" title="طباعة">🖨️</span>
+      <span onclick="shareCurrencies()" title="مشاركة">🔗</span>
+    </div>
+  </div>
+
+  <!-- قائمة العملات -->
+  <div class="currencies-list" id="currencies_container"></div>
+
+  <!-- الزر العائم للإضافة -->
+  <button class="fab-add" onclick="addNewCurrency()" title="إضافة عملة">+</button>
+
+  <script>
+    const defaultCurrencies = [
+      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1, subRate: 0 },
+      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1, subRate: 0 },
+      { id: 3, name: "دولار", symbol: "USD", rate: 1, subRate: 0 }
+    ];
+
+    function getCurrencies() {
+      const data = localStorage.getItem("hisabak_currencies");
+      return data ? JSON.parse(data) : defaultCurrencies;
+    }
+
+    function saveCurrencies(list) {
+      localStorage.setItem("hisabak_currencies", JSON.stringify(list));
+      renderCurrencies();
+    }
+
+    function renderCurrencies() {
+      const list = getCurrencies();
+      const container = document.getElementById("currencies_container");
+      container.innerHTML = "";
+
+      list.forEach((c, index) => {
+        const card = document.createElement("div");
+        card.className = "currency-card";
+        card.innerHTML = `
+          <div class="curr-left">
+            <div class="edit-icon-box" onclick="editCurrency(${index})" title="تعديل">✏️</div>
+          </div>
+          <div class="curr-center">
+            <div class="curr-subrate">${c.subRate}</div>
+            <div class="curr-rate">${c.rate}</div>
+            <div class="curr-symbol">${c.symbol}</div>
+          </div>
+          <div class="curr-right">
+            <span>${c.name}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addNewCurrency() {
+      const name = prompt("اسم العملة:");
+      if (!name) return;
+      const symbol = prompt("رمز العملة بالإنجليزية (مثال: EUR):");
+      if (!symbol) return;
+      const rate = prompt("سعر الصرف:", "1") || "1";
+
+      const list = getCurrencies();
+      list.push({
+        id: Date.now(),
+        name: name.trim(),
+        symbol: symbol.trim().toUpperCase(),
+        rate: parseFloat(rate) || 1,
+        subRate: 0
+      });
+      saveCurrencies(list);
+    }
+
+    function editCurrency(index) {
+      const list = getCurrencies();
+      const c = list[index];
+      const newRate = prompt(`تعديل سعر الصرف لعملة ${c.name} (${c.symbol}):`, c.rate);
+      if (newRate !== null) {
+        c.rate = parseFloat(newRate) || c.rate;
+        saveCurrencies(list);
+      }
+    }
+
+    function shareCurrencies() {
+      const list = getCurrencies();
+      let text = "أسعار العملات - تطبيق حسابك:\n";
+      list.forEach(c => {
+        text += `- ${c.name} (${c.symbol}): ${c.rate}\n`;
+      });
+      if (navigator.share) {
+        navigator.share({ title: 'ملف العملات', text: text });
+      } else {
+        navigator.clipboard.writeText(text);
+        alert("تم نسخ أسعار العملات إلى الحافظة");
+      }
+    }
+
+    function searchCurrency() {
+      const q = prompt("ابحث عن عملة بالاسم أو الرمز:");
+      if (!q) { renderCurrencies(); return; }
+      const list = getCurrencies().filter(c => 
+        c.name.includes(q.trim()) || c.symbol.toLowerCase().includes(q.trim().toLowerCase())
+      );
+      const container = document.getElementById("currencies_container");
+      container.innerHTML = "";
+      list.forEach((c, index) => {
+        const card = document.createElement("div");
+        card.className = "currency-card";
+        card.innerHTML = `
+          <div class="curr-left">
+            <div class="edit-icon-box" onclick="editCurrency(${index})" title="تعديل">✏️</div>
+          </div>
+          <div class="curr-center">
+            <div class="curr-subrate">${c.subRate}</div>
+            <div class="curr-rate">${c.rate}</div>
+            <div class="curr-symbol">${c.symbol}</div>
+          </div>
+          <div class="curr-right">
+            <span>${c.name}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    renderCurrencies();
+  </script>
+</body>
+</html>
