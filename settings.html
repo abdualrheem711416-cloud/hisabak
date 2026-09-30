@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>الإعدادات العامة - حسابك</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f0f4f9; color: #333; padding-bottom: 40px; }
+    .top-bar { background-color: #0b5cab; color: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; font-weight: bold; }
+    .back-btn { color: white; text-decoration: none; font-size: 22px; }
+    .container { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .card-row { background: white; border: 1.5px solid #b6d4fe; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 500; }
+    .section-banner { background-color: #1976d2; color: white; text-align: center; padding: 7px; border-radius: 8px; font-weight: bold; font-size: 14px; margin-top: 6px; }
+    .btn-action { background: #0d6efd; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; text-align: center; width: 100%; cursor: pointer; font-size: 14px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .input-box { width: 100%; border: none; border-bottom: 1.5px solid #aaa; padding: 4px; text-align: center; font-size: 13px; outline: none; background: transparent; }
+    .note-text { font-size: 11px; color: #777; text-align: center; margin: 2px 0 6px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">&#10005;</a>
+    <span>الإعدادات العامة للنظام</span>
+    <span style="cursor:pointer;" onclick="saveAllSettings()">💾 حفظ</span>
+  </div>
+
+  <div class="container">
+    <!-- كرت التفعيل وتحديث التطبيق -->
+    <div class="card-row" style="color:#d81b60; font-weight:bold; justify-content:center;">
+      تفعيل التطبيق 428853738 _ 2000
+    </div>
+
+    <button class="btn-action">تحديث التطبيق VS.1660</button>
+
+    <!-- نوع الاستخدام -->
+    <div class="card-row">
+      <div style="display:flex; gap:16px;">
+        <label><input type="radio" name="use_type" checked> المحلي</label>
+        <label><input type="radio" name="use_type"> المزامنه</label>
+      </div>
+      <span style="font-weight:bold; color:#0b5cab;">نوع الإستخدام</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card-row" style="justify-content:center; color:#0b5cab;">دخول مستخدم/فرع</div>
+      <div class="card-row" style="justify-content:center; color:#c2185b; font-weight:bold;">دخول المدير</div>
+    </div>
+
+    <!-- الشعار والبيانات -->
+    <div class="card-row" style="flex-direction:column; gap:8px;">
+      <span style="color:#0b5cab; font-weight:bold;">الشعار</span>
+      <div style="font-size:30px; color:#d32f2f;">✕</div>
+      <label style="color:#d81b60; font-size:12px;"><input type="checkbox"> لا اريد ظهور الإعلانات</label>
+    </div>
+
+    <!-- اسم المنشأة والعنوان والجوال -->
+    <div class="grid-2">
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">Name_en</span>
+        <input type="text" class="input-box" id="name_en" value="DiffAcc6">
+      </div>
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">الاسم</span>
+        <input type="text" class="input-box" id="name_ar" value="نظام محاسبي متكامل">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">Address_en</span>
+        <input type="text" class="input-box" id="addr_en" value="YEMEN SANAA">
+      </div>
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">العنوان</span>
+        <input type="text" class="input-box" id="addr_ar" value="الجمهورية اليمنية - صنعاء">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">Mobile_en</span>
+        <input type="text" class="input-box" id="phone_en" value="000000000 967">
+      </div>
+      <div class="card-row" style="flex-direction:column;">
+        <span style="font-size:10px; color:#777;">رقم الجوال</span>
+        <input type="text" class="input-box" id="phone_ar" value="776514956">
+      </div>
+    </div>
+
+    <div class="card-row" style="flex-direction:column;">
+      <span style="font-size:11px; color:#777;">الرقم الضريبي</span>
+      <input type="text" class="input-box" id="tax_no" placeholder="أدخل الرقم الضريبي">
+    </div>
+
+    <div class="card-row">
+      <span>رسم التوقيع اسفل الفواتير والسندات</span>
+      <input type="checkbox">
+    </div>
+    <div class="card-row">
+      <span>استخدام رسائل الواتساب التلقائيه</span>
+      <input type="checkbox" checked>
+    </div>
+
+    <!-- شريط إعدادات الحسابات -->
+    <div class="section-banner">اعدادات الحسابات</div>
+
+    <div class="card-row">
+      <div style="display:flex; gap:12px; align-items:center;">
+        <label><input type="checkbox"> ورقه صفراء</label>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <button style="width:20px;">+</button>
+          <span>4</span>
+          <button style="width:20px;">-</button>
+        </div>
+      </div>
+      <span>مقاس الخطوط</span>
+    </div>
+
+    <div class="card-row">
+      <div style="display:flex; gap:12px;">
+        <label><input type="radio" name="pr_target" checked> PDF</label>
+        <label><input type="radio" name="pr_target"> الطابعه</label>
+      </div>
+      <span>الطباعه الى</span>
+    </div>
+
+    <div class="card-row">
+      <span>التذكير بالنسخ الاحتياطي عند الاغلاق</span>
+      <input type="checkbox" checked>
+    </div>
+
+    <div class="card-row">
+      <div style="display:flex; gap:8px; font-size:11px;">
+        <label><input type="radio" name="wa_type" checked> الاخضر</label>
+        <label><input type="radio" name="wa_type"> اعمال</label>
+        <label><input type="radio" name="wa_type"> عمر</label>
+      </div>
+      <span style="color:#0b5cab;">الواتساب المستخدم</span>
+    </div>
+
+    <div class="card-row">
+      <span>الحمايه بكلمة مرور</span>
+      <input type="checkbox">
+    </div>
+
+    <div class="card-row"><span>عرض وقت السند</span><input type="checkbox"></div>
+    <div class="card-row"><span>اخفاء اجمالي الصناديق في الشاشة الرئيسية</span><input type="checkbox"></div>
+    <div class="card-row"><span>استخدام سند صرف/قبض</span><input type="checkbox" checked></div>
+    <div class="card-row"><span>عرض خيار جميع العملات الى عمله محليه</span><input type="checkbox" checked></div>
+    <div class="card-row"><span>طباعة السندات بـ طابعه حراريه</span><input type="checkbox"></div>
+    <div class="card-row"><span>عرض رقم السند في الرسائل النصيه</span><input type="checkbox"></div>
+
+    <!-- شريط إعدادات المبيعات والمشتريات -->
+    <div class="section-banner">اعدادات المبيعات والمشتريات</div>
+
+    <div class="card-row" style="flex-direction:column; gap:4px;">
+      <span style="color:#555; font-size:11px;">ملاحظات اسفل فواتير المبيعات</span>
+      <input type="text" class="input-box" value="البضاعة المباعة لا ترد ولا تستبدل بعد 3 أيام">
+    </div>
+
+    <div class="card-row">
+      <div style="display:flex; gap:10px;">
+        <label><input type="checkbox"> بيع بدون رصيد</label>
+      </div>
+      <span>بيع بسعر اقل من التكلفه</span>
+      <input type="checkbox">
+    </div>
+
+    <div class="card-row">
+      <div style="display:flex; gap:14px;">
+        <label><input type="radio" name="inv_tmpl" value="1" checked> 1</label>
+        <label><input type="radio" name="inv_tmpl" value="2"> 2</label>
+      </div>
+      <span style="color:#0b5cab;">نموذج طباعة الفواتير</span>
+    </div>
+
+    <div class="card-row"><span>عدم طباعة سعر البيع في فواتير mm80</span><input type="checkbox"></div>
+    <div class="card-row"><span>عدم اظهار تكلفة الأصناف</span><input type="checkbox" checked></div>
+    <div class="card-row"><span>عرض الاصناف في تفاصيل الفاتوره</span><input type="checkbox" checked></div>
+    <div class="card-row"><span>عدم عرض تاريخ الانتهاء في الفاتوره</span><input type="checkbox" checked></div>
+    <div class="card-row"><span>استخدام البونص الكميه المجانيه</span><input type="checkbox"></div>
+    <div class="card-row"><span>عدم عرض تاريخ الطباعه في الفاتوره</span><input type="checkbox"></div>
+    <div class="card-row"><span>استخدام اكبر وحده كـ وحده رئيسيه</span><input type="checkbox"></div>
+
+    <div class="note-text">
+      ملاحظه هامه جدا : لا ينصح بتفعيل هذا الخيار، يتم اختيار هذا الإعداد عندما تستخدم اكبر وحده كـ وحده رئيسيه، مثلا تستخدم الكرتون كـ وحده رئيسيه وليس الحبه
+    </div>
+  </div>
+
+  <script>
+    function saveAllSettings() {
+      const data = {
+        name_ar: document.getElementById("name_ar").value,
+        name_en: document.getElementById("name_en").value,
+        phone_ar: document.getElementById("phone_ar").value,
+        addr_ar: document.getElementById("addr_ar").value,
+        tax_no: document.getElementById("tax_no").value
+      };
+      localStorage.setItem("hisabak_settings", JSON.stringify(data));
+      alert("تم حفظ الإعدادات بنجاح!");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

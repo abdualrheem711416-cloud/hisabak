@@ -1934,5 +1934,26 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function bindSettingsGear() {
+    // استهداف أيقونة الترس سواء كانت نص ⚙ أو class
+    document.querySelectorAll("*").forEach(function(el) {
+      if (el.children.length === 0 && (el.textContent.includes("⚙") || el.classList.contains("fa-cog") || el.classList.contains("fa-gear"))) {
+        el.style.cursor = "pointer";
+        el.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = "settings.html";
+        };
+      }
+    });
+  }
+  bindSettingsGear();
+  setInterval(bindSettingsGear, 500);
+});
+</script>
+
 </body>
 </html>
