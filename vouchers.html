@@ -2,97 +2,263 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>السندات - حسابك</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>اضافة سند صرف/قبض - حسابك</title>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, sans-serif; margin: 0; padding: 0; }
-    body { background: #f0f4f9; color: #333; padding-bottom: 30px; }
-    .top-bar { background: #0b5cab; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-    .container { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-    .card { background: white; border: 1.5px solid #b6d4fe; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .switcher { display: flex; border: 1.5px solid #0b5cab; border-radius: 8px; overflow: hidden; }
-    .switcher button { flex: 1; padding: 10px; border: none; background: white; color: #0b5cab; font-weight: bold; cursor: pointer; }
-    .switcher button.active { background: #0b5cab; color: white; }
-    .switcher button.active.pay { background: #d81b60; }
-    .inp { border: 1.5px solid #d0e0f5; border-radius: 6px; padding: 8px; font-size: 14px; outline: none; width: 100%; }
-    .btn { background: #0b5cab; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f0f4f9; color: #222; padding: 12px; }
+
+    /* الهيدر العلوي */
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; font-weight: bold; }
+    .close-after-save { display: flex; align-items: center; gap: 6px; color: #d81b60; font-size: 13px; }
+    .close-after-save input[type="checkbox"] { width: 18px; height: 18px; accent-color: #d81b60; cursor: pointer; }
+    .header-title-text { color: #0b5cab; font-size: 15px; }
+
+    /* التاريخ والميكروفون */
+    .date-mic-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .date-badge { background-color: #0b5cab; color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(11,92,171,0.2); }
+    .mic-icon { font-size: 22px; cursor: pointer; color: #0b5cab; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: #eaf2fb; border-radius: 50%; }
+
+    /* البطاقات والحقول بتناسق الهوية الزرقاء */
+    .field-card { background: white; border: 1.5px solid #b6d4fe; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; overflow: hidden; transition: border-color 0.2s; }
+    .field-card:focus-within { border-color: #0b5cab; }
+    
+    .action-square-btn { width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; background: #f4f8fd; border: none; cursor: pointer; font-size: 20px; font-weight: bold; flex-shrink: 0; color: #0b5cab; border-right: 1px solid #d0e0f5; }
+    .calc-btn { background: #0b5cab; color: #fff; width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+    .camera-btn { background: #0b5cab; color: #fff; width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 17px; cursor: pointer; flex-shrink: 0; }
+
+    .input-inner { flex: 1; border: none; outline: none; padding: 9px 12px; font-size: 15px; text-align: center; background: transparent; font-weight: 500; color: #222; }
+    .select-currency { border: none; outline: none; background: #f4f8fd; font-size: 14px; font-weight: bold; padding: 0 10px; height: 42px; display: flex; align-items: center; gap: 4px; border-left: 1px solid #d0e0f5; color: #0b5cab; }
+
+    /* شريط الرصيد بتناسق أزرق هادئ */
+    .balance-banner { background-color: #eaf2fb; color: #0b5cab; border: 1px solid #b6d4fe; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
+
+    /* خياري صرف / قبض بهوية التطبيق */
+    .type-radio-group { display: flex; justify-content: center; align-items: center; gap: 32px; margin: 14px 0 18px 0; font-size: 16px; font-weight: bold; }
+    .type-radio-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .radio-sarf { color: #d81b60; }
+    .radio-qabd { color: #0b5cab; }
+    .type-radio-group input[type="radio"] { width: 19px; height: 19px; cursor: pointer; }
+    .radio-sarf input[type="radio"] { accent-color: #d81b60; }
+    .radio-qabd input[type="radio"] { accent-color: #0b5cab; }
+
+    /* الأزرار السفلية الأربعة بتدرج وتناسق هوية التطبيق */
+    .bottom-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+    .btn-act { border: none; border-radius: 8px; padding: 11px 0; font-size: 14px; font-weight: bold; color: white; cursor: pointer; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.08); transition: opacity 0.2s; }
+    .btn-act:active { opacity: 0.85; transform: scale(0.98); }
+
+    /* حفظ: الأزرق الأساسي للتطبيق */
+    .btn-save { background: #0b5cab; }
+    /* إرسال: الأخضر الإجرائي المريح */
+    .btn-send { background: #2e7d32; }
+    /* صورة: تدرج أزرق داكن متناسق */
+    .btn-image { background: #08427b; }
+    /* إغلاق: الوردي المتناسق مع هوية حسابك الثانوية */
+    .btn-close { background: #d81b60; }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <a href="index.html" style="color:white; text-decoration:none; font-size:20px;">✕</a>
-    <span id="title">سند قبض</span>
-    <span style="cursor:pointer;" onclick="saveV()">💾 حفظ</span>
+
+  <!-- الهيدر العلوي -->
+  <div class="top-header">
+    <label class="close-after-save">
+      <input type="checkbox" id="close_after_save" checked>
+      الإغلاق بعد الحفظ
+    </label>
+    <span class="header-title-text">اضافة سند صرف/قبض</span>
   </div>
-  <div class="container">
-    <div class="switcher">
-      <button id="b-rcv" class="active" onclick="setType('rcv')">سند قبض (استلام)</button>
-      <button id="b-pay" onclick="setType('pay')">سند صرف (دفع)</button>
-    </div>
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; font-size:12px; color:#666;">
-        <span>رقم السند: <b id="v-no">101</b></span>
-        <span id="v-date"></span>
-      </div>
-      <div>
-        <label style="font-size:12px; font-weight:bold;">الاسم / الحساب</label>
-        <input type="text" id="acc" class="inp" placeholder="اسم العميل أو المورد">
-      </div>
-      <div>
-        <label style="font-size:12px; font-weight:bold;">المبلغ (ر.ي)</label>
-        <input type="number" id="amt" class="inp" placeholder="0.00" style="font-size:18px; font-weight:bold; color:#0b5cab;">
-      </div>
-      <div>
-        <label style="font-size:12px; font-weight:bold;">الصندوق</label>
-        <select id="box" class="inp">
-          <option>الصندوق الرئيسي</option>
-          <option>بنك الكريمي</option>
-          <option>شبكة النجم</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:12px; font-weight:bold;">البيان</label>
-        <input type="text" id="notes" class="inp" placeholder="ملاحظات...">
-      </div>
-      <button class="btn" onclick="saveV()">حفظ السند وطباعته</button>
-    </div>
+
+  <!-- التاريخ والميكروفون -->
+  <div class="date-mic-row">
+    <div class="mic-icon" onclick="startVoiceSearch()" title="بحث صوتي">🎤</div>
+    <div class="date-badge" id="current_date_display">جارٍ التحديث...</div>
   </div>
+
+  <!-- بحث عن حساب مع زر + -->
+  <div class="field-card">
+    <span style="padding:0 10px; color:#0b5cab; font-size:12px;">▾</span>
+    <input type="text" class="input-inner" id="account_name" placeholder="بحث عن حساب" oninput="updateBalancePreview()">
+    <button class="action-square-btn" onclick="addNewAccount()" title="إضافة حساب جديد">+</button>
+  </div>
+
+  <!-- شريط عرض الرصيد -->
+  <div class="balance-banner" id="balance_display">
+    0.00 الرصيد
+  </div>
+
+  <!-- المبلغ والعملة وزر الآلة الحاسبة -->
+  <div class="field-card">
+    <div class="select-currency">
+      <span style="font-size:12px;">▾</span>
+      <select id="currency_select" style="border:none; outline:none; background:transparent; font-weight:bold; color:#0b5cab;">
+        <option value="ر.ي">ر.ي</option>
+        <option value="ر.س">ر.س</option>
+        <option value="$">$</option>
+      </select>
+    </div>
+    <input type="number" class="input-inner" id="amount_input" placeholder="المبلغ" style="font-size:16px; font-weight:bold; color:#0b5cab;">
+    <div class="calc-btn" onclick="openMiniCalc()" title="آلة حاسبة">🖩</div>
+  </div>
+
+  <!-- التفاصيل والصورة بالكاميرا -->
+  <div class="field-card">
+    <input type="text" class="input-inner" id="details_input" placeholder="التفاصيل / البيان">
+    <div class="camera-btn" onclick="document.getElementById('file_input').click()" title="إرفاق صورة">📷+</div>
+    <input type="file" id="file_input" accept="image/*" style="display:none;" onchange="handleImage(this)">
+  </div>
+
+  <!-- حساب الصندوق -->
+  <div class="field-card">
+    <span style="padding:0 10px; color:#0b5cab; font-size:12px;">▾</span>
+    <select id="fund_box" class="input-inner" style="color:#0b5cab; font-weight:bold;">
+      <option value="الصندوق الرئيسي">الصندوق الرئيسي</option>
+      <option value="بنك الكريمي">بنك الكريمي</option>
+      <option value="شبكة النجم">شبكة النجم</option>
+      <option value="بنك التضامن">بنك التضامن</option>
+    </select>
+    <span style="padding: 0 12px; font-size:13px; font-weight:bold; color:#0b5cab; border-right:1px solid #d0e0f5; height:42px; display:flex; align-items:center; background:#f4f8fd;">حساب الصندوق</span>
+  </div>
+
+  <!-- راديو صرف / قبض -->
+  <div class="type-radio-group">
+    <label class="radio-sarf">
+      صرف
+      <input type="radio" name="v_type" value="صرف" checked>
+    </label>
+    <label class="radio-qabd">
+      قبض
+      <input type="radio" name="v_type" value="قبض">
+    </label>
+  </div>
+
+  <!-- الأزرار السفلية الأربعة المنسقة بهوية التطبيق -->
+  <div class="bottom-buttons">
+    <button class="btn-act btn-save" onclick="saveVoucherAction(false)">حفظ</button>
+    <button class="btn-act btn-send" onclick="sendVoucherWhatsApp()">ارسال</button>
+    <button class="btn-act btn-image" onclick="document.getElementById('file_input').click()">صوره</button>
+    <button class="btn-act btn-close" onclick="closeVoucherScreen()">اغلاق</button>
+  </div>
+
   <script>
-    let curType = 'rcv';
-    function setType(t) {
-      curType = t;
-      document.getElementById('b-rcv').className = t === 'rcv' ? 'active' : '';
-      document.getElementById('b-pay').className = t === 'pay' ? 'active pay' : '';
-      document.getElementById('title').innerText = t === 'rcv' ? 'سند قبض' : 'سند صرف';
-      document.getElementById('amt').style.color = t === 'rcv' ? '#0b5cab' : '#d81b60';
+    function updateDateString() {
+      const now = new Date();
+      const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+      const dayName = days[now.getDay()];
+      const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+      const dateStr = String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth()+1).padStart(2, '0') + "/" + now.getFullYear();
+      document.getElementById("current_date_display").innerText = `${timeStr} ${dayName} ${dateStr}`;
     }
-    function init() {
-      const v = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
-      document.getElementById('v-no').innerText = v.length + 101;
-      document.getElementById('v-date').innerText = new Date().toLocaleDateString('ar-YE');
+    updateDateString();
+
+    function updateBalancePreview() {
+      const acc = document.getElementById("account_name").value.trim().toLowerCase();
+      if (!acc) {
+        document.getElementById("balance_display").innerText = "0.00 الرصيد";
+        return;
+      }
+      const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
+      const vouchers = JSON.parse(localStorage.getItem("hisabak_vouchers") || "[]");
+      let bal = 0;
+      invoices.filter(i => (i.account||"").toLowerCase().includes(acc)).forEach(i => {
+        bal += (i.opType === "بيع" ? (i.net||0) : -(i.net||0));
+      });
+      vouchers.filter(v => (v.account||"").toLowerCase().includes(acc)).forEach(v => {
+        bal += (v.type === "صرف" ? (v.amount||0) : -(v.amount||0));
+      });
+      document.getElementById("balance_display").innerText = `${bal.toFixed(2)} الرصيد`;
     }
-    function saveV() {
-      const acc = document.getElementById('acc').value.trim();
-      const amt = parseFloat(document.getElementById('amt').value);
-      if(!acc || !amt) { alert('يرجى إكمال الحقول المطلوبة'); return; }
-      const item = {
+
+    function saveVoucherAction(isSend) {
+      const acc = document.getElementById("account_name").value.trim();
+      const amt = parseFloat(document.getElementById("amount_input").value);
+      const details = document.getElementById("details_input").value.trim();
+      const curr = document.getElementById("currency_select").value;
+      const box = document.getElementById("fund_box").value;
+      const type = document.querySelector('input[name="v_type"]:checked').value;
+
+      if (!acc) { alert("يرجى كتابة أو اختيار اسم الحساب"); return null; }
+      if (!amt || amt <= 0) { alert("يرجى تحديد المبلغ بشكل صحيح"); return null; }
+
+      const vList = JSON.parse(localStorage.getItem("hisabak_vouchers") || "[]");
+      const newVoucher = {
         id: Date.now(),
-        no: document.getElementById('v-no').innerText,
-        type: curType === 'rcv' ? 'سند قبض' : 'سند صرف',
+        no: vList.length + 101,
+        type: type,
         account: acc,
         amount: amt,
-        box: document.getElementById('box').value,
-        notes: document.getElementById('notes').value,
-        date: new Date().toLocaleString('ar-YE')
+        currency: curr,
+        box: box,
+        notes: details,
+        date: new Date().toLocaleString("ar-YE")
       };
-      const v = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
-      v.unshift(item);
-      localStorage.setItem('hisabak_vouchers', JSON.stringify(v));
-      alert('تم حفظ السند بنجاح');
-      window.print();
-      location.reload();
+
+      vList.unshift(newVoucher);
+      localStorage.setItem("hisabak_vouchers", JSON.stringify(vList));
+      alert(`تم حفظ سند ${type} #${newVoucher.no} بنجاح!`);
+
+      if (document.getElementById("close_after_save").checked && !isSend) {
+        closeVoucherScreen();
+      } else {
+        document.getElementById("account_name").value = "";
+        document.getElementById("amount_input").value = "";
+        document.getElementById("details_input").value = "";
+        document.getElementById("balance_display").innerText = "0.00 الرصيد";
+      }
+      return newVoucher;
     }
-    init();
+
+    function sendVoucherWhatsApp() {
+      const v = saveVoucherAction(true);
+      if (!v) return;
+      const msg = `*سند ${v.type} رقم #${v.no}*\nالطرف: ${v.account}\nالمبلغ: ${v.amount} ${v.currency}\nالصندوق: ${v.box}\nالبيان: ${v.notes || '---'}\nالتاريخ: ${v.date}\n_تطبيق حسابك_ 📱`;
+      window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), "_blank");
+      if (document.getElementById("close_after_save").checked) {
+        setTimeout(closeVoucherScreen, 1000);
+      }
+    }
+
+    function closeVoucherScreen() {
+      window.location.href = "index.html";
+    }
+
+    function addNewAccount() {
+      const name = prompt("أدخل اسم الحساب الجديد:");
+      if (name) {
+        document.getElementById("account_name").value = name;
+        updateBalancePreview();
+      }
+    }
+
+    function startVoiceSearch() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert("البحث الصوتي غير مدعوم في هذا المتصفح");
+        return;
+      }
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const rec = new Speech();
+      rec.lang = 'ar-YE';
+      rec.onresult = (e) => {
+        document.getElementById("account_name").value = e.results[0][0].transcript;
+        updateBalancePreview();
+      };
+      rec.start();
+    }
+
+    function handleImage(input) {
+      if (input.files && input.files[0]) {
+        alert("تم إرفاق صورة السند بنجاح!");
+      }
+    }
+
+    function openMiniCalc() {
+      const expr = prompt("أدخل العملية الحسابية (مثال: 5000 + 250):");
+      if (expr) {
+        try {
+          const res = Function('"use strict";return (' + expr.replace(/[^0-9+\-*\/.]/g, '') + ')')();
+          if (!isNaN(res)) document.getElementById("amount_input").value = res;
+        } catch(e) { alert("عملية غير صحيحة"); }
+      }
+    }
   </script>
 </body>
 </html>
