@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hisabak-cache-v1';
+// CacheUpdate_1790800830\nconst CACHE_NAME = 'hisabak-cache-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,7 +6,7 @@ const ASSETS_TO_CACHE = [
   './customers.html',
   './suppliers.html',
   './settings.html',
-  './settings_menu.html',
+  './settings_menu.html',\n  './vouchers.html',\n  './invoices_list.html',\n  './statement.html',
   './manifest.json',
   './icon-512.png'
 ];

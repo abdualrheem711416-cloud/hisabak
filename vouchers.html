@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>السندات - حسابك</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+    body { background: #f0f4f9; color: #333; padding-bottom: 30px; }
+    .top-bar { background: #0b5cab; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    .container { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .card { background: white; border: 1.5px solid #b6d4fe; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .switcher { display: flex; border: 1.5px solid #0b5cab; border-radius: 8px; overflow: hidden; }
+    .switcher button { flex: 1; padding: 10px; border: none; background: white; color: #0b5cab; font-weight: bold; cursor: pointer; }
+    .switcher button.active { background: #0b5cab; color: white; }
+    .switcher button.active.pay { background: #d81b60; }
+    .inp { border: 1.5px solid #d0e0f5; border-radius: 6px; padding: 8px; font-size: 14px; outline: none; width: 100%; }
+    .btn { background: #0b5cab; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="index.html" style="color:white; text-decoration:none; font-size:20px;">✕</a>
+    <span id="title">سند قبض</span>
+    <span style="cursor:pointer;" onclick="saveV()">💾 حفظ</span>
+  </div>
+  <div class="container">
+    <div class="switcher">
+      <button id="b-rcv" class="active" onclick="setType('rcv')">سند قبض (استلام)</button>
+      <button id="b-pay" onclick="setType('pay')">سند صرف (دفع)</button>
+    </div>
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:#666;">
+        <span>رقم السند: <b id="v-no">101</b></span>
+        <span id="v-date"></span>
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:bold;">الاسم / الحساب</label>
+        <input type="text" id="acc" class="inp" placeholder="اسم العميل أو المورد">
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:bold;">المبلغ (ر.ي)</label>
+        <input type="number" id="amt" class="inp" placeholder="0.00" style="font-size:18px; font-weight:bold; color:#0b5cab;">
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:bold;">الصندوق</label>
+        <select id="box" class="inp">
+          <option>الصندوق الرئيسي</option>
+          <option>بنك الكريمي</option>
+          <option>شبكة النجم</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:bold;">البيان</label>
+        <input type="text" id="notes" class="inp" placeholder="ملاحظات...">
+      </div>
+      <button class="btn" onclick="saveV()">حفظ السند وطباعته</button>
+    </div>
+  </div>
+  <script>
+    let curType = 'rcv';
+    function setType(t) {
+      curType = t;
+      document.getElementById('b-rcv').className = t === 'rcv' ? 'active' : '';
+      document.getElementById('b-pay').className = t === 'pay' ? 'active pay' : '';
+      document.getElementById('title').innerText = t === 'rcv' ? 'سند قبض' : 'سند صرف';
+      document.getElementById('amt').style.color = t === 'rcv' ? '#0b5cab' : '#d81b60';
+    }
+    function init() {
+      const v = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
+      document.getElementById('v-no').innerText = v.length + 101;
+      document.getElementById('v-date').innerText = new Date().toLocaleDateString('ar-YE');
+    }
+    function saveV() {
+      const acc = document.getElementById('acc').value.trim();
+      const amt = parseFloat(document.getElementById('amt').value);
+      if(!acc || !amt) { alert('يرجى إكمال الحقول المطلوبة'); return; }
+      const item = {
+        id: Date.now(),
+        no: document.getElementById('v-no').innerText,
+        type: curType === 'rcv' ? 'سند قبض' : 'سند صرف',
+        account: acc,
+        amount: amt,
+        box: document.getElementById('box').value,
+        notes: document.getElementById('notes').value,
+        date: new Date().toLocaleString('ar-YE')
+      };
+      const v = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
+      v.unshift(item);
+      localStorage.setItem('hisabak_vouchers', JSON.stringify(v));
+      alert('تم حفظ السند بنجاح');
+      window.print();
+      location.reload();
+    }
+    init();
+  </script>
+</body>
+</html>

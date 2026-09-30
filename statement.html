@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كشف حساب - حسابك</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+    body { background: #f0f4f9; color: #333; padding-bottom: 30px; }
+    .top-bar { background: #0b5cab; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    .container { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    table { width: 100%; border-collapse: collapse; background: white; font-size: 12px; }
+    th { background: #eaf2fb; color: #0b5cab; padding: 8px 4px; border: 1px solid #d0e0f5; }
+    td { padding: 8px 4px; text-align: center; border: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="index.html" style="color:white; text-decoration:none; font-size:20px;">✕</a>
+    <span>كشف حساب تفصيلي</span>
+    <span style="cursor:pointer;" onclick="window.print()">🖨 طباعة</span>
+  </div>
+  <div class="container">
+    <input type="text" id="acc" placeholder="🔍 اكتب اسم العميل أو المورد..." oninput="load()" style="padding:8px; border:1px solid #b6d4fe; border-radius:6px; outline:none; width:100%;">
+    <div style="background:white; padding:10px; border-radius:6px; font-weight:bold; display:flex; justify-content:space-between;">
+      <span>الرصيد:</span>
+      <span id="bal" style="color:#d81b60;">0.00 ر.ي</span>
+    </div>
+    <table>
+      <thead><tr><th>التاريخ</th><th>البيان</th><th>مدين (+)</th><th>دائن (-)</th><th>الرصيد</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="5" style="padding:15px; color:#888;">أدخل اسم الحساب للبحث</td></tr></tbody>
+    </table>
+  </div>
+  <script>
+    function load() {
+      const q = document.getElementById('acc').value.trim().toLowerCase();
+      if(!q) return;
+      const invs = JSON.parse(localStorage.getItem('hisabak_invoices') || '[]');
+      const vchs = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
+      let rows = [];
+      invs.filter(i => (i.account||'').toLowerCase().includes(q)).forEach(i => {
+        rows.push({ d: i.date, desc: 'فاتورة #' + i.number, db: i.opType === 'بيع' ? (i.net||0) : 0, cr: i.opType === 'شراء' ? (i.net||0) : 0, ts: i.id });
+      });
+      vchs.filter(v => (v.account||'').toLowerCase().includes(q)).forEach(v => {
+        rows.push({ d: v.date, desc: v.type + ' #' + v.no, db: v.type === 'سند صرف' ? (v.amount||0) : 0, cr: v.type === 'سند قبض' ? (v.amount||0) : 0, ts: v.id });
+      });
+      rows.sort((a,b) => a.ts - b.ts);
+      let run = 0, h = '';
+      rows.forEach(r => {
+        run += (r.db - r.cr);
+        h += `<tr><td>${(r.d||'').split(',')[0]}</td><td>${r.desc}</td><td style="color:#0b5cab;">${r.db||'-'}</td><td style="color:#2e7d32;">${r.cr||'-'}</td><td style="font-weight:bold;">${run.toFixed(2)}</td></tr>`;
+      });
+      document.getElementById('rows').innerHTML = h || '<tr><td colspan="5" style="padding:15px;">لا توجد حركات</td></tr>';
+      document.getElementById('bal').innerText = run.toFixed(2) + ' ر.ي';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سجل الفواتير - حسابك</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+    body { background: #f0f4f9; color: #333; padding-bottom: 30px; }
+    .top-bar { background: #0b5cab; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    .container { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .card { background: white; border: 1.5px solid #d0e0f5; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .btn { padding: 6px 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="index.html" style="color:white; text-decoration:none; font-size:20px;">✕</a>
+    <span>سجل الفواتير السابقة</span>
+    <span></span>
+  </div>
+  <div class="container">
+    <input type="text" id="q" placeholder="🔍 بحث بالرقم أو العميل..." oninput="render()" style="padding:8px; border:1px solid #b6d4fe; border-radius:6px; outline:none; width:100%;">
+    <div id="list" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+  <script>
+    function render() {
+      const q = document.getElementById('q').value.trim().toLowerCase();
+      const all = JSON.parse(localStorage.getItem('hisabak_invoices') || '[]');
+      const filtered = all.filter(i => String(i.number).includes(q) || (i.account && i.account.toLowerCase().includes(q)));
+      const el = document.getElementById('list');
+      if(!filtered.length) { el.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">لا توجد فواتير</div>'; return; }
+      el.innerHTML = filtered.map(i => `
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; font-weight:bold;">
+            <span style="color:#0b5cab;">فاتورة #${i.number}</span>
+            <span style="color:#2e7d32;">${i.opType} (${i.payType})</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>العميل: <b>${i.account}</b></span>
+            <span>الصافي: <b style="color:#d81b60;">${i.net} ر.ي</b></span>
+          </div>
+          <div style="font-size:11px; color:#888;">${i.date}</div>
+          <div style="display:flex; gap:6px; margin-top:4px;">
+            <button class="btn" style="background:#eaf2fb; color:#0b5cab;" onclick="window.print()">🖨 طباعة</button>
+            <button class="btn" style="background:#ffebee; color:#c62828;" onclick="del(${i.id})">🗑 حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    function del(id) {
+      if(!confirm('حذف الفاتورة؟')) return;
+      let all = JSON.parse(localStorage.getItem('hisabak_invoices') || '[]').filter(x => x.id !== id);
+      localStorage.setItem('hisabak_invoices', JSON.stringify(all));
+      render();
+    }
+    render();
+  </script>
+</body>
+</html>
