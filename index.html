@@ -2217,99 +2217,67 @@ window.addEventListener("load", function() {
 </script>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  const currencyOptions = [
-    { name: "عمله محليه", symbol: "YER" },
-    { name: "ريال سعودي", symbol: "SAR" },
-    { name: "دولار", symbol: "USD" }
-  ];
 
-  function populateAllCurrencySelects() {
-    const selects = document.querySelectorAll("select");
-    selects.forEach(sel => {
-      const isCurr = (sel.id + " " + sel.name + " " + sel.className).toLowerCase().includes("curr") ||
-                     sel.innerHTML.includes("عمل") || sel.innerHTML.includes("YER") || sel.innerHTML.includes("ريال");
-      if (isCurr) {
-        const val = sel.value;
-        sel.innerHTML = "";
-        currencyOptions.forEach(c => {
-          const opt = document.createElement("option");
-          opt.value = c.symbol;
-          opt.textContent = `${c.name} (${c.symbol})`;
-          if (c.symbol === val) opt.selected = true;
-          sel.appendChild(opt);
-        });
-      }
-    });
-  }
 
-  // التقاط النقر على زر (+) أو الشاشة وتشغيل التغذية فوراً بعد ظهور النافذة
-  document.addEventListener("click", function(e) {
-    // التأكد من استجابة زر الإضافة إن كان معلقاً
-    const target = e.target.closest("button, .btn, [onclick], .fab");
-    setTimeout(populateAllCurrencySelects, 60);
-    setTimeout(populateAllCurrencySelects, 250);
-  });
-});
-</script>
+
+
 
 
 <script>
+// محرك ربط زر (+) وتغذية العملات المعتمدة
 (function() {
-  const currencies = [
+  const CURRENCIES = [
     { name: "عمله محليه", symbol: "YER" },
     { name: "ريال سعودي", symbol: "SAR" },
     { name: "دولار", symbol: "USD" }
   ];
 
-  function populateCurrencyFields() {
-    const selects = document.querySelectorAll("select");
-    selects.forEach(sel => {
-      const fieldId = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      if (fieldId.includes("curr") || fieldId.includes("عمل") || sel.innerHTML.includes("ريال") || sel.innerHTML.includes("YER")) {
-        const val = sel.value;
-        sel.innerHTML = "";
-        currencies.forEach(c => {
+  function applyCurrencies() {
+    document.querySelectorAll("select").forEach(function(s) {
+      const info = (s.id + " " + s.name + " " + s.className).toLowerCase();
+      if (info.includes("curr") || info.includes("عمل") || s.innerHTML.includes("YER") || s.innerHTML.includes("ريال")) {
+        const current = s.value;
+        s.innerHTML = "";
+        CURRENCIES.forEach(function(cur) {
           const opt = document.createElement("option");
-          opt.value = c.symbol;
-          opt.textContent = `${c.name} (${c.symbol})`;
-          if (c.symbol === val) opt.selected = true;
-          sel.appendChild(opt);
+          opt.value = cur.symbol;
+          opt.textContent = cur.name + " (" + cur.symbol + ")";
+          if (cur.symbol === current) opt.selected = true;
+          s.appendChild(opt);
         });
       }
     });
   }
 
-  // تفعيل النقر على زر الإضافة البرتقالي وضمان فتح النافذة المطلوبة
-  window.addEventListener("DOMContentLoaded", function() {
-    const fabBtn = document.getElementById("fab-add") || document.querySelector(".fab");
-    if (fabBtn) {
-      fabBtn.style.pointerEvents = "auto";
-      fabBtn.style.cursor = "pointer";
-      fabBtn.addEventListener("click", function(e) {
-        // فحص النوافذ المنبثقة المتاحة وفتح المناسبة إن لم تكن مفتوحة
-        const activeTab = document.querySelector(".tab.active, .nav-item.active, [data-active='true']");
-        const isSupplier = activeTab && activeTab.textContent.includes("مورد");
+  // معالجة النقر على الزر العائم
+  document.addEventListener("click", function(e) {
+    const btn = e.target.closest("#fab-add, .fab, .floating-btn, button[class*="fab"]");
+    if (btn) {
+      // فتح نافذة الإضافة المتاحة
+      const customerModal = document.getElementById("customerModal") || document.getElementById("customers-modal") || document.getElementById("addCustomerModal");
+      const supplierModal = document.getElementById("supplierModal") || document.getElementById("suppliers-modal") || document.getElementById("addSupplierModal");
+      
+      const activeText = (document.querySelector(".active, .tab-active, [aria-selected="true"]") || {}).innerText || "";
+      const targetModal = (activeText.includes("مورد") && supplierModal) ? supplierModal : (customerModal || supplierModal);
 
-        const modal = isSupplier ? 
-          (document.getElementById("suppliers-modal") || document.getElementById("supplier-modal")) : 
-          (document.getElementById("customers-modal") || document.getElementById("customer-modal") || document.getElementById("add-modal"));
+      if (targetModal) {
+        targetModal.style.display = "flex";
+        targetModal.classList.add("show", "active", "open");
+      } else if (typeof openAddModal === "function") {
+        openAddModal();
+      } else if (typeof openCustomerModal === "function") {
+        openCustomerModal();
+      }
 
-        if (modal) {
-          modal.style.display = "flex";
-        }
-        setTimeout(populateCurrencyFields, 50);
-        setTimeout(populateCurrencyFields, 200);
-      }, true);
+      setTimeout(applyCurrencies, 50);
+      setTimeout(applyCurrencies, 250);
     }
-  });
+  }, true);
 
-  // تغذية مستمرة لأي نافذة تفتح في الواجهة
-  const obs = new MutationObserver(function() {
-    populateCurrencyFields();
-  });
+  // تحديث العملات في أي وقت تفتح نافذة
+  const obs = new MutationObserver(applyCurrencies);
   obs.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener("load", applyCurrencies);
 })();
 </script>
 
