@@ -5,56 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>العملاء - حسابك</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
     body { background: #f4f6f9; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    
-    /* الشريط العلوي */
     .top-bar { background: #0d62b3; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
     .top-bar .title-box { display: flex; align-items: center; gap: 16px; font-size: 18px; font-weight: bold; }
     .top-bar .icons { display: flex; gap: 18px; font-size: 18px; }
     .top-bar a { color: #fff; text-decoration: none; font-size: 20px; }
-
-    /* بطاقة الفلاتر والخيارات المطابقة للصورة */
     .filter-card { background: #fff; margin: 8px; border-radius: 12px; border: 1px solid #dce4ec; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .periods { display: flex; justify-content: space-around; padding: 10px 6px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
     .periods label, .sorting label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
     .sorting { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
     .date-dropdown { border: 1px solid #aaa; border-radius: 6px; padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
     .currency-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
-    
-    /* شريط التواريخ الأزرق */
     .date-range-bar { background: #0d62b3; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; font-size: 13px; }
     .date-tag { background: #fff; color: #0d62b3; padding: 2px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; margin: 0 4px; }
     .arrow-circle { background: rgba(255,255,255,0.25); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; }
-
-    /* قائمة العملاء */
     .cust-list { flex: 1; overflow-y: auto; padding: 10px; }
     .cust-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
-    
-    /* الزر العائم */
-    .fab { position: fixed; bottom: 65px; left: 20px; width: 56px; height: 56px; border-radius: 50%; background: #e67e22; color: #fff; border: none; font-size: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-    /* الشريط السفلي */
+    .fab { position: fixed; bottom: 65px; left: 20px; width: 56px; height: 56px; border-radius: 50%; background: #e67e22; color: #fff; border: none; font-size: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; }
     .bottom-bar { background: #0d62b3; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: bold; }
     .bottom-btn { background: rgba(255,255,255,0.2); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 15px; }
+    .modal-card { background: #fff; width: 100%; max-width: 400px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+    .modal-header { padding: 12px 16px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .modal-body input, .modal-body select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+    .btn-action-sheet { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 15px; font-weight: bold; cursor: pointer; text-align: right; }
   </style>
 </head>
 <body>
-
-  <!-- الشريط العلوي -->
   <div class="top-bar">
     <div class="title-box">
       <a href="index.html">➔</a>
       <span>العملاء</span>
     </div>
     <div class="icons">
-      <span onclick="alert('البحث قيد التفعيل')">🔍</span>
-      <span onclick="window.print()">🖨️</span>
-      <span onclick="alert('خيارات التصفية')">🔻</span>
+      <span>🔍</span>
+      <span onclick="window.print()">🖨</span>
+      <span>🔻</span>
     </div>
   </div>
 
-  <!-- لوحة الخيارات والفلاتر -->
   <div class="filter-card">
     <div class="periods">
       <label><input type="radio" name="p"> يومي</label>
@@ -63,9 +54,7 @@
       <label><input type="radio" name="p"> سنوي</label>
     </div>
     <div class="sorting">
-      <div class="date-dropdown">
-        <span>ترتيب حسب التاريخ</span> <span>▼</span>
-      </div>
+      <div class="date-dropdown"><span>ترتيب حسب التاريخ</span> <span>▼</span></div>
       <div style="display:flex; gap:10px;">
         <label><input type="radio" name="s"> تصاعدي</label>
         <label style="color:#d35400; font-weight:bold;"><input type="radio" name="s" checked> تنازلي</label>
@@ -90,17 +79,39 @@
     </div>
   </div>
 
-  <!-- قائمة العملاء -->
   <div class="cust-list" id="cust-container"></div>
-
-  <!-- زر الإضافة العائم -->
   <button class="fab" id="fab-add">+</button>
 
-  <!-- الشريط السفلي -->
   <div class="bottom-bar">
     <span style="font-size:20px; cursor:pointer;">☰</span>
     <div id="totals-text">عليه : 0  له : 0  الرصيد له : 0 ر.ي</div>
     <div class="bottom-btn" id="bottom-add">+</div>
+  </div>
+
+  <div id="action-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <button onclick="closeModal('action-modal')" style="background:#eee; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer;">✕</button>
+        <h4 style="margin:0; color:#0d62b3;">اختر العملية</h4>
+      </div>
+      <div class="modal-body">
+        <button class="btn-action-sheet" onclick="openForm('add_cust')">👤 إضافة عميل جديد</button>
+        <button class="btn-action-sheet" onclick="openForm('receipt')">📥 سند قبض (تسديد من عميل)</button>
+        <button class="btn-action-sheet" onclick="openForm('payment')">📤 سند صرف (دفعة لعميل)</button>
+        <button class="btn-action-sheet" onclick="openForm('invoice')">🧾 فاتورة مبيعات</button>
+        <button class="btn-action-sheet" onclick="openForm('return')">🔄 مردود مبيعات</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="form-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <button onclick="closeModal('form-modal')" style="background:#eee; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer;">✕</button>
+        <h4 id="form-title" style="margin:0; color:#0d62b3;"></h4>
+      </div>
+      <div class="modal-body" id="form-fields"></div>
+    </div>
   </div>
 
   <script>
@@ -128,7 +139,7 @@
           </div>
           <div style="text-align:left;">
             <div style="font-weight:bold; font-size:15px; color:#222;">${item.name}</div>
-            <div style="font-size:12px; color:#666;">${item.phone ? '📞 ' + item.phone : 'بدون هاتف'}</div>
+            <div style="font-size:12px; color:#666;">${item.phone ? "📞 " + item.phone : "بدون هاتف"}</div>
             <div style="font-weight:bold; font-size:13px; color:#27ae60;">الرصيد: ${Number(item.balance).toLocaleString()} ر.ي</div>
           </div>
         `;
@@ -138,63 +149,148 @@
     }
 
     window.deleteCust = function(i) {
-      customers.splice(i, 1);
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-      render();
+      if (confirm("هل تريد حذف هذا العميل؟")) {
+        customers.splice(i, 1);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        render();
+      }
     };
 
     window.sendWA = function(i) {
       const itm = customers[i];
       if (!itm.phone) return alert("يرجى إدخال رقم الهاتف أولاً");
       const clean = itm.phone.replace(/[^0-9]/g, "");
-      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،\nكشف حساب من تطبيق حسابك:\nرصيدكم الحالي: ${Number(itm.balance).toLocaleString()} ر.ي.`);
+      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،
+كشف حساب من تطبيق حسابك:
+رصيدكم الحالي هو: ${Number(itm.balance).toLocaleString()} ر.ي.`);
       window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
     };
 
-    function handleActions() {
-      const act = prompt("اختر العملية المطلوبة:\n1 - إضافة عميل جديد\n2 - سند قبض\n3 - سند صرف\n4 - فاتورة مبيعات\n5 - مردود مبيعات", "1");
-      if (act === "1") {
-        const n = prompt("اسم العميل:");
-        if (!n) return;
-        const p = prompt("رقم الهاتف (واتساب):", "");
-        const b = parseFloat(prompt("الرصيد الافتتاحي (ر.ي):", "0")) || 0;
-        customers.push({ id: Date.now(), name: n, phone: p, balance: b });
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        render();
-      } else if (act === "2" || act === "3") {
-        const name = prompt("اكتب اسم العميل بدقة:");
-        const cust = customers.find(x => x.name === name);
-        if (!cust) return alert("العميل غير موجود");
-        const amt = parseFloat(prompt("المبلغ (ر.ي):", "0")) || 0;
-        if (amt <= 0) return;
-        cust.balance = act === "2" ? (Number(cust.balance) - amt) : (Number(cust.balance) + amt);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم حفظ السند وتحديث الرصيد!");
-        render();
-      } else if (act === "4") {
-        const name = prompt("اكتب اسم العميل بدقة:");
-        const cust = customers.find(x => x.name === name);
-        if (!cust) return alert("العميل غير موجود");
-        const tot = parseFloat(prompt("إجمالي الفاتورة:", "0")) || 0;
-        const paid = parseFloat(prompt("المدفوع نقداً:", "0")) || 0;
-        cust.balance = Number(cust.balance) + (tot - paid);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم قيد الفاتورة وتحديث الرصيد!");
-        render();
-      } else if (act === "5") {
-        const name = prompt("اكتب اسم العميل بدقة:");
-        const cust = customers.find(x => x.name === name);
-        if (!cust) return alert("العميل غير موجود");
-        const ret = parseFloat(prompt("قيمة المردود (ر.ي):", "0")) || 0;
-        cust.balance = Number(cust.balance) - ret;
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم تسجيل المردود وخصمه من الرصيد!");
-        render();
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    function showActionModal() { document.getElementById("action-modal").style.display = "flex"; }
+
+    document.getElementById("fab-add").onclick = showActionModal;
+    document.getElementById("bottom-add").onclick = showActionModal;
+
+    function openForm(type) {
+      closeModal("action-modal");
+      const fModal = document.getElementById("form-modal");
+      const title = document.getElementById("form-title");
+      const fields = document.getElementById("form-fields");
+      fModal.style.display = "flex";
+      let opts = customers.map(c => `<option value="${c.name}">${c.name} (${Number(c.balance).toLocaleString()} ر.ي)</option>`).join("");
+
+      if (type === "add_cust") {
+        title.textContent = "إضافة عميل جديد";
+        fields.innerHTML = `
+          <input type="text" id="fn_name" placeholder="اسم العميل">
+          <input type="tel" id="fn_phone" placeholder="رقم الهاتف">
+          <input type="number" id="fn_bal" placeholder="الرصيد الافتتاحي (ر.ي)">
+          <button onclick="saveCust()" style="background:#0d62b3; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ العميل</button>
+        `;
+      } else if (type === "receipt" || type === "payment") {
+        const isRec = type === "receipt";
+        title.textContent = isRec ? "سند قبض مالي" : "سند صرف مالي";
+        fields.innerHTML = `
+          <select id="fn_cust">${opts}</select>
+          <input type="number" id="fn_amt" placeholder="المبلغ (ر.ي)">
+          <input type="text" id="fn_note" placeholder="البيان / ملاحظات">
+          <button onclick="saveVoucher('${type}')" style="background:#0d62b3; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ السند</button>
+        `;
+      } else if (type === "invoice") {
+        title.textContent = "فاتورة مبيعات جديدة";
+        fields.innerHTML = `
+          <select id="fn_cust">${opts}</select>
+          <input type="text" id="fn_note" placeholder="بيان الفاتورة">
+          <input type="number" id="fn_amt" placeholder="إجمالي الفاتورة (ر.ي)">
+          <input type="number" id="fn_paid" placeholder="المدفوع نقداً">
+          <button onclick="saveInvoice()" style="background:#27ae60; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">إصدار الفاتورة</button>
+        `;
+      } else if (type === "return") {
+        title.textContent = "مردود مبيعات";
+        fields.innerHTML = `
+          <select id="fn_cust">${opts}</select>
+          <input type="text" id="fn_note" placeholder="بيان المردود">
+          <input type="number" id="fn_amt" placeholder="قيمة المردود (ر.ي)">
+          <button onclick="saveReturn()" style="background:#c0392b; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">قيد المردود</button>
+        `;
       }
     }
 
-    document.getElementById("fab-add").onclick = handleActions;
-    document.getElementById("bottom-add").onclick = handleActions;
+    window.saveCust = function() {
+      const name = document.getElementById("fn_name").value.trim();
+      const phone = document.getElementById("fn_phone").value.trim();
+      const bal = parseFloat(document.getElementById("fn_bal").value) || 0;
+      if (!name) return alert("يرجى إدخال الاسم");
+      customers.push({ id: Date.now(), name, phone, balance: bal });
+      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+      closeModal("form-modal");
+      render();
+    };
+
+    window.saveVoucher = function(type) {
+      const name = document.getElementById("fn_cust").value;
+      const amt = parseFloat(document.getElementById("fn_amt").value) || 0;
+      const note = document.getElementById("fn_note").value.trim();
+      if (amt <= 0) return alert("مبلغ غير صحيح");
+      const c = customers.find(x => x.name === name);
+      if (c) {
+        c.balance = type === "receipt" ? (Number(c.balance) - amt) : (Number(c.balance) + amt);
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم الحفظ بنجاح!");
+        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
+          const clean = c.phone.replace(/[^0-9]/g, "");
+          const op = type === "receipt" ? "سند قبض" : "سند صرف";
+          const msg = encodeURIComponent(`مرحباً ${c.name}، تم قيد ${op} بمبلغ: ${amt.toLocaleString()} ر.ي. الرصيد الحالي: ${Number(c.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
+        }
+        closeModal("form-modal");
+        render();
+      }
+    };
+
+    window.saveInvoice = function() {
+      const name = document.getElementById("fn_cust").value;
+      const tot = parseFloat(document.getElementById("fn_amt").value) || 0;
+      const paid = parseFloat(document.getElementById("fn_paid").value) || 0;
+      const note = document.getElementById("fn_note").value.trim();
+      if (tot <= 0) return alert("إجمالي غير صحيح");
+      const rem = tot - paid;
+      const c = customers.find(x => x.name === name);
+      if (c) {
+        c.balance = Number(c.balance) + rem;
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم حفظ الفاتورة وتحديث الرصيد!");
+        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
+          const clean = c.phone.replace(/[^0-9]/g, "");
+          const msg = encodeURIComponent(`مرحباً ${c.name}، فاتورة مبيعات: الإجمالي ${tot.toLocaleString()} ر.ي، المتبقي: ${rem.toLocaleString()} ر.ي. الرصيد: ${Number(c.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
+        }
+        closeModal("form-modal");
+        render();
+      }
+    };
+
+    window.saveReturn = function() {
+      const name = document.getElementById("fn_cust").value;
+      const amt = parseFloat(document.getElementById("fn_amt").value) || 0;
+      const note = document.getElementById("fn_note").value.trim();
+      if (amt <= 0) return alert("قيمة غير صحيحة");
+      const c = customers.find(x => x.name === name);
+      if (c) {
+        c.balance = Number(c.balance) - amt;
+        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        alert("تم قيد المردود وخصمه من الرصيد!");
+        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
+          const clean = c.phone.replace(/[^0-9]/g, "");
+          const msg = encodeURIComponent(`مرحباً ${c.name}، إشعار مردود مبيعات بقيمة: ${amt.toLocaleString()} ر.ي. الرصيد الحالي: ${Number(c.balance).toLocaleString()} ر.ي.`);
+          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
+        }
+        closeModal("form-modal");
+        render();
+      }
+    };
+
     render();
   </script>
 </body>
