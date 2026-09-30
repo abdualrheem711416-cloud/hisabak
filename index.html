@@ -1803,5 +1803,28 @@ window.addEventListener("load", enforceCustomersLink);
 setInterval(enforceCustomersLink, 800);
 </script>
 
+
+<script>
+// إزالة أي نافذة مصغرة قديمة إذا حاولت الظهور
+const removeOldCustModals = () => {
+  document.querySelectorAll("[id*="cust"], [id*="customer"]").forEach(el => {
+    if (el.innerText && el.innerText.includes("إدارة العملاء") && el.style.position === "fixed") {
+      el.remove();
+    }
+  });
+};
+setInterval(removeOldCustModals, 300);
+
+// توجيه فوري ومباشر 100% للشاشة الكاملة customers.html
+document.addEventListener("click", function(e) {
+  const target = e.target.closest("div, .card, button, a");
+  if (target && target.innerText && target.innerText.trim().includes("العملاء") && !target.closest("#full-customers-screen")) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    window.location.href = "customers.html";
+  }
+}, true);
+</script>
+
 </body>
 </html>
