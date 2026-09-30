@@ -1989,5 +1989,82 @@ document.addEventListener("click", function(e) {
 }, true);
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function isolateCards() {
+    // استهداف كل العناصر القابلة للنقر داخل شبكة البطاقات
+    const items = document.querySelectorAll("a, button, .grid-item, .card, .dashboard-card");
+    
+    // إزالة خاصية href لمنع التداخل
+    items.forEach(el => {
+      if (el.tagName === "A") el.removeAttribute("href");
+    });
+  }
+  isolateCards();
+});
+
+// مراقب نقرات ذكي يختبر النص الداخلي المباشر للزر وليس الحاوية العامة
+document.addEventListener("click", function(e) {
+  let target = e.target;
+  
+  // نصعد لأعلى حتى نصل إلى عنصر بطاقة فردي (وليس الحاوية الكبرى للشبكة)
+  let foundCard = null;
+  let curr = target;
+  for (let i = 0; i < 4; i++) {
+    if (!curr || curr === document.body || curr.classList.contains("container") || curr.classList.contains("grid")) break;
+    const txt = (curr.textContent || "").trim();
+    // إذا كان طول النص كبيراً جداً، فهذه حاوية كاملة وليست بطاقة واحدة
+    if (txt.length > 0 && txt.length < 30) {
+      foundCard = curr;
+      break;
+    }
+    curr = curr.parentElement;
+  }
+
+  if (!foundCard) return;
+
+  const cardText = (foundCard.innerText || foundCard.textContent || "").trim();
+
+  // 1. سند جديد -> vouchers.html حصراً
+  if (cardText === "سند جديد") {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    window.location.href = "vouchers.html";
+    return false;
+  }
+
+  // 2. فاتورة جديدة -> invoice.html حصراً
+  if (cardText === "فاتورة جديدة") {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    window.location.href = "invoice.html";
+    return false;
+  }
+
+  // 3. كشف حساب -> statement.html حصراً
+  if (cardText === "كشف حساب" || cardText === "كشف الحساب") {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    window.location.href = "statement.html";
+    return false;
+  }
+
+  // 4. البطاقات الصلبة (قيد بسيط، حركة يومية، حوالة، صناديق، صرف عملات، بحث سريع)
+  const lockedList = ["حوالة جديدة", "حوالة جديد", "قيد بسيط", "الحركة اليومية", "صناديق النقدية", "صرف عملات", "البحث السريع"];
+  for (let locked of lockedList) {
+    if (cardText === locked) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      return false;
+    }
+  }
+}, true);
+</script>
+
 </body>
 </html>
