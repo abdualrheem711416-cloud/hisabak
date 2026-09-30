@@ -1892,5 +1892,26 @@ window.closeSuppliersModal = function() {
 };
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function redirectSuppliers() {
+    document.querySelectorAll("*").forEach(function(el) {
+      if (el.children.length === 0 && el.textContent.trim() === "الموردين") {
+        var card = el.closest(".card") || el.parentElement || el;
+        card.style.cursor = "pointer";
+        card.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = "suppliers.html";
+        };
+      }
+    });
+  }
+  redirectSuppliers();
+  setInterval(redirectSuppliers, 500);
+});
+</script>
+
 </body>
 </html>
