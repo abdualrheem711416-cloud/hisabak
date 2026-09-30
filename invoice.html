@@ -322,5 +322,21 @@
       }
     }
   </script>
+
+<div id="toast-msg" style="display:none; position:fixed; top:40%; left:50%; transform:translate(-50%, -50%); background:rgba(30,30,30,0.92); color:#fff; padding:12px 24px; border-radius:24px; font-size:14px; font-weight:bold; z-index:99999; box-shadow:0 4px 15px rgba(0,0,0,0.3); text-align:center; pointer-events:none; transition:opacity 0.3s ease;"></div>
+<script>
+window.alert = function(msg) {
+  var t = document.getElementById("toast-msg");
+  if (!t) return;
+  t.innerText = msg;
+  t.style.display = "block";
+  t.style.opacity = "1";
+  setTimeout(function() {
+    t.style.opacity = "0";
+    setTimeout(function() { t.style.display = "none"; }, 300);
+  }, 2000);
+};
+</script>
+
 </body>
 </html>
