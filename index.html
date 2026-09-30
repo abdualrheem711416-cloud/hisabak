@@ -264,7 +264,7 @@ function processExcel() {
   <div style="background:#fff; width:90%; max-width:400px; border-radius:12px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.2); max-height:85vh; overflow-y:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:10px;">
       <h3 style="margin:0; color:#0b5cab;">إدارة الموردين</h3>
-      <button onclick="closeSuppliersModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      <button type="button" ontouchstart="this.closest('[style*="fixed"], .modal, div[id*="supplier"]').remove();" onclick="this.closest('[style*="fixed"], .modal, div[id*="supplier"]').remove();" style="background:#e0e0e0; color:#333; border:none; width:44px; height:44px; border-radius:50%; font-size:26px; font-weight:bold; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;">✕</button>
     </div>
     
     <div style="margin-top:15px;">
@@ -1879,6 +1879,17 @@ document.addEventListener("DOMContentLoaded", function() {
   setInterval(fixAllModals, 300);
   document.addEventListener("DOMContentLoaded", fixAllModals);
 })();
+</script>
+
+
+<script>
+window.closeSuppliersModal = function() {
+  document.querySelectorAll("[style*="fixed"], .modal, div[id*="supplier"]").forEach(function(el) {
+    if (el.innerText && el.innerText.includes("إدارة الموردين")) {
+      el.remove();
+    }
+  });
+};
 </script>
 
 </body>
