@@ -114,285 +114,90 @@
     </div>
   </div>
 
-  <script>
-    let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-    if (customers.length === 0) {
-      customers = [
-        { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
-        { id: 2, name: "عبدالرحيم", phone: "776332929", balance: 100000 }
-      ];
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-    }
+  
 
-    function render() {
-      const c = document.getElementById("cust-container");
-      c.innerHTML = "";
-      let total = 0;
-      customers.forEach((item, idx) => {
-        total += Number(item.balance || 0);
-        const div = document.createElement("div");
-        div.className = "cust-item";
-        div.innerHTML = `
-          <div style="display:flex; gap:6px;">
-            <button onclick="deleteCust(${idx})" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer;">حذف</button>
-            <button onclick="sendWA(${idx})" style="background:#25D366; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer;">💬 واتساب</button>
-          </div>
-          <div style="text-align:left;">
-            <div style="font-weight:bold; font-size:15px; color:#222;">${item.name}</div>
-            <div style="font-size:12px; color:#666;">${item.phone ? "📞 " + item.phone : "بدون هاتف"}</div>
-            <div style="font-weight:bold; font-size:13px; color:#27ae60;">الرصيد: ${Number(item.balance).toLocaleString()} ر.ي</div>
-          </div>
-        `;
-        c.appendChild(div);
-      });
-      document.getElementById("totals-text").textContent = `عليه : 0  له : ${total.toLocaleString()}  الرصيد له : ${total.toLocaleString()} ر.ي`;
-    }
 
-    window.deleteCust = function(i) {
-      if (confirm("هل تريد حذف هذا العميل؟")) {
-        customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        render();
-      }
-    };
 
-    window.sendWA = function(i) {
-      const itm = customers[i];
-      if (!itm.phone) return alert("يرجى إدخال رقم الهاتف أولاً");
-      const clean = itm.phone.replace(/[^0-9]/g, "");
-      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،
-كشف حساب من تطبيق حسابك:
-رصيدكم الحالي هو: ${Number(itm.balance).toLocaleString()} ر.ي.`);
-      window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
-    };
 
-    function closeModal(id) { document.getElementById(id).style.display = "none"; }
-    function showActionModal() { document.getElementById("action-modal").style.display = "flex"; }
-
-    document.getElementById("fab-add").onclick = showActionModal;
-    document.getElementById("bottom-add").onclick = showActionModal;
-
-    function openForm(type) {
-      closeModal("action-modal");
-      const fModal = document.getElementById("form-modal");
-      const title = document.getElementById("form-title");
-      const fields = document.getElementById("form-fields");
-      fModal.style.display = "flex";
-      let opts = customers.map(c => `<option value="${c.name}">${c.name} (${Number(c.balance).toLocaleString()} ر.ي)</option>`).join("");
-
-      if (type === "add_cust") {
-        title.textContent = "إضافة عميل جديد";
-        fields.innerHTML = `
-          <input type="text" id="fn_name" placeholder="اسم العميل">
-          <input type="tel" id="fn_phone" placeholder="رقم الهاتف">
-          <input type="number" id="fn_bal" placeholder="الرصيد الافتتاحي (ر.ي)">
-          <button onclick="saveCust()" style="background:#0d62b3; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ العميل</button>
-        `;
-      } else if (type === "receipt" || type === "payment") {
-        const isRec = type === "receipt";
-        title.textContent = isRec ? "سند قبض مالي" : "سند صرف مالي";
-        fields.innerHTML = `
-          <select id="fn_cust">${opts}</select>
-          <input type="number" id="fn_amt" placeholder="المبلغ (ر.ي)">
-          <input type="text" id="fn_note" placeholder="البيان / ملاحظات">
-          <button onclick="saveVoucher('${type}')" style="background:#0d62b3; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ السند</button>
-        `;
-      } else if (type === "invoice") {
-        title.textContent = "فاتورة مبيعات جديدة";
-        fields.innerHTML = `
-          <select id="fn_cust">${opts}</select>
-          <input type="text" id="fn_note" placeholder="بيان الفاتورة">
-          <input type="number" id="fn_amt" placeholder="إجمالي الفاتورة (ر.ي)">
-          <input type="number" id="fn_paid" placeholder="المدفوع نقداً">
-          <button onclick="saveInvoice()" style="background:#27ae60; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">إصدار الفاتورة</button>
-        `;
-      } else if (type === "return") {
-        title.textContent = "مردود مبيعات";
-        fields.innerHTML = `
-          <select id="fn_cust">${opts}</select>
-          <input type="text" id="fn_note" placeholder="بيان المردود">
-          <input type="number" id="fn_amt" placeholder="قيمة المردود (ر.ي)">
-          <button onclick="saveReturn()" style="background:#c0392b; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">قيد المردود</button>
-        `;
-      }
-    }
-
-    window.saveCust = function() {
-      const name = document.getElementById("fn_name").value.trim();
-      const phone = document.getElementById("fn_phone").value.trim();
-      const bal = parseFloat(document.getElementById("fn_bal").value) || 0;
-      if (!name) return alert("يرجى إدخال الاسم");
-      customers.push({ id: Date.now(), name, phone, balance: bal });
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-      closeModal("form-modal");
-      render();
-    };
-
-    window.saveVoucher = function(type) {
-      const name = document.getElementById("fn_cust").value;
-      const amt = parseFloat(document.getElementById("fn_amt").value) || 0;
-      const note = document.getElementById("fn_note").value.trim();
-      if (amt <= 0) return alert("مبلغ غير صحيح");
-      const c = customers.find(x => x.name === name);
-      if (c) {
-        c.balance = type === "receipt" ? (Number(c.balance) - amt) : (Number(c.balance) + amt);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم الحفظ بنجاح!");
-        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
-          const clean = c.phone.replace(/[^0-9]/g, "");
-          const op = type === "receipt" ? "سند قبض" : "سند صرف";
-          const msg = encodeURIComponent(`مرحباً ${c.name}، تم قيد ${op} بمبلغ: ${amt.toLocaleString()} ر.ي. الرصيد الحالي: ${Number(c.balance).toLocaleString()} ر.ي.`);
-          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
-        }
-        closeModal("form-modal");
-        render();
-      }
-    };
-
-    window.saveInvoice = function() {
-      const name = document.getElementById("fn_cust").value;
-      const tot = parseFloat(document.getElementById("fn_amt").value) || 0;
-      const paid = parseFloat(document.getElementById("fn_paid").value) || 0;
-      const note = document.getElementById("fn_note").value.trim();
-      if (tot <= 0) return alert("إجمالي غير صحيح");
-      const rem = tot - paid;
-      const c = customers.find(x => x.name === name);
-      if (c) {
-        c.balance = Number(c.balance) + rem;
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم حفظ الفاتورة وتحديث الرصيد!");
-        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
-          const clean = c.phone.replace(/[^0-9]/g, "");
-          const msg = encodeURIComponent(`مرحباً ${c.name}، فاتورة مبيعات: الإجمالي ${tot.toLocaleString()} ر.ي، المتبقي: ${rem.toLocaleString()} ر.ي. الرصيد: ${Number(c.balance).toLocaleString()} ر.ي.`);
-          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
-        }
-        closeModal("form-modal");
-        render();
-      }
-    };
-
-    window.saveReturn = function() {
-      const name = document.getElementById("fn_cust").value;
-      const amt = parseFloat(document.getElementById("fn_amt").value) || 0;
-      const note = document.getElementById("fn_note").value.trim();
-      if (amt <= 0) return alert("قيمة غير صحيحة");
-      const c = customers.find(x => x.name === name);
-      if (c) {
-        c.balance = Number(c.balance) - amt;
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
-        alert("تم قيد المردود وخصمه من الرصيد!");
-        if (c.phone && confirm("إرسال إشعار واتساب؟")) {
-          const clean = c.phone.replace(/[^0-9]/g, "");
-          const msg = encodeURIComponent(`مرحباً ${c.name}، إشعار مردود مبيعات بقيمة: ${amt.toLocaleString()} ر.ي. الرصيد الحالي: ${Number(c.balance).toLocaleString()} ر.ي.`);
-          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${msg}`, "_blank");
-        }
-        closeModal("form-modal");
-        render();
-      }
-    };
-
-    render();
-  </script>
 
 <script>
-// وظيفة مزامنة العملات في كافة شاشات التطبيق
 (function() {
-  function getAppCurrencies() {
-    const saved = localStorage.getItem("hisabak_currencies");
-    if (saved) {
-      try { return JSON.parse(saved); } catch(e) {}
-    }
-    return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
-    ];
-  }
-
-  function applyCurrenciesToSelects() {
-    const currencies = getAppCurrencies();
-    // البحث عن كافة حقول اختيار العملة في الشاشة
-    const selectElements = document.querySelectorAll("select[name*='curr'], select[id*='curr'], select.currency-select, select[name='currency']");
-    
-    selectElements.forEach(select => {
-      const currentVal = select.value;
-      select.innerHTML = "";
-      currencies.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.symbol;
-        opt.textContent = `${c.name} (${c.symbol})`;
-        opt.setAttribute("data-rate", c.rate);
-        if (opt.value === currentVal) opt.selected = true;
-        select.appendChild(opt);
-      });
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded", applyCurrenciesToSelects);
-  window.addEventListener("load", applyCurrenciesToSelects);
-})();
-</script>
-
-
-<!-- مزامنة شاملة للعملات في جميع الشاشات -->
-<script>
-(function() {
-  function fetchActiveCurrencies() {
+  function getLiveCurrencies() {
     try {
-      const data = localStorage.getItem("hisabak_currencies");
-      if (data) return JSON.parse(data);
+      const stored = localStorage.getItem("hisabak_currencies");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch(e) {}
     return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
+      { name: "عمله محليه", symbol: "YER", rate: 1 },
+      { name: "ريال سعودي", symbol: "SAR", rate: 1 },
+      { name: "دولار", symbol: "USD", rate: 1 }
     ];
   }
 
-  function syncAllCurrencySelects() {
-    const currencies = fetchActiveCurrencies();
-    // استهداف كافة حقول الاختيار المحتملة للعملة
+  function applyCurrenciesToAllSelects() {
+    const list = getLiveCurrencies();
     const selects = document.querySelectorAll("select");
 
     selects.forEach(sel => {
-      const idOrName = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      const parentText = (sel.parentElement ? sel.parentElement.innerText : "").toLowerCase();
+      // فحص إذا كان الحقل مخصصاً للعملة
+      const info = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
+      let isCurr = info.includes("curr") || info.includes("عملة") || info.includes("currency") || info.includes("coin");
       
-      // الكشف التلقائي عن أي قائمة لاختيار العملة سواء بالاسم أو بالخيارات الحالية
-      let isCurrencySelect = idOrName.includes("curr") || idOrName.includes("عملة") || 
-                             parentText.includes("عملة") || parentText.includes("العملة");
-
-      if (!isCurrencySelect && sel.options.length > 0) {
+      if (!isCurr) {
+        // فحص نصوص الخيارات الحالية
         for (let i = 0; i < sel.options.length; i++) {
-          const t = sel.options[i].text;
-          if (t.includes("ريال") || t.includes("دولار") || t.includes("YER") || t.includes("SAR") || t.includes("USD")) {
-            isCurrencySelect = true;
+          const txt = sel.options[i].text;
+          if (txt.includes("ريال") || txt.includes("دولار") || txt.includes("YER") || txt.includes("SAR") || txt.includes("USD") || txt.includes("ر.ي") || txt.includes("ر.س")) {
+            isCurr = true;
             break;
           }
         }
       }
 
-      if (isCurrencySelect) {
-        const selectedVal = sel.value;
+      if (isCurr) {
+        const currentVal = sel.value;
+        const currentText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
+        
+        // التحقق إن كانت القائمة محدثة مسبقاً بنفس عدد الخيارات والرموز لتفادي التكرار
+        const firstOpt = sel.options[0] ? sel.options[0].text : "";
+        if (sel.getAttribute("data-synced-ver") === "2.0" && firstOpt.includes("YER")) {
+          return;
+        }
+
         sel.innerHTML = "";
-        currencies.forEach(c => {
+        list.forEach(c => {
           const opt = document.createElement("option");
           opt.value = c.symbol;
           opt.textContent = `${c.name} (${c.symbol})`;
-          opt.setAttribute("data-rate", c.rate);
-          if (c.symbol === selectedVal || c.name === selectedVal) {
+          opt.setAttribute("data-rate", c.rate || 1);
+          if (c.symbol === currentVal || currentText.includes(c.symbol) || currentText.includes(c.name)) {
             opt.selected = true;
           }
           sel.appendChild(opt);
         });
+        sel.setAttribute("data-synced-ver", "2.0");
       }
     });
   }
 
-  // تفعيل المزامنة فوراً وعند فتح أي نافذة إضافة (Modal)
-  document.addEventListener("DOMContentLoaded", syncAllCurrencySelects);
-  window.addEventListener("load", syncAllCurrencySelects);
-  setInterval(syncAllCurrencySelects, 800); // يغطي النوافذ المنبثقة عند الضغط على إضافة عميل/مورد/صندوق
+  // 1. تشغيل عند التحميل
+  document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
+  window.addEventListener("load", applyCurrenciesToAllSelects);
+
+  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
+  const observer = new MutationObserver(function() {
+    applyCurrenciesToAllSelects();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  // 3. فحص عند أي نقرة زر داخل الصفحة
+  document.addEventListener("click", function() {
+    setTimeout(applyCurrenciesToAllSelects, 50);
+    setTimeout(applyCurrenciesToAllSelects, 300);
+  });
 })();
 </script>
 

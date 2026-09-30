@@ -139,227 +139,90 @@
     <button class="btn-act btn-close" onclick="closeVoucherScreen()">اغلاق</button>
   </div>
 
-  <script>
-    function updateDateString() {
-      const now = new Date();
-      const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-      const dayName = days[now.getDay()];
-      const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
-      const dateStr = String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth()+1).padStart(2, '0') + "/" + now.getFullYear();
-      document.getElementById("current_date_display").innerText = `${timeStr} ${dayName} ${dateStr}`;
-    }
-    updateDateString();
+  
 
-    function updateBalancePreview() {
-      const acc = document.getElementById("account_name").value.trim().toLowerCase();
-      if (!acc) {
-        document.getElementById("balance_display").innerText = "0.00 الرصيد";
-        return;
-      }
-      const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
-      const vouchers = JSON.parse(localStorage.getItem("hisabak_vouchers") || "[]");
-      let bal = 0;
-      invoices.filter(i => (i.account||"").toLowerCase().includes(acc)).forEach(i => {
-        bal += (i.opType === "بيع" ? (i.net||0) : -(i.net||0));
-      });
-      vouchers.filter(v => (v.account||"").toLowerCase().includes(acc)).forEach(v => {
-        bal += (v.type === "صرف" ? (v.amount||0) : -(v.amount||0));
-      });
-      document.getElementById("balance_display").innerText = `${bal.toFixed(2)} الرصيد`;
-    }
 
-    function saveVoucherAction(isSend) {
-      const acc = document.getElementById("account_name").value.trim();
-      const amt = parseFloat(document.getElementById("amount_input").value);
-      const details = document.getElementById("details_input").value.trim();
-      const curr = document.getElementById("currency_select").value;
-      const box = document.getElementById("fund_box").value;
-      const type = document.querySelector('input[name="v_type"]:checked').value;
 
-      if (!acc) { alert("يرجى كتابة أو اختيار اسم الحساب"); return null; }
-      if (!amt || amt <= 0) { alert("يرجى تحديد المبلغ بشكل صحيح"); return null; }
 
-      const vList = JSON.parse(localStorage.getItem("hisabak_vouchers") || "[]");
-      const newVoucher = {
-        id: Date.now(),
-        no: vList.length + 101,
-        type: type,
-        account: acc,
-        amount: amt,
-        currency: curr,
-        box: box,
-        notes: details,
-        date: new Date().toLocaleString("ar-YE")
-      };
-
-      vList.unshift(newVoucher);
-      localStorage.setItem("hisabak_vouchers", JSON.stringify(vList));
-      alert(`تم حفظ سند ${type} #${newVoucher.no} بنجاح!`);
-
-      if (document.getElementById("close_after_save").checked && !isSend) {
-        closeVoucherScreen();
-      } else {
-        document.getElementById("account_name").value = "";
-        document.getElementById("amount_input").value = "";
-        document.getElementById("details_input").value = "";
-        document.getElementById("balance_display").innerText = "0.00 الرصيد";
-      }
-      return newVoucher;
-    }
-
-    function sendVoucherWhatsApp() {
-      const v = saveVoucherAction(true);
-      if (!v) return;
-      const msg = `*سند ${v.type} رقم #${v.no}*\nالطرف: ${v.account}\nالمبلغ: ${v.amount} ${v.currency}\nالصندوق: ${v.box}\nالبيان: ${v.notes || '---'}\nالتاريخ: ${v.date}\n_تطبيق حسابك_ 📱`;
-      window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), "_blank");
-      if (document.getElementById("close_after_save").checked) {
-        setTimeout(closeVoucherScreen, 1000);
-      }
-    }
-
-    function closeVoucherScreen() {
-      window.location.href = "index.html";
-    }
-
-    function addNewAccount() {
-      const name = prompt("أدخل اسم الحساب الجديد:");
-      if (name) {
-        document.getElementById("account_name").value = name;
-        updateBalancePreview();
-      }
-    }
-
-    function startVoiceSearch() {
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert("البحث الصوتي غير مدعوم في هذا المتصفح");
-        return;
-      }
-      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const rec = new Speech();
-      rec.lang = 'ar-YE';
-      rec.onresult = (e) => {
-        document.getElementById("account_name").value = e.results[0][0].transcript;
-        updateBalancePreview();
-      };
-      rec.start();
-    }
-
-    function handleImage(input) {
-      if (input.files && input.files[0]) {
-        alert("تم إرفاق صورة السند بنجاح!");
-      }
-    }
-
-    function openMiniCalc() {
-      const expr = prompt("أدخل العملية الحسابية (مثال: 5000 + 250):");
-      if (expr) {
-        try {
-          const res = Function('"use strict";return (' + expr.replace(/[^0-9+\-*\/.]/g, '') + ')')();
-          if (!isNaN(res)) document.getElementById("amount_input").value = res;
-        } catch(e) { alert("عملية غير صحيحة"); }
-      }
-    }
-  </script>
 
 <script>
-// وظيفة مزامنة العملات في كافة شاشات التطبيق
 (function() {
-  function getAppCurrencies() {
-    const saved = localStorage.getItem("hisabak_currencies");
-    if (saved) {
-      try { return JSON.parse(saved); } catch(e) {}
-    }
-    return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
-    ];
-  }
-
-  function applyCurrenciesToSelects() {
-    const currencies = getAppCurrencies();
-    // البحث عن كافة حقول اختيار العملة في الشاشة
-    const selectElements = document.querySelectorAll("select[name*='curr'], select[id*='curr'], select.currency-select, select[name='currency']");
-    
-    selectElements.forEach(select => {
-      const currentVal = select.value;
-      select.innerHTML = "";
-      currencies.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.symbol;
-        opt.textContent = `${c.name} (${c.symbol})`;
-        opt.setAttribute("data-rate", c.rate);
-        if (opt.value === currentVal) opt.selected = true;
-        select.appendChild(opt);
-      });
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded", applyCurrenciesToSelects);
-  window.addEventListener("load", applyCurrenciesToSelects);
-})();
-</script>
-
-
-<!-- مزامنة شاملة للعملات في جميع الشاشات -->
-<script>
-(function() {
-  function fetchActiveCurrencies() {
+  function getLiveCurrencies() {
     try {
-      const data = localStorage.getItem("hisabak_currencies");
-      if (data) return JSON.parse(data);
+      const stored = localStorage.getItem("hisabak_currencies");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch(e) {}
     return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
+      { name: "عمله محليه", symbol: "YER", rate: 1 },
+      { name: "ريال سعودي", symbol: "SAR", rate: 1 },
+      { name: "دولار", symbol: "USD", rate: 1 }
     ];
   }
 
-  function syncAllCurrencySelects() {
-    const currencies = fetchActiveCurrencies();
-    // استهداف كافة حقول الاختيار المحتملة للعملة
+  function applyCurrenciesToAllSelects() {
+    const list = getLiveCurrencies();
     const selects = document.querySelectorAll("select");
 
     selects.forEach(sel => {
-      const idOrName = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      const parentText = (sel.parentElement ? sel.parentElement.innerText : "").toLowerCase();
+      // فحص إذا كان الحقل مخصصاً للعملة
+      const info = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
+      let isCurr = info.includes("curr") || info.includes("عملة") || info.includes("currency") || info.includes("coin");
       
-      // الكشف التلقائي عن أي قائمة لاختيار العملة سواء بالاسم أو بالخيارات الحالية
-      let isCurrencySelect = idOrName.includes("curr") || idOrName.includes("عملة") || 
-                             parentText.includes("عملة") || parentText.includes("العملة");
-
-      if (!isCurrencySelect && sel.options.length > 0) {
+      if (!isCurr) {
+        // فحص نصوص الخيارات الحالية
         for (let i = 0; i < sel.options.length; i++) {
-          const t = sel.options[i].text;
-          if (t.includes("ريال") || t.includes("دولار") || t.includes("YER") || t.includes("SAR") || t.includes("USD")) {
-            isCurrencySelect = true;
+          const txt = sel.options[i].text;
+          if (txt.includes("ريال") || txt.includes("دولار") || txt.includes("YER") || txt.includes("SAR") || txt.includes("USD") || txt.includes("ر.ي") || txt.includes("ر.س")) {
+            isCurr = true;
             break;
           }
         }
       }
 
-      if (isCurrencySelect) {
-        const selectedVal = sel.value;
+      if (isCurr) {
+        const currentVal = sel.value;
+        const currentText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
+        
+        // التحقق إن كانت القائمة محدثة مسبقاً بنفس عدد الخيارات والرموز لتفادي التكرار
+        const firstOpt = sel.options[0] ? sel.options[0].text : "";
+        if (sel.getAttribute("data-synced-ver") === "2.0" && firstOpt.includes("YER")) {
+          return;
+        }
+
         sel.innerHTML = "";
-        currencies.forEach(c => {
+        list.forEach(c => {
           const opt = document.createElement("option");
           opt.value = c.symbol;
           opt.textContent = `${c.name} (${c.symbol})`;
-          opt.setAttribute("data-rate", c.rate);
-          if (c.symbol === selectedVal || c.name === selectedVal) {
+          opt.setAttribute("data-rate", c.rate || 1);
+          if (c.symbol === currentVal || currentText.includes(c.symbol) || currentText.includes(c.name)) {
             opt.selected = true;
           }
           sel.appendChild(opt);
         });
+        sel.setAttribute("data-synced-ver", "2.0");
       }
     });
   }
 
-  // تفعيل المزامنة فوراً وعند فتح أي نافذة إضافة (Modal)
-  document.addEventListener("DOMContentLoaded", syncAllCurrencySelects);
-  window.addEventListener("load", syncAllCurrencySelects);
-  setInterval(syncAllCurrencySelects, 800); // يغطي النوافذ المنبثقة عند الضغط على إضافة عميل/مورد/صندوق
+  // 1. تشغيل عند التحميل
+  document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
+  window.addEventListener("load", applyCurrenciesToAllSelects);
+
+  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
+  const observer = new MutationObserver(function() {
+    applyCurrenciesToAllSelects();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  // 3. فحص عند أي نقرة زر داخل الصفحة
+  document.addEventListener("click", function() {
+    setTimeout(applyCurrenciesToAllSelects, 50);
+    setTimeout(applyCurrenciesToAllSelects, 300);
+  });
 })();
 </script>
 

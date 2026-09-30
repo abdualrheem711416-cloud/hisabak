@@ -254,415 +254,90 @@
     </div>
   </div>
 
-  <script>
-    let invoiceItems = [];
-
-    function updateTitle() { /* ثابت فاتورة */ }
-
-    function addItemToInvoice() {
-      const name = document.getElementById("item-name").value.trim();
-      const qty = parseFloat(document.getElementById("item-qty").value) || 0;
-      const price = parseFloat(document.getElementById("item-price").value) || 0;
-
-      if (!name) {
-        alert("يرجى إدخال اسم الصنف");
-        return;
-      }
-      if (qty <= 0) {
-        alert("يرجى إدخال كمية صحيحة");
-        return;
-      }
-
-      invoiceItems.push({ name, unit: "حبه", qty, price, total: (qty * price) });
-      renderItems();
-
-      document.getElementById("item-name").value = "";
-      document.getElementById("item-qty").value = "1";
-      document.getElementById("item-price").value = "0";
-    }
-
-    function renderItems() {
-      const container = document.getElementById("invoice-items-table");
-      if (invoiceItems.length === 0) {
-        container.innerHTML = "";
-      } else {
-        container.innerHTML = invoiceItems.map((item, idx) => `
-          <div class="item-row">
-            <div class="col-name">${item.name}</div>
-            <div class="col-unit">${item.unit}</div>
-            <div class="col-qty">${item.qty}</div>
-            <div class="col-price">${item.price.toFixed(2)}</div>
-            <div class="col-total">${item.total.toFixed(2)}</div>
-          </div>
-        `).join("");
-      }
-      calculateTotals();
-    }
-
-    function calculateTotals() {
-      let totalQty = 0;
-      let subTotal = 0;
-      invoiceItems.forEach(i => {
-        totalQty += i.qty;
-        subTotal += i.total;
-      });
-      document.getElementById("lbl-total-qty").innerText = totalQty.toFixed(2);
-      document.getElementById("sum-subtotal").innerText = subTotal.toFixed(2);
-      document.getElementById("sum-net").innerText = subTotal.toFixed(2);
-      document.getElementById("paid-amount").value = subTotal.toFixed(2);
-    }
-
-    
-
-    function calcPopup() {
-      const p = prompt("أدخل العملية الحسابية:", "");
-      if (p) {
-        try {
-          document.getElementById("item-price").value = eval(p);
-        } catch(e) {}
-      }
-    }
-  </script>
-
-<div id="toast-msg" style="display:none; position:fixed; top:40%; left:50%; transform:translate(-50%, -50%); background:rgba(30,30,30,0.92); color:#fff; padding:12px 24px; border-radius:24px; font-size:14px; font-weight:bold; z-index:99999; box-shadow:0 4px 15px rgba(0,0,0,0.3); text-align:center; pointer-events:none; transition:opacity 0.3s ease;"></div>
-<script>
-window.alert = function(msg) {
-  var t = document.getElementById("toast-msg");
-  if (!t) return;
-  t.innerText = msg;
-  t.style.display = "block";
-  t.style.opacity = "1";
-  setTimeout(function() {
-    t.style.opacity = "0";
-    setTimeout(function() { t.style.display = "none"; }, 300);
-  }, 2000);
-};
-</script>
-
-
-<!-- آلة حاسبة متكاملة -->
-<div id="calc-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:#fff; width:280px; border-radius:12px; padding:14px; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-family:sans-serif;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <span style="font-weight:bold; color:#0b5cab; font-size:15px;">الآلة الحاسبة</span>
-      <button onclick="closeCalculatorModal()" style="border:none; background:#eee; width:28px; height:28px; border-radius:50%; font-size:16px; cursor:pointer;">✕</button>
-    </div>
-    <div id="calc-screen" style="background:#f2f5f9; border:1.5px solid #2b7de9; border-radius:8px; padding:10px; font-size:22px; font-weight:bold; text-align:left; min-height:45px; word-break:break-all; margin-bottom:12px; color:#222; direction:ltr;">0</div>
-    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; direction:ltr;">
-      <button class="calc-btn" onclick="calcInput('C')" style="background:#ffcdd2; color:#c62828;">C</button>
-      <button class="calc-btn" onclick="calcInput('(')">(</button>
-      <button class="calc-btn" onclick="calcInput(')')">)</button>
-      <button class="calc-btn" onclick="calcInput('/')" style="background:#e3f2fd; color:#1565c0;">÷</button>
-      
-      <button class="calc-btn" onclick="calcInput('7')">7</button>
-      <button class="calc-btn" onclick="calcInput('8')">8</button>
-      <button class="calc-btn" onclick="calcInput('9')">9</button>
-      <button class="calc-btn" onclick="calcInput('*')" style="background:#e3f2fd; color:#1565c0;">×</button>
-      
-      <button class="calc-btn" onclick="calcInput('4')">4</button>
-      <button class="calc-btn" onclick="calcInput('5')">5</button>
-      <button class="calc-btn" onclick="calcInput('6')">6</button>
-      <button class="calc-btn" onclick="calcInput('-')" style="background:#e3f2fd; color:#1565c0;">-</button>
-      
-      <button class="calc-btn" onclick="calcInput('1')">1</button>
-      <button class="calc-btn" onclick="calcInput('2')">2</button>
-      <button class="calc-btn" onclick="calcInput('3')">3</button>
-      <button class="calc-btn" onclick="calcInput('+')" style="background:#e3f2fd; color:#1565c0;">+</button>
-      
-      <button class="calc-btn" onclick="calcInput('0')">0</button>
-      <button class="calc-btn" onclick="calcInput('.')">.</button>
-      <button class="calc-btn" onclick="calcInput('=')" style="background:#c8e6c9; color:#2e7d32; font-weight:bold;">=</button>
-      <button class="calc-btn" onclick="applyCalcToPrice()" style="background:#2b7de9; color:#fff; font-size:12px; font-weight:bold;">إدراج</button>
-    </div>
-  </div>
-</div>
-
-<style>
-.calc-btn {
-  padding: 10px 0;
-  font-size: 16px;
-  font-weight: bold;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fafafa;
-  cursor: pointer;
-}
-.calc-btn:active { background: #e0e0e0; }
-</style>
-
-<script>
-let calcExpr = "";
-function openCalculatorModal() {
-  calcExpr = document.getElementById("item-price").value || "";
-  if (calcExpr === "0") calcExpr = "";
-  document.getElementById("calc-screen").innerText = calcExpr || "0";
-  document.getElementById("calc-modal").style.display = "flex";
-}
-function closeCalculatorModal() {
-  document.getElementById("calc-modal").style.display = "none";
-}
-function calcInput(char) {
-  const screen = document.getElementById("calc-screen");
-  if (char === "C") {
-    calcExpr = "";
-    screen.innerText = "0";
-  } else if (char === "=") {
-    try {
-      calcExpr = String(eval(calcExpr));
-      screen.innerText = calcExpr;
-    } catch(e) {
-      screen.innerText = "خطأ";
-      calcExpr = "";
-    }
-  } else {
-    calcExpr += char;
-    screen.innerText = calcExpr;
-  }
-}
-function applyCalcToPrice() {
-  try {
-    if (calcExpr) {
-      const res = eval(calcExpr);
-      document.getElementById("item-price").value = res;
-    }
-  } catch(e) {}
-  closeCalculatorModal();
-}
-</script>
-
-
-<!-- حاوية الطباعة -->
-<div id="print-area"></div>
-
-<!-- نافذة المشاركة والطباعة بعد الحفظ -->
-<div id="post-save-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center;">
-  <div style="background:#fff; width:300px; border-radius:12px; padding:16px; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.3);">
-    <h3 style="color:#2e7d32; margin-bottom:12px;">✓ تم حفظ الفاتورة بنجاح</h3>
-    <p style="font-size:13px; color:#555; margin-bottom:15px;" id="saved-inv-summary"></p>
-    
-    <div style="display:flex; flex-direction:column; gap:8px;">
-      <button onclick="printCurrentInvoice()" style="background:#2b7de9; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">🖨️ طباعة الفاتورة</button>
-      <button onclick="shareViaWhatsApp()" style="background:#25d366; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">📲 مشاركة عبر واتساب</button>
-      <button onclick="resetForNewInvoice()" style="background:#f0f0f0; color:#333; border:none; padding:8px; border-radius:6px; cursor:pointer;">فاتورة جديدة</button>
-    </div>
-  </div>
-</div>
-
-
-<script>
-let lastSavedInvoice = null;
-
-// ضبط رقم الفاتورة التلقائي عند التحميل
-document.addEventListener("DOMContentLoaded", function() {
-  const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
-  document.getElementById("inv-no").value = invoices.length + 101;
-});
-
-function saveInvoice() {
-  if (invoiceItems.length === 0) {
-    alert("يرجى إضافة صنف واحد على الأقل للفاتورة");
-    return;
-  }
-
-  const invNumber = document.getElementById("inv-no").value;
-  const opType = document.querySelector('input[name="op_type"]:checked').value;
-  const payType = document.querySelector('input[name="pay_type"]:checked').value;
-  const accountName = document.getElementById("account-search").value.trim() || "عميل نقدي";
-  const subTotal = parseFloat(document.getElementById("sum-subtotal").innerText) || 0;
-  const discount = parseFloat(document.getElementById("sum-discount").innerText) || 0;
-  const netTotal = parseFloat(document.getElementById("sum-net").innerText) || 0;
-  const paid = parseFloat(document.getElementById("paid-amount").value) || 0;
-  const paper = document.querySelector('input[name="paper_size"]:checked')?.parentElement.innerText.trim() || "80m";
-
-  lastSavedInvoice = {
-    id: Date.now(),
-    number: invNumber,
-    date: new Date().toLocaleString("ar-YE"),
-    account: accountName,
-    opType: opType === "sale" ? "بيع" : "شراء",
-    payType: payType === "cash" ? "نقداً" : "آجل",
-    items: [...invoiceItems],
-    subTotal: subTotal,
-    discount: discount,
-    net: netTotal,
-    paid: paid,
-    paper: paper
-  };
-
-  // الحفظ في قاعدة بيانات localStorage المحلية
-  let invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
-  invoices.unshift(lastSavedInvoice);
-  localStorage.setItem("hisabak_invoices", JSON.stringify(invoices));
-
-  // إظهار نافذة الخيارات
-  document.getElementById("saved-inv-summary").innerText = `فاتورة رقم #${invNumber} للعميل: ${accountName}\nالصافي: ${netTotal.toFixed(2)} ر.ي`;
-  document.getElementById("post-save-modal").style.display = "flex";
-}
-
-function printCurrentInvoice() {
-  if (!lastSavedInvoice) return;
-  const pArea = document.getElementById("print-area");
   
-  let rows = lastSavedInvoice.items.map(i => `
-    <tr>
-      <td style="text-align:right;">${i.name}</td>
-      <td>${i.qty}</td>
-      <td>${i.price.toFixed(2)}</td>
-      <td>${i.total.toFixed(2)}</td>
-    </tr>
-  `).join("");
 
-  pArea.innerHTML = `
-    <div class="receipt-80mm">
-      <h2 style="text-align:center; margin:0;">تطبيق حسابك</h2>
-      <p style="text-align:center; margin:2px 0;">فاتورة ${lastSavedInvoice.opType} (${lastSavedInvoice.payType})</p>
-      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
-      <div>رقم الفاتورة: #${lastSavedInvoice.number}</div>
-      <div>التاريخ: ${lastSavedInvoice.date}</div>
-      <div>الحساب: ${lastSavedInvoice.account}</div>
-      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
-      <table class="receipt-table">
-        <thead><tr><th style="text-align:right;">الصنف</th><th>العدد</th><th>السعر</th><th>الإجمالي</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <div style="border-top:1px dashed #000; margin:6px 0;"></div>
-      <div style="display:flex; justify-content:space-between;"><span>الإجمالي:</span><span>${lastSavedInvoice.subTotal.toFixed(2)} ر.ي</span></div>
-      <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;"><span>الصافي:</span><span>${lastSavedInvoice.net.toFixed(2)} ر.ي</span></div>
-      <p style="text-align:center; margin-top:10px;">شكراً لتعاملكم معنا</p>
-    </div>
-  `;
-  window.print();
-}
 
-function shareViaWhatsApp() {
-  if (!lastSavedInvoice) return;
-  let text = `*فاتورة ${lastSavedInvoice.opType} (${lastSavedInvoice.payType})*\n`;
-  text += `رقم: #${lastSavedInvoice.number}\n`;
-  text += `الحساب: ${lastSavedInvoice.account}\n`;
-  text += `التاريخ: ${lastSavedInvoice.date}\n`;
-  text += `-----------------------\n`;
-  lastSavedInvoice.items.forEach((item, idx) => {
-    text += `${idx + 1}. ${item.name} | العدد: ${item.qty} | السعر: ${item.price} | الإجمالي: ${item.total}\n`;
-  });
-  text += `-----------------------\n`;
-  text += `*الصافي المطلوب: ${lastSavedInvoice.net.toFixed(2)} ر.ي*\n`;
-  text += `تمت بالعملية عبر تطبيق حسابك 📱`;
 
-  const url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
-}
-
-function resetForNewInvoice() {
-  invoiceItems = [];
-  renderItems();
-  document.getElementById("post-save-modal").style.display = "none";
-  const invoices = JSON.parse(localStorage.getItem("hisabak_invoices") || "[]");
-  document.getElementById("inv-no").value = invoices.length + 101;
-  document.getElementById("account-search").value = "";
-  document.getElementById("notes").value = "";
-}
-</script>
 
 
 <script>
-// وظيفة مزامنة العملات في كافة شاشات التطبيق
 (function() {
-  function getAppCurrencies() {
-    const saved = localStorage.getItem("hisabak_currencies");
-    if (saved) {
-      try { return JSON.parse(saved); } catch(e) {}
-    }
-    return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
-    ];
-  }
-
-  function applyCurrenciesToSelects() {
-    const currencies = getAppCurrencies();
-    // البحث عن كافة حقول اختيار العملة في الشاشة
-    const selectElements = document.querySelectorAll("select[name*='curr'], select[id*='curr'], select.currency-select, select[name='currency']");
-    
-    selectElements.forEach(select => {
-      const currentVal = select.value;
-      select.innerHTML = "";
-      currencies.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.symbol;
-        opt.textContent = `${c.name} (${c.symbol})`;
-        opt.setAttribute("data-rate", c.rate);
-        if (opt.value === currentVal) opt.selected = true;
-        select.appendChild(opt);
-      });
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded", applyCurrenciesToSelects);
-  window.addEventListener("load", applyCurrenciesToSelects);
-})();
-</script>
-
-
-<!-- مزامنة شاملة للعملات في جميع الشاشات -->
-<script>
-(function() {
-  function fetchActiveCurrencies() {
+  function getLiveCurrencies() {
     try {
-      const data = localStorage.getItem("hisabak_currencies");
-      if (data) return JSON.parse(data);
+      const stored = localStorage.getItem("hisabak_currencies");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch(e) {}
     return [
-      { id: 1, name: "عمله محليه", symbol: "YER", rate: 1 },
-      { id: 2, name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { id: 3, name: "دولار", symbol: "USD", rate: 1 }
+      { name: "عمله محليه", symbol: "YER", rate: 1 },
+      { name: "ريال سعودي", symbol: "SAR", rate: 1 },
+      { name: "دولار", symbol: "USD", rate: 1 }
     ];
   }
 
-  function syncAllCurrencySelects() {
-    const currencies = fetchActiveCurrencies();
-    // استهداف كافة حقول الاختيار المحتملة للعملة
+  function applyCurrenciesToAllSelects() {
+    const list = getLiveCurrencies();
     const selects = document.querySelectorAll("select");
 
     selects.forEach(sel => {
-      const idOrName = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      const parentText = (sel.parentElement ? sel.parentElement.innerText : "").toLowerCase();
+      // فحص إذا كان الحقل مخصصاً للعملة
+      const info = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
+      let isCurr = info.includes("curr") || info.includes("عملة") || info.includes("currency") || info.includes("coin");
       
-      // الكشف التلقائي عن أي قائمة لاختيار العملة سواء بالاسم أو بالخيارات الحالية
-      let isCurrencySelect = idOrName.includes("curr") || idOrName.includes("عملة") || 
-                             parentText.includes("عملة") || parentText.includes("العملة");
-
-      if (!isCurrencySelect && sel.options.length > 0) {
+      if (!isCurr) {
+        // فحص نصوص الخيارات الحالية
         for (let i = 0; i < sel.options.length; i++) {
-          const t = sel.options[i].text;
-          if (t.includes("ريال") || t.includes("دولار") || t.includes("YER") || t.includes("SAR") || t.includes("USD")) {
-            isCurrencySelect = true;
+          const txt = sel.options[i].text;
+          if (txt.includes("ريال") || txt.includes("دولار") || txt.includes("YER") || txt.includes("SAR") || txt.includes("USD") || txt.includes("ر.ي") || txt.includes("ر.س")) {
+            isCurr = true;
             break;
           }
         }
       }
 
-      if (isCurrencySelect) {
-        const selectedVal = sel.value;
+      if (isCurr) {
+        const currentVal = sel.value;
+        const currentText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
+        
+        // التحقق إن كانت القائمة محدثة مسبقاً بنفس عدد الخيارات والرموز لتفادي التكرار
+        const firstOpt = sel.options[0] ? sel.options[0].text : "";
+        if (sel.getAttribute("data-synced-ver") === "2.0" && firstOpt.includes("YER")) {
+          return;
+        }
+
         sel.innerHTML = "";
-        currencies.forEach(c => {
+        list.forEach(c => {
           const opt = document.createElement("option");
           opt.value = c.symbol;
           opt.textContent = `${c.name} (${c.symbol})`;
-          opt.setAttribute("data-rate", c.rate);
-          if (c.symbol === selectedVal || c.name === selectedVal) {
+          opt.setAttribute("data-rate", c.rate || 1);
+          if (c.symbol === currentVal || currentText.includes(c.symbol) || currentText.includes(c.name)) {
             opt.selected = true;
           }
           sel.appendChild(opt);
         });
+        sel.setAttribute("data-synced-ver", "2.0");
       }
     });
   }
 
-  // تفعيل المزامنة فوراً وعند فتح أي نافذة إضافة (Modal)
-  document.addEventListener("DOMContentLoaded", syncAllCurrencySelects);
-  window.addEventListener("load", syncAllCurrencySelects);
-  setInterval(syncAllCurrencySelects, 800); // يغطي النوافذ المنبثقة عند الضغط على إضافة عميل/مورد/صندوق
+  // 1. تشغيل عند التحميل
+  document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
+  window.addEventListener("load", applyCurrenciesToAllSelects);
+
+  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
+  const observer = new MutationObserver(function() {
+    applyCurrenciesToAllSelects();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  // 3. فحص عند أي نقرة زر داخل الصفحة
+  document.addEventListener("click", function() {
+    setTimeout(applyCurrenciesToAllSelects, 50);
+    setTimeout(applyCurrenciesToAllSelects, 300);
+  });
 })();
 </script>
 
