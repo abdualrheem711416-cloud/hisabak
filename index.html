@@ -2217,68 +2217,48 @@ window.addEventListener("load", function() {
 </script>
 
 
-
-
-
-
-
-
-<script>
-// محرك ربط زر (+) وتغذية العملات المعتمدة
-(function() {
-  const CURRENCIES = [
-    { name: "عمله محليه", symbol: "YER" },
-    { name: "ريال سعودي", symbol: "SAR" },
-    { name: "دولار", symbol: "USD" }
-  ];
-
-  function applyCurrencies() {
-    document.querySelectorAll("select").forEach(function(s) {
-      const info = (s.id + " " + s.name + " " + s.className).toLowerCase();
-      if (info.includes("curr") || info.includes("عمل") || s.innerHTML.includes("YER") || s.innerHTML.includes("ريال")) {
-        const current = s.value;
-        s.innerHTML = "";
-        CURRENCIES.forEach(function(cur) {
-          const opt = document.createElement("option");
-          opt.value = cur.symbol;
-          opt.textContent = cur.name + " (" + cur.symbol + ")";
-          if (cur.symbol === current) opt.selected = true;
-          s.appendChild(opt);
-        });
+<script id="currency-sync-engine">
+window.addEventListener("load", function() {
+  function updateCurrenciesSilently() {
+    try {
+      const stored = localStorage.getItem("hisabak_currencies");
+      let list = [];
+      if (stored) {
+        try { list = JSON.parse(stored); } catch(e) {}
       }
-    });
+      if (!list || list.length === 0) {
+        list = [
+          { name: "عمله محليه", symbol: "YER" },
+          { name: "ريال سعودي", symbol: "SAR" },
+          { name: "دولار", symbol: "USD" }
+        ];
+      }
+
+      const selects = document.querySelectorAll("select");
+      selects.forEach(function(sel) {
+        const idName = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
+        if (idName.indexOf("curr") !== -1 || idName.indexOf("عمل") !== -1) {
+          if (sel.getAttribute("data-currency-ready") !== "true") {
+            const currentVal = sel.value;
+            sel.innerHTML = "";
+            list.forEach(function(c) {
+              const opt = document.createElement("option");
+              opt.value = c.symbol;
+              opt.textContent = c.name + " (" + c.symbol + ")";
+              if (c.symbol === currentVal) opt.selected = true;
+              sel.appendChild(opt);
+            });
+            sel.setAttribute("data-currency-ready", "true");
+          }
+        }
+      });
+    } catch(err) {
+      console.warn("Currency sync error:", err);
+    }
   }
 
-  // معالجة النقر على الزر العائم
-  document.addEventListener("click", function(e) {
-    const btn = e.target.closest("#fab-add, .fab, .floating-btn, button[class*="fab"]");
-    if (btn) {
-      // فتح نافذة الإضافة المتاحة
-      const customerModal = document.getElementById("customerModal") || document.getElementById("customers-modal") || document.getElementById("addCustomerModal");
-      const supplierModal = document.getElementById("supplierModal") || document.getElementById("suppliers-modal") || document.getElementById("addSupplierModal");
-      
-      const activeText = (document.querySelector(".active, .tab-active, [aria-selected="true"]") || {}).innerText || "";
-      const targetModal = (activeText.includes("مورد") && supplierModal) ? supplierModal : (customerModal || supplierModal);
-
-      if (targetModal) {
-        targetModal.style.display = "flex";
-        targetModal.classList.add("show", "active", "open");
-      } else if (typeof openAddModal === "function") {
-        openAddModal();
-      } else if (typeof openCustomerModal === "function") {
-        openCustomerModal();
-      }
-
-      setTimeout(applyCurrencies, 50);
-      setTimeout(applyCurrencies, 250);
-    }
-  }, true);
-
-  // تحديث العملات في أي وقت تفتح نافذة
-  const obs = new MutationObserver(applyCurrencies);
-  obs.observe(document.documentElement, { childList: true, subtree: true });
-  window.addEventListener("load", applyCurrencies);
-})();
+  setInterval(updateCurrenciesSilently, 600);
+});
 </script>
 
 </body>
