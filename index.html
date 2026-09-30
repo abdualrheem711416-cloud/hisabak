@@ -1957,200 +1957,37 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  function fixDashboardLinks() {
-    document.querySelectorAll("a, button, div, span").forEach(function(el) {
-      const text = el.textContent || "";
-      
-      // السندات (سند قبض / صرف)
-      if (text.includes("السندات") || text.includes("سند قبض") || text.includes("سند صرف")) {
-        const link = el.closest("a") || el;
-        link.onclick = function(e) { e.preventDefault(); window.location.href = "./vouchers.html"; };
-      }
-      
-      // سجل الفواتير السابقة
-      if (text.includes("سجل الفواتير") || text.includes("الفواتير السابقة") || text.includes("فواتير سابقة")) {
-        const link = el.closest("a") || el;
-        link.onclick = function(e) { e.preventDefault(); window.location.href = "./invoices_list.html"; };
-      }
-      
-      // كشف الحساب والتقارير
-      if (text.includes("كشف حساب") || text.includes("كشف الحساب") || text.includes("التقارير")) {
-        const link = el.closest("a") || el;
-        link.onclick = function(e) { e.preventDefault(); window.location.href = "./statement.html"; };
-      }
-    });
-  }
-  fixDashboardLinks();
-  setTimeout(fixDashboardLinks, 500);
-});
-</script>
-
-
-<script>
-// تحديث فوري للكاش والتسجيل
-if ('serviceWorker' in navigator) {
+// إلغاء أي عامل خدمة كاش معلق
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then(function(regs) {
-    for (let reg of regs) {
-      reg.update();
-    }
+    for(let r of regs) r.unregister();
   });
 }
-</script>
 
-
-<script>
-window.addEventListener("DOMContentLoaded", function() {
-  // دالة ربط البطاقات بدقة حسب النص المكتوب عليها
-  function bindCards() {
-    const allElements = document.querySelectorAll("div, button, a, span, p");
-    
-    allElements.forEach(el => {
-      const txt = (el.innerText || "").trim();
-      
-      // 1. سند جديد
-      if (txt === "سند جديد") {
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = "vouchers.html";
-          };
-        }
-      }
-      
-      // 2. فاتورة جديدة
-      else if (txt === "فاتورة جديدة") {
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = "invoice.html";
-          };
-        }
-      }
-      
-      // 3. كشف حساب تفصيلي
-      else if (txt === "كشف حساب تفصيلي" || txt === "كشف الحساب") {
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = "statement.html";
-          };
-        }
-      }
-      
-      // 4. البطاقات الصلبة غير المفعلة حالياً
-      else if (["حوالة جديد", "قيد بسيط", "الحركة اليومية", "صناديق النقدية", "صرف عملات", "البحث السريع"].includes(txt)) {
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          };
-        }
-      }
-    });
-  }
-
-  bindCards();
-  setTimeout(bindCards, 500);
-});
-</script>
-
-</body>
-</html>
-<!-- كود توجيه البطاقات التسع الحصري والمحمي -->
-<script>
-window.addEventListener("DOMContentLoaded", function() {
-  function lockAndRoute() {
-    const routingTable = {
-      "سند جديد": "vouchers.html",
-      "فاتورة جديدة": "invoice.html",
-      "كشف حساب": "statement.html",
-      "كشف الحساب": "statement.html",
-      "سجل الفواتير": "invoices_list.html"
-    };
-
-    const lockedCards = [
-      "حوالة جديدة", "حوالة جديد", "قيد بسيط", 
-      "الحركة اليومية", "صناديق النقدية", "صرف عملات", "البحث السريع"
-    ];
-
-    document.querySelectorAll("div, a, button, span").forEach(function(el) {
-      const txt = (el.innerText || "").trim();
-
-      // توجيه البطاقات المفعلة
-      if (routingTable[txt]) {
-        const target = routingTable[txt];
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          if (card.tagName === "A") card.removeAttribute("href");
-          card.style.cursor = "pointer";
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = target;
-          };
-        }
-      }
-
-      // تجميد البطاقات غير المفعلة
-      if (lockedCards.includes(txt)) {
-        const card = el.closest(".card") || el.closest("a") || el.parentElement;
-        if (card) {
-          if (card.tagName === "A") card.removeAttribute("href");
-          card.style.cursor = "default";
-          card.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          };
-        }
-      }
-    });
-  }
-
-  lockAndRoute();
-  setTimeout(lockAndRoute, 400);
-});
-</script>
-
-<script>
+// توجيه البطاقات عند النقر المباشر فقط
 document.addEventListener("click", function(e) {
-  const target = e.target;
-  const card = target.closest(".card") || target.closest("a") || target.closest("div");
+  const card = e.target.closest("a, button, .card, div");
   if (!card) return;
-
-  const text = (card.innerText || "").trim();
-
-  if (text.includes("سند جديد")) {
+  const t = (card.innerText || "").trim();
+  
+  if (t === "سند جديد") {
     e.preventDefault();
     e.stopPropagation();
     window.location.href = "vouchers.html";
-  } else if (text.includes("فاتورة جديدة")) {
+  } else if (t === "فاتورة جديدة") {
     e.preventDefault();
     e.stopPropagation();
     window.location.href = "invoice.html";
-  } else if (text.includes("كشف حساب")) {
+  } else if (t === "كشف حساب" || t === "كشف الحساب") {
     e.preventDefault();
     e.stopPropagation();
     window.location.href = "statement.html";
-  } else if (
-    text.includes("حوالة جديد") ||
-    text.includes("قيد بسيط") ||
-    text.includes("الحركة اليومية") ||
-    text.includes("صناديق النقدية") ||
-    text.includes("صرف عملات") ||
-    text.includes("البحث السريع")
-  ) {
+  } else if (["حوالة جديدة", "حوالة جديد", "قيد بسيط", "الحركة اليومية", "صناديق النقدية", "صرف عملات", "البحث السريع"].includes(t)) {
     e.preventDefault();
     e.stopPropagation();
   }
 }, true);
 </script>
+
+</body>
+</html>
