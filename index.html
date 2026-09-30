@@ -1986,5 +1986,17 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+// تحديث فوري للكاش والتسجيل
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    for (let reg of regs) {
+      reg.update();
+    }
+  });
+}
+</script>
+
 </body>
 </html>
