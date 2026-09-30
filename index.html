@@ -1818,5 +1818,68 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+(function() {
+  function fixAllModals() {
+    // 1. البحث عن جميع أزرار الإغلاق التي تحتوي على ✕ أو X أو class close
+    document.querySelectorAll("button, span, div, a").forEach(function(el) {
+      const txt = (el.innerText || el.textContent || "").trim();
+      if ((txt === "✕" || txt === "×" || txt.toLowerCase() === "x" || el.classList.contains("close") || el.getAttribute("data-dismiss") === "modal") && !el.dataset.fixedClose) {
+        el.dataset.fixedClose = "true";
+        el.style.cursor = "pointer";
+        el.style.zIndex = "9999999";
+        el.style.pointerEvents = "auto";
+
+        const closeAction = function(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+          }
+          // العثور على أقرب نافذة منبثقة أو طبقة خارجية وإخفاؤها
+          let modal = el.closest(".modal, [class*="modal"], [id*="modal"], [style*="fixed"], [style*="absolute"]");
+          if (!modal) {
+            // صعود للأعلى للبحث عن الحاوية
+            let parent = el.parentElement;
+            while (parent && parent !== document.body) {
+              const pos = window.getComputedStyle(parent).position;
+              if (pos === "fixed" || pos === "absolute") {
+                modal = parent;
+                break;
+              }
+              parent = parent.parentElement;
+            }
+          }
+          if (modal && modal !== document.body) {
+            modal.style.display = "none";
+            modal.classList.remove("show", "active", "open");
+          }
+        };
+
+        el.onclick = closeAction;
+        el.ontouchend = closeAction;
+        el.onpointerdown = closeAction;
+      }
+    });
+
+    // 2. إغلاق النافذة إذا ضغط المستخدم في الخلفية المعتمة بالخارج
+    document.querySelectorAll("[style*="fixed"], .modal-overlay, .modal-backdrop").forEach(function(overlay) {
+      if (!overlay.dataset.fixedOverlay && overlay !== document.body) {
+        overlay.dataset.fixedOverlay = "true";
+        overlay.addEventListener("click", function(e) {
+          if (e.target === overlay) {
+            overlay.style.display = "none";
+          }
+        });
+      }
+    });
+  }
+
+  setInterval(fixAllModals, 300);
+  document.addEventListener("DOMContentLoaded", fixAllModals);
+})();
+</script>
+
 </body>
 </html>
