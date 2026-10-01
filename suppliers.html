@@ -201,5 +201,31 @@
 })();
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const fab = document.getElementById("fab-add") || document.querySelector(".fab") || document.querySelector(".btn-float");
+  const modal = document.getElementById("suppliers-modal") || document.getElementById("customers-modal") || document.querySelector(".modal");
+  
+  if (fab && modal) {
+    fab.style.pointerEvents = "auto";
+    fab.style.cursor = "pointer";
+    fab.onclick = function(e) {
+      e.preventDefault();
+      modal.style.display = "flex";
+      modal.classList.add("show");
+    };
+  }
+
+  // إغلاق النافذة عند الضغط على زر الإغلاق (X)
+  const closeBtn = document.querySelector(".modal .close, .close-modal, [onclick*='close']");
+  if (closeBtn && modal) {
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    };
+  }
+});
+</script>
+
 </body>
 </html>
