@@ -198,7 +198,7 @@
   document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
   window.addEventListener("load", applyCurrenciesToAllSelects);
 
-  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
+  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، عميل، فاتورة جديدة، إلخ)
   const observer = new MutationObserver(function() {
     applyCurrenciesToAllSelects();
   });
