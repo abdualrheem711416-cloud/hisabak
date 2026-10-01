@@ -85,6 +85,14 @@
             <label>سعر البيع</label>
             <input type="number" id="item-price" class="form-control" value="0" min="0" step="any">
           </div>
+          <div class="col form-group">
+            <label>العملة</label>
+            <select id="item-currency" class="form-control">
+              <option value="YER">عمله محليه (YER)</option>
+              <option value="SAR">ريال سعودي (SAR)</option>
+              <option value="USD">دولار (USD)</option>
+            </select>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" style="width:100%; margin-top:6px;">
           <i class="fas fa-save"></i> حفظ الصنف
@@ -122,6 +130,7 @@
               <th>الوحدة</th>
               <th>الكمية</th>
               <th>السعر</th>
+              <th>العملة</th>
               <th>إجراء</th>
             </tr>
           </thead>
@@ -168,6 +177,7 @@
           <td>${item.unit || "حبه"}</td>
           <td>${item.qty || 0}</td>
           <td>${item.price || 0}</td>
+          <td><span style="font-weight:bold; color:var(--primary-color);">${item.currency || "YER"}</span></td>
           <td>
             <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem; margin:auto;" onclick="deleteItem(${index})">
               <i class="fas fa-trash"></i>
@@ -185,11 +195,12 @@
       const unit = document.getElementById("item-unit").value.trim();
       const qty = parseFloat(document.getElementById("item-qty").value) || 0;
       const price = parseFloat(document.getElementById("item-price").value) || 0;
+      const currency = document.getElementById("item-currency").value || "YER";
 
       if (!name) return;
 
       const items = getItems();
-      items.push({ name, warehouse, unit, qty, price });
+      items.push({ name, warehouse, unit, qty, price, currency });
       saveItems(items);
       this.reset();
       document.getElementById("item-qty").value = "0";
@@ -235,7 +246,8 @@
               warehouse: row[1] ? String(row[1]).trim() : "المخزن الرئيسي",
               unit: row[2] ? String(row[2]).trim() : "حبه",
               qty: parseFloat(row[3]) || 0,
-              price: parseFloat(row[4]) || 0
+              price: parseFloat(row[4]) || 0,
+              currency: row[5] ? String(row[5]).trim() : "YER"
             });
             added++;
           }
@@ -259,11 +271,11 @@
       }
 
       const excelData = [
-        ["اسم الصنف", "المخزن", "الوحدة", "الكمية", "سعر البيع"]
+        ["اسم الصنف", "المخزن", "الوحدة", "الكمية", "سعر البيع", "العملة"]
       ];
 
       items.forEach(it => {
-        excelData.push([it.name, it.warehouse, it.unit, it.qty, it.price]);
+        excelData.push([it.name, it.warehouse, it.unit, it.qty, it.price, it.currency || "YER"]);
       });
 
       const ws = XLSX.utils.aoa_to_sheet(excelData);
