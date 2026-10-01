@@ -48,7 +48,7 @@
   <div class="top-bar">
     <div class="title-box">
       <a href="index.html">➔</a>
-      <span>العملاء</span>
+      <span>الموردين</span>
     </div>
     <div class="icons">
       <span>🔍</span>
@@ -106,9 +106,9 @@
         <h4 style="margin:0; color:#0d62b3;">اختر العملية</h4>
       </div>
       <div class="modal-body">
-        <button class="btn-action-sheet" onclick="openForm('add_cust')">👤 إضافة عميل جديد</button>
-        <button class="btn-action-sheet" onclick="openForm('receipt')">📥 سند قبض (تسديد من عميل)</button>
-        <button class="btn-action-sheet" onclick="openForm('payment')">📤 سند صرف (دفعة لعميل)</button>
+        <button class="btn-action-sheet" onclick="openForm('add_cust')">👤 إضافة مورد جديد</button>
+        <button class="btn-action-sheet" onclick="openForm('receipt')">📥 سند قبض (تسديد من مورد)</button>
+        <button class="btn-action-sheet" onclick="openForm('payment')">📤 سند صرف (دفعة لمورد)</button>
         <button class="btn-action-sheet" onclick="openForm('invoice')">🧾 فاتورة مبيعات</button>
         <button class="btn-action-sheet" onclick="openForm('return')">🔄 مردود مبيعات</button>
       </div>
@@ -198,7 +198,7 @@
   document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
   window.addEventListener("load", applyCurrenciesToAllSelects);
 
-  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
+  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة مورد، مورد، فاتورة جديدة، إلخ)
   const observer = new MutationObserver(function() {
     applyCurrenciesToAllSelects();
   });
