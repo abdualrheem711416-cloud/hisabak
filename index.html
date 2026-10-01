@@ -22,7 +22,7 @@ if ("serviceWorker" in navigator) {
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="حسابك">
+  <meta name="apple-mobile-web-app-title" content="المحاسب الإحترافي بلس">
   <link rel="apple-touch-icon" href="icon-512.png">
   <script>
     if ("serviceWorker" in navigator) {
@@ -46,7 +46,7 @@ if ("serviceWorker" in navigator) {
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حسابك</title>
+    <title>المحاسب الإحترافي بلس</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -149,7 +149,7 @@ if ("serviceWorker" in navigator) {
     <div class="top-bar" style="position:relative; display:flex; justify-content:space-between; align-items:center;">
     <div onclick="document.getElementById('excelModalOfficial').style.display='flex'" style="font-size:22px; cursor:pointer; padding:0 8px;">⚙️</div>
         <div><i class="fa-solid fa-bars"></i></div>
-        <div><div style="display:flex; align-items:center; gap:8px;"><span style="background:#ffffff; color:#0d62b5; font-weight:900; font-size:13px; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1.5px solid #e0f2fe; letter-spacing:0.5px;">AR</span><span style="font-size:1.15rem; font-weight:bold;">حسابك</span></div></div>
+        <div><div style="display:flex; align-items:center; gap:8px;"><span style="background:#ffffff; color:#0d62b5; font-weight:900; font-size:13px; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1.5px solid #e0f2fe; letter-spacing:0.5px;">AR</span><span style="font-size:1.15rem; font-weight:bold;">المحاسب الإحترافي بلس</span></div></div>
         <div class="top-icons">
             <i class="fa-solid fa-plus"></i>
             <i class="fa-solid fa-arrows-rotate"></i>
@@ -298,7 +298,7 @@ function closeSuppliersModal() {
 }
 
 function getSuppliers() {
-  const data = localStorage.getItem('hisabak_suppliers');
+  const data = localStorage.getItem('المحاسب الإحترافي بلس_suppliers');
   return data ? JSON.parse(data) : [
     { name: 'شركة الأمل للتوريدات', balance: 3507845 }
   ];
@@ -333,7 +333,7 @@ function addSupplier() {
   }
   const list = getSuppliers();
   list.unshift({ name: name, balance: bal });
-  localStorage.setItem('hisabak_suppliers', JSON.stringify(list));
+  localStorage.setItem('المحاسب الإحترافي بلس_suppliers', JSON.stringify(list));
   document.getElementById('sup-name').value = '';
   document.getElementById('sup-balance').value = '';
   renderSuppliers();
@@ -342,7 +342,7 @@ function addSupplier() {
 function deleteSupplier(idx) {
   const list = getSuppliers();
   list.splice(idx, 1);
-  localStorage.setItem('hisabak_suppliers', JSON.stringify(list));
+  localStorage.setItem('المحاسب الإحترافي بلس_suppliers', JSON.stringify(list));
   renderSuppliers();
 }
 </script>
@@ -462,13 +462,13 @@ window.openCustomersModal = function() {
   let existing = document.getElementById("customers-modal-root");
   if (existing) existing.remove();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", balance: 0 },
       { id: 2, name: "شركة النور", balance: 150000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const modalHtml = `
@@ -519,7 +519,7 @@ window.openCustomersModal = function() {
       btn.onclick = function() {
         const i = this.getAttribute("data-idx");
         customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderList();
       };
     });
@@ -541,7 +541,7 @@ window.openCustomersModal = function() {
     const b = parseFloat(document.getElementById("cust-bal-input").value) || 0;
     if (!n) return alert("يرجى إدخال اسم العميل");
     customers.push({ id: Date.now(), name: n, balance: b });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
     document.getElementById("cust-name-input").value = "";
     document.getElementById("cust-bal-input").value = "";
     renderList();
@@ -568,13 +568,13 @@ window.openCustomersModal = function() {
   const oldModal = document.getElementById("customers-modal-root");
   if (oldModal) oldModal.remove();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", balance: 0 },
       { id: 2, name: "شركة النور", balance: 150000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const modalHtml = `
@@ -625,7 +625,7 @@ window.openCustomersModal = function() {
       btn.onclick = function() {
         const i = this.getAttribute("data-del");
         customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderCusts();
       };
     });
@@ -644,7 +644,7 @@ window.openCustomersModal = function() {
     const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
     if (!name) return alert("يرجى إدخال اسم العميل");
     customers.push({ id: Date.now(), name: name, balance: bal });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
     document.getElementById("cust-name-input").value = "";
     document.getElementById("cust-bal-input").value = "";
     renderCusts();
@@ -686,13 +686,13 @@ window.closeAnyModal = function() {
 window.openCustomersModal = function() {
   window.closeAnyModal();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", balance: 0 },
       { id: 2, name: "شركة النور", balance: 150000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const modalHtml = `
@@ -744,7 +744,7 @@ window.openCustomersModal = function() {
         e.stopPropagation();
         const i = this.getAttribute("data-del");
         customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderCusts();
       };
     });
@@ -763,7 +763,7 @@ window.openCustomersModal = function() {
     const bal = parseFloat(document.getElementById("cust-bal-input").value) || 0;
     if (!name) return alert("يرجى إدخال اسم العميل");
     customers.push({ id: Date.now(), name: name, balance: bal });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
     document.getElementById("cust-name-input").value = "";
     document.getElementById("cust-bal-input").value = "";
     renderCusts();
@@ -798,13 +798,13 @@ document.addEventListener("click", function(e) {
 window.openCustomersModal = function() {
   window.closeAnyModal();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
       { id: 2, name: "شركة النور", phone: "777000000", balance: 150000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const modalHtml = `
@@ -848,8 +848,8 @@ window.openCustomersModal = function() {
     }
     const cleanPhone = c.phone.replace(/[^0-9]/g, "");
     const msg = encodeURIComponent(`مرحباً أستاذ ${c.name}،
-إشعار من تطبيق (حسابك):
-رصيد حسابكم الحالي هو: ${Number(c.balance).toLocaleString()} ر.ي.
+إشعار من تطبيق (المحاسب الإحترافي بلس):
+رصيد المحاسب الإحترافي بلسم الحالي هو: ${Number(c.balance).toLocaleString()} ر.ي.
 شكراً لتعاملكم معنا.`);
     window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
   }
@@ -881,7 +881,7 @@ window.openCustomersModal = function() {
         e.stopPropagation();
         const i = this.getAttribute("data-del");
         customers.splice(i, 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderCusts();
       };
     });
@@ -911,7 +911,7 @@ window.openCustomersModal = function() {
 
     const newCust = { id: Date.now(), name: name, phone: phone, balance: bal };
     customers.push(newCust);
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
     
     // إذا وُجد رقم هاتف، يُتاح إرسال إشعار فوري
     if (phone && confirm("تمت إضافة العميل بنجاح. هل ترغب بإرسال إشعار ترحيبي برصيد الحساب عبر واتساب فوراً؟")) {
@@ -938,13 +938,13 @@ window.dismissCustomerModal = function() {
 window.openCustomersModalView = function() {
   window.dismissCustomerModal();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
       { id: 2, name: "شركة النور", phone: "777000000", balance: 150000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const modalHtml = `
@@ -1003,7 +1003,7 @@ window.openCustomersModalView = function() {
       b.onclick = (e) => {
         e.stopPropagation();
         customers.splice(b.getAttribute("data-del"), 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderList();
       };
     });
@@ -1015,8 +1015,8 @@ window.openCustomersModalView = function() {
         if (!item.phone) return alert("يرجى إدخال رقم هاتف العميل أولاً");
         const clean = item.phone.replace(/[^0-9]/g, "");
         const txt = encodeURIComponent(`مرحباً أستاذ ${item.name}،
-إشعار من تطبيق حسابك:
-رصيد حسابكم الحالي: ${Number(item.balance).toLocaleString()} ر.ي.`);
+إشعار من تطبيق المحاسب الإحترافي بلس:
+رصيد المحاسب الإحترافي بلسم الحالي: ${Number(item.balance).toLocaleString()} ر.ي.`);
         window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
       };
     });
@@ -1038,7 +1038,7 @@ window.openCustomersModalView = function() {
     if (!name) return alert("يرجى إدخال اسم العميل");
 
     customers.push({ id: Date.now(), name, phone, balance: bal });
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
 
     document.getElementById("cust-input-name").value = "";
     document.getElementById("cust-input-phone").value = "";
@@ -1095,8 +1095,8 @@ window.closeTxModal = function() {
 // فتح نافذة إنشاء سند جديد (قبض / صرف)
 window.openReceiptModal = function() {
   window.closeTxModal();
-  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-  const suppliers = JSON.parse(localStorage.getItem("hisabak_suppliers") || "[]");
+  const customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
+  const suppliers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_suppliers") || "[]");
 
   const modalHtml = `
     <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
@@ -1165,7 +1165,7 @@ window.openReceiptModal = function() {
     if (!name) return alert("يرجى اختيار الحساب");
     if (amount <= 0) return alert("يرجى كتابة مبلغ صحيح");
 
-    const storageKey = isCustomer ? "hisabak_customers" : "hisabak_suppliers";
+    const storageKey = isCustomer ? "المحاسب الإحترافي بلس_customers" : "المحاسب الإحترافي بلس_suppliers";
     const dataList = JSON.parse(localStorage.getItem(storageKey) || "[]");
     const item = dataList.find(x => x.name === name);
 
@@ -1198,7 +1198,7 @@ window.openReceiptModal = function() {
 // فتح نافذة إنشاء فاتورة جديدة
 window.openInvoiceModal = function() {
   window.closeTxModal();
-  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  const customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
 
   const modalHtml = `
     <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
@@ -1240,19 +1240,19 @@ window.openInvoiceModal = function() {
     if (total <= 0) return alert("يرجى إدخال مبلغ الفاتورة");
 
     const remaining = total - paid;
-    const custs = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+    const custs = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
     const c = custs.find(x => x.name === custName);
 
     if (c) {
       c.balance = Number(c.balance) + remaining;
-      localStorage.setItem("hisabak_customers", JSON.stringify(custs));
+      localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(custs));
       alert(`تم حفظ الفاتورة بنجاح! المبلغ المتبقي على الحساب: ${remaining.toLocaleString()} ر.ي`);
 
       if (c.phone) {
         if (confirm("هل ترغب بإرسال تفاصيل الفاتورة للعميل عبر واتساب؟")) {
           const cleanPhone = c.phone.replace(/[^0-9]/g, "");
           const msg = encodeURIComponent(`مرحباً أستاذ ${c.name}،
-فاتورة جديدة من تطبيق حسابك:
+فاتورة جديدة من تطبيق المحاسب الإحترافي بلس:
 البيان: ${desc || "مشتريات"}
 الإجمالي: ${total.toLocaleString()} ر.ي
 المدفوع: ${paid.toLocaleString()} ر.ي
@@ -1296,8 +1296,8 @@ window.openReturnsModal = function() {
   const old = document.getElementById("tx-modal-root");
   if (old) old.remove();
 
-  const customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
-  const suppliers = JSON.parse(localStorage.getItem("hisabak_suppliers") || "[]");
+  const customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
+  const suppliers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_suppliers") || "[]");
 
   const modalHtml = `
     <div id="tx-modal-root" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; direction:rtl; font-family:sans-serif; padding:12px; box-sizing:border-box;">
@@ -1361,7 +1361,7 @@ window.openReturnsModal = function() {
     if (!name) return alert("يرجى اختيار الحساب");
     if (amount <= 0) return alert("يرجى إدخال مبلغ صحيح");
 
-    const storageKey = isSalesRet ? "hisabak_customers" : "hisabak_suppliers";
+    const storageKey = isSalesRet ? "المحاسب الإحترافي بلس_customers" : "المحاسب الإحترافي بلس_suppliers";
     const dataList = JSON.parse(localStorage.getItem(storageKey) || "[]");
     const item = dataList.find(x => x.name === name);
 
@@ -1379,7 +1379,7 @@ window.openReturnsModal = function() {
 إشعار بقيد (${typeTitle}):
 الأصناف: ${desc || "مردودات"}
 المبلغ المخصوم: ${amount.toLocaleString()} ر.ي
-رصيد حسابكم الحالي بعد المردود: ${Number(item.balance).toLocaleString()} ر.ي.`);
+رصيد المحاسب الإحترافي بلسم الحالي بعد المردود: ${Number(item.balance).toLocaleString()} ر.ي.`);
           window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
         }
       }
@@ -1409,13 +1409,13 @@ window.openCustomersFullView = function() {
   const existing = document.getElementById("full-customers-screen");
   if (existing) existing.remove();
 
-  let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+  let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
   if (customers.length === 0) {
     customers = [
       { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
       { id: 2, name: "عبدالرحيم", phone: "776332929", balance: 100000 }
     ];
-    localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+    localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
   }
 
   const screenHtml = `
@@ -1522,7 +1522,7 @@ window.openCustomersFullView = function() {
     container.querySelectorAll("[data-del]").forEach(b => {
       b.onclick = () => {
         customers.splice(b.getAttribute("data-del"), 1);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         renderCustomers();
       };
     });
@@ -1533,7 +1533,7 @@ window.openCustomersFullView = function() {
         if (!item.phone) return alert("لا يوجد رقم هاتف للعميل");
         const clean = item.phone.replace(/[^0-9]/g, "");
         const txt = encodeURIComponent(`مرحباً أستاذ ${item.name}،
-كشف حساب من تطبيق حسابك:
+كشف حساب من تطبيق المحاسب الإحترافي بلس:
 رصيدكم الحالي هو: ${Number(item.balance).toLocaleString()} ر.ي.`);
         window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
       };
@@ -1560,7 +1560,7 @@ window.openCustomersFullView = function() {
       const p = prompt("رقم الهاتف (واتساب):", "");
       const b = parseFloat(prompt("الرصيد الافتتاحي (ر.ي):", "0")) || 0;
       customers.push({ id: Date.now(), name: n, phone: p, balance: b });
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+      localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
       renderCustomers();
     } else if (action === "2" && window.openReceiptModal) {
       window.openReceiptModal();
@@ -1657,13 +1657,13 @@ document.addEventListener("pointerdown", function(e) {
   </div>
 
   <script>
-    let customers = JSON.parse(localStorage.getItem("hisabak_customers") || "[]");
+    let customers = JSON.parse(localStorage.getItem("المحاسب الإحترافي بلس_customers") || "[]");
     if (customers.length === 0) {
       customers = [
         { id: 1, name: "عميل نقدي عام", phone: "", balance: 0 },
         { id: 2, name: "عبدالرحيم", phone: "776332929", balance: 100000 }
       ];
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+      localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
     }
 
     function render() {
@@ -1692,7 +1692,7 @@ document.addEventListener("pointerdown", function(e) {
 
     window.deleteCust = function(i) {
       customers.splice(i, 1);
-      localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+      localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
       render();
     };
 
@@ -1700,7 +1700,7 @@ document.addEventListener("pointerdown", function(e) {
       const itm = customers[i];
       if (!itm.phone) return alert("يرجى إدخال رقم الهاتف أولاً");
       const clean = itm.phone.replace(/[^0-9]/g, "");
-      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،\nكشف حساب من تطبيق حسابك:\nرصيدكم الحالي: ${Number(itm.balance).toLocaleString()} ر.ي.`);
+      const txt = encodeURIComponent(`مرحباً أستاذ ${itm.name}،\nكشف حساب من تطبيق المحاسب الإحترافي بلس:\nرصيدكم الحالي: ${Number(itm.balance).toLocaleString()} ر.ي.`);
       window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${txt}`, "_blank");
     };
 
@@ -1712,7 +1712,7 @@ document.addEventListener("pointerdown", function(e) {
         const p = prompt("رقم الهاتف (واتساب):", "");
         const b = parseFloat(prompt("الرصيد الافتتاحي (ر.ي):", "0")) || 0;
         customers.push({ id: Date.now(), name: n, phone: p, balance: b });
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         render();
       } else if (act === "2" || act === "3") {
         const name = prompt("اكتب اسم العميل بدقة:");
@@ -1721,7 +1721,7 @@ document.addEventListener("pointerdown", function(e) {
         const amt = parseFloat(prompt("المبلغ (ر.ي):", "0")) || 0;
         if (amt <= 0) return;
         cust.balance = act === "2" ? (Number(cust.balance) - amt) : (Number(cust.balance) + amt);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         alert("تم حفظ السند وتحديث الرصيد!");
         render();
       } else if (act === "4") {
@@ -1731,7 +1731,7 @@ document.addEventListener("pointerdown", function(e) {
         const tot = parseFloat(prompt("إجمالي الفاتورة:", "0")) || 0;
         const paid = parseFloat(prompt("المدفوع نقداً:", "0")) || 0;
         cust.balance = Number(cust.balance) + (tot - paid);
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         alert("تم قيد الفاتورة وتحديث الرصيد!");
         render();
       } else if (act === "5") {
@@ -1740,7 +1740,7 @@ document.addEventListener("pointerdown", function(e) {
         if (!cust) return alert("العميل غير موجود");
         const ret = parseFloat(prompt("قيمة المردود (ر.ي):", "0")) || 0;
         cust.balance = Number(cust.balance) - ret;
-        localStorage.setItem("hisabak_customers", JSON.stringify(customers));
+        localStorage.setItem("المحاسب الإحترافي بلس_customers", JSON.stringify(customers));
         alert("تم تسجيل المردود وخصمه من الرصيد!");
         render();
       }
@@ -2114,7 +2114,7 @@ document.addEventListener("click", function(e) {
 (function() {
   function fetchActiveCurrencies() {
     try {
-      const data = localStorage.getItem("hisabak_currencies");
+      const data = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       if (data) return JSON.parse(data);
     } catch(e) {}
     return [
@@ -2231,7 +2231,7 @@ window.addEventListener("load", function() {
     ];
     let list = defaultList;
     try {
-      const saved = localStorage.getItem("hisabak_currencies");
+      const saved = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       if (saved) list = JSON.parse(saved);
     } catch(e) {}
 
@@ -2263,7 +2263,7 @@ window.addEventListener("load", function() {
 window.addEventListener("load", function() {
   function updateCurrenciesSilently() {
     try {
-      const stored = localStorage.getItem("hisabak_currencies");
+      const stored = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       let list = [];
       if (stored) {
         try { list = JSON.parse(stored); } catch(e) {}

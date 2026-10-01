@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>كشف حساب - حسابك</title>
+  <title>المحاسب الإحترافي بلس</title>
   <style>
     * { box-sizing: border-box; font-family: system-ui, sans-serif; margin: 0; padding: 0; }
     body { background: #f0f4f9; color: #333; padding-bottom: 30px; }
@@ -13,6 +13,10 @@
     th { background: #eaf2fb; color: #0b5cab; padding: 8px 4px; border: 1px solid #d0e0f5; }
     td { padding: 8px 4px; text-align: center; border: 1px solid #eee; }
   </style>
+
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+        
 </head>
 <body>
   <div class="top-bar">
@@ -41,7 +45,7 @@
 (function() {
   function getLiveCurrencies() {
     try {
-      const stored = localStorage.getItem("hisabak_currencies");
+      const stored = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;

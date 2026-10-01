@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>حسابك - إدارة المخازن والأصناف</title>
+  <title>المحاسب الإحترافي بلس</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
@@ -46,6 +46,10 @@
     th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
     th { background: #f1f5f9; color: var(--primary-color); }
   </style>
+
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+        
 </head>
 <body>
   <div class="header">
@@ -141,7 +145,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hisabak_items_data";
+    const STORAGE_KEY = "المحاسب الإحترافي بلس_items_data";
 
     function getItems() {
       try {
@@ -281,7 +285,7 @@
       const ws = XLSX.utils.aoa_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "الأصناف والمخازن");
-      XLSX.writeFile(wb, "hisabak_inventory_items.xlsx");
+      XLSX.writeFile(wb, "المحاسب الإحترافي بلس_inventory_items.xlsx");
     }
 
     window.addEventListener("DOMContentLoaded", renderItems);

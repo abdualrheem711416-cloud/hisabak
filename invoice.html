@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>فاتورة جديدة - حسابك</title>
+  <title>المحاسب الإحترافي بلس</title>
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f7f9fc; color: #333; padding-bottom: 160px; }
@@ -84,6 +84,10 @@
 .receipt-table th, .receipt-table td { border-bottom: 1px dashed #444; padding: 4px 2px; text-align: center; }
 </style>
 
+
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+        
 </head>
 <body>
 
@@ -264,7 +268,7 @@
 (function() {
   function getLiveCurrencies() {
     try {
-      const stored = localStorage.getItem("hisabak_currencies");
+      const stored = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;

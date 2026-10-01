@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>الإعدادات العامة - حسابك</title>
+  <title>المحاسب الإحترافي بلس</title>
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f0f4f9; color: #333; padding-bottom: 40px; }
@@ -17,6 +17,10 @@
     .input-box { width: 100%; border: none; border-bottom: 1.5px solid #aaa; padding: 4px; text-align: center; font-size: 13px; outline: none; background: transparent; }
     .note-text { font-size: 11px; color: #777; text-align: center; margin: 2px 0 6px 0; }
   </style>
+
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+        
 </head>
 <body>
 
@@ -198,7 +202,7 @@
         addr_ar: document.getElementById("addr_ar").value,
         tax_no: document.getElementById("tax_no").value
       };
-      localStorage.setItem("hisabak_settings", JSON.stringify(data));
+      localStorage.setItem("المحاسب الإحترافي بلس_settings", JSON.stringify(data));
       alert("تم حفظ الإعدادات بنجاح!");
       window.location.href = "settings_menu.html";
     }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ملف العملات - حسابك</title>
+  <title>المحاسب الإحترافي بلس</title>
   <style>
     :root {
       --primary: #0b5cab;
@@ -167,6 +167,10 @@
       box-shadow: 0 2px 8px rgba(216, 27, 96, 0.3);
     }
   </style>
+
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+        
 </head>
 <body>
 
@@ -197,12 +201,12 @@
     ];
 
     function getCurrencies() {
-      const data = localStorage.getItem("hisabak_currencies");
+      const data = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
       return data ? JSON.parse(data) : defaultCurrencies;
     }
 
     function saveCurrencies(list) {
-      localStorage.setItem("hisabak_currencies", JSON.stringify(list));
+      localStorage.setItem("المحاسب الإحترافي بلس_currencies", JSON.stringify(list));
       renderCurrencies();
     }
 
@@ -261,7 +265,7 @@
 
     function shareCurrencies() {
       const list = getCurrencies();
-      let text = "أسعار العملات - تطبيق حسابك:\n";
+      let text = "أسعار العملات - تطبيق المحاسب الإحترافي بلس:\n";
       list.forEach(c => {
         text += `- ${c.name} (${c.symbol}): ${c.rate}\n`;
       });
