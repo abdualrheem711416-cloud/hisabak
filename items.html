@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حسابك - إدارة المخازن والأصناف</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1a5276;
+      --accent-color: #f39c12;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --border-color: #e2e8f0;
+      --success-color: #27ae60;
+      --danger-color: #e74c3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); direction: rtl; }
+    .header { background: var(--primary-color); color: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .header h1 { font-size: 1.1rem; }
+    .header a { color: white; text-decoration: none; font-size: 1.2rem; }
+    .container { padding: 15px; max-width: 800px; margin: auto; }
+    
+    .card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+    .card h3 { font-size: 1rem; margin-bottom: 12px; color: var(--primary-color); }
+    
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: bold; }
+    .form-control { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
+    
+    .row { display: flex; gap: 10px; }
+    .col { flex: 1; }
+    
+    .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-success { background: var(--success-color); color: white; }
+    .btn-accent { background: var(--accent-color); color: white; }
+    .btn-danger { background: var(--danger-color); color: white; }
+    
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
+    th { background: #f1f5f9; color: var(--primary-color); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="settings_menu.html"><i class="fas fa-arrow-right"></i></a>
+    <h1>إدارة المخازن والأصناف</h1>
+    <div style="width:24px;"></div>
+  </div>
+
+  <div class="container">
+    <!-- كرت إضافة صنف جديد -->
+    <div class="card">
+      <h3><i class="fas fa-plus-circle"></i> إضافة صنف جديد</h3>
+      <form id="item-form">
+        <div class="form-group">
+          <label>اسم الصنف</label>
+          <input type="text" id="item-name" class="form-control" placeholder="أدخل اسم الصنف" required>
+        </div>
+        <div class="row">
+          <div class="col form-group">
+            <label>المخزن</label>
+            <select id="item-warehouse" class="form-control">
+              <option value="المخزن الرئيسي">المخزن الرئيسي</option>
+              <option value="مخزن الفرع">مخزن الفرع</option>
+            </select>
+          </div>
+          <div class="col form-group">
+            <label>الوحدة</label>
+            <input type="text" id="item-unit" class="form-control" value="حبه" placeholder="حبه / كرتون">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col form-group">
+            <label>الكمية الافتتاحية</label>
+            <input type="number" id="item-qty" class="form-control" value="0" min="0">
+          </div>
+          <div class="col form-group">
+            <label>سعر البيع</label>
+            <input type="number" id="item-price" class="form-control" value="0" min="0" step="any">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:6px;">
+          <i class="fas fa-save"></i> حفظ الصنف
+        </button>
+      </form>
+    </div>
+
+    <!-- كرت الاستيراد والتصدير عبر Excel -->
+    <div class="card">
+      <h3><i class="fas fa-file-excel"></i> عمليات Excel المتقدمة</h3>
+      <input type="file" id="excel-file" accept=".xlsx, .xls" style="display: none;">
+      <div class="btn-group">
+        <button class="btn btn-success" onclick="document.getElementById('excel-file').click()">
+          <i class="fas fa-file-import"></i> استيراد من Excel
+        </button>
+        <button class="btn btn-accent" onclick="exportItemsToExcel()">
+          <i class="fas fa-file-export"></i> تصدير إلى Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- جدول قائمة الأصناف -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3><i class="fas fa-boxes"></i> قائمة الأصناف بالمخازن</h3>
+        <span id="items-count" style="font-size:0.85rem; font-weight:bold; color:var(--primary-color);">0 صنف</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الصنف</th>
+              <th>المخزن</th>
+              <th>الوحدة</th>
+              <th>الكمية</th>
+              <th>السعر</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="items-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "hisabak_items_data";
+
+    function getItems() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function saveItems(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      renderItems();
+    }
+
+    function renderItems() {
+      const items = getItems();
+      const tbody = document.getElementById("items-table-body");
+      const countEl = document.getElementById("items-count");
+      tbody.innerHTML = "";
+      countEl.textContent = `${items.length} صنف`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:#777; padding:15px;">لا توجد أصناف مدخلة بعد</td></tr>`;
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td style="font-weight:bold; text-align:right;">${item.name}</td>
+          <td>${item.warehouse || "المخزن الرئيسي"}</td>
+          <td>${item.unit || "حبه"}</td>
+          <td>${item.qty || 0}</td>
+          <td>${item.price || 0}</td>
+          <td>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem; margin:auto;" onclick="deleteItem(${index})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById("item-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("item-name").value.trim();
+      const warehouse = document.getElementById("item-warehouse").value;
+      const unit = document.getElementById("item-unit").value.trim();
+      const qty = parseFloat(document.getElementById("item-qty").value) || 0;
+      const price = parseFloat(document.getElementById("item-price").value) || 0;
+
+      if (!name) return;
+
+      const items = getItems();
+      items.push({ name, warehouse, unit, qty, price });
+      saveItems(items);
+      this.reset();
+      document.getElementById("item-qty").value = "0";
+      document.getElementById("item-price").value = "0";
+      document.getElementById("item-unit").value = "حبه";
+    });
+
+    function deleteItem(index) {
+      if (confirm("هل تريد حذف هذا الصنف بالتأكيد؟")) {
+        const items = getItems();
+        items.splice(index, 1);
+        saveItems(items);
+      }
+    }
+
+    // استيراد من ملف Excel
+    document.getElementById("excel-file").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+          if (rows.length < 2) {
+            alert("الملف فارغ أو لا يحتوي على صفوف صالحة.");
+            return;
+          }
+
+          const currentItems = getItems();
+          let added = 0;
+
+          // تخطي الصف الأول كترويسة
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row || !row[0]) continue;
+            currentItems.push({
+              name: String(row[0]).trim(),
+              warehouse: row[1] ? String(row[1]).trim() : "المخزن الرئيسي",
+              unit: row[2] ? String(row[2]).trim() : "حبه",
+              qty: parseFloat(row[3]) || 0,
+              price: parseFloat(row[4]) || 0
+            });
+            added++;
+          }
+
+          saveItems(currentItems);
+          alert(`تم استيراد ${added} صنف بنجاح من Excel!`);
+        } catch(err) {
+          alert("حدث خطأ أثناء قراءة ملف Excel: " + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      this.value = "";
+    });
+
+    // تصدير الأصناف إلى ملف Excel
+    function exportItemsToExcel() {
+      const items = getItems();
+      if (items.length === 0) {
+        alert("لا توجد أصناف لتصديرها.");
+        return;
+      }
+
+      const excelData = [
+        ["اسم الصنف", "المخزن", "الوحدة", "الكمية", "سعر البيع"]
+      ];
+
+      items.forEach(it => {
+        excelData.push([it.name, it.warehouse, it.unit, it.qty, it.price]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(excelData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "الأصناف والمخازن");
+      XLSX.writeFile(wb, "hisabak_inventory_items.xlsx");
+    }
+
+    window.addEventListener("DOMContentLoaded", renderItems);
+  </script>
+</body>
+</html>
