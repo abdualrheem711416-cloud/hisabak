@@ -1,241 +1,459 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>المحاسب الإحترافي بلس</title>
-  <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f0f4f9; color: #222; padding: 12px; }
-
-    /* الهيدر العلوي */
-    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; font-weight: bold; }
-    .close-after-save { display: flex; align-items: center; gap: 6px; color: #d81b60; font-size: 13px; }
-    .close-after-save input[type="checkbox"] { width: 18px; height: 18px; accent-color: #d81b60; cursor: pointer; }
-    .header-title-text { color: #0b5cab; font-size: 15px; }
-
-    /* التاريخ والميكروفون */
-    .date-mic-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .date-badge { background-color: #0b5cab; color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(11,92,171,0.2); }
-    .mic-icon { font-size: 22px; cursor: pointer; color: #0b5cab; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: #eaf2fb; border-radius: 50%; }
-
-    /* البطاقات والحقول بتناسق الهوية الزرقاء */
-    .field-card { background: white; border: 1.5px solid #b6d4fe; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; overflow: hidden; transition: border-color 0.2s; }
-    .field-card:focus-within { border-color: #0b5cab; }
-    
-    .action-square-btn { width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; background: #f4f8fd; border: none; cursor: pointer; font-size: 20px; font-weight: bold; flex-shrink: 0; color: #0b5cab; border-right: 1px solid #d0e0f5; }
-    .calc-btn { background: #0b5cab; color: #fff; width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; flex-shrink: 0; }
-    .camera-btn { background: #0b5cab; color: #fff; width: 44px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 17px; cursor: pointer; flex-shrink: 0; }
-
-    .input-inner { flex: 1; border: none; outline: none; padding: 9px 12px; font-size: 15px; text-align: center; background: transparent; font-weight: 500; color: #222; }
-    .select-currency { border: none; outline: none; background: #f4f8fd; font-size: 14px; font-weight: bold; padding: 0 10px; height: 42px; display: flex; align-items: center; gap: 4px; border-left: 1px solid #d0e0f5; color: #0b5cab; }
-
-    /* شريط الرصيد بتناسق أزرق هادئ */
-    .balance-banner { background-color: #eaf2fb; color: #0b5cab; border: 1px solid #b6d4fe; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
-
-    /* خياري صرف / قبض بهوية التطبيق */
-    .type-radio-group { display: flex; justify-content: center; align-items: center; gap: 32px; margin: 14px 0 18px 0; font-size: 16px; font-weight: bold; }
-    .type-radio-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .radio-sarf { color: #d81b60; }
-    .radio-qabd { color: #0b5cab; }
-    .type-radio-group input[type="radio"] { width: 19px; height: 19px; cursor: pointer; }
-    .radio-sarf input[type="radio"] { accent-color: #d81b60; }
-    .radio-qabd input[type="radio"] { accent-color: #0b5cab; }
-
-    /* الأزرار السفلية الأربعة بتدرج وتناسق هوية التطبيق */
-    .bottom-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
-    .btn-act { border: none; border-radius: 8px; padding: 11px 0; font-size: 14px; font-weight: bold; color: white; cursor: pointer; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.08); transition: opacity 0.2s; }
-    .btn-act:active { opacity: 0.85; transform: scale(0.98); }
-
-    /* حفظ: الأزرق الأساسي للتطبيق */
-    .btn-save { background: #0b5cab; }
-    /* إرسال: الأخضر الإجرائي المريح */
-    .btn-send { background: #2e7d32; }
-    /* صورة: تدرج أزرق داكن متناسق */
-    .btn-image { background: #08427b; }
-    /* إغلاق: الوردي المتناسق مع هوية المحاسب الإحترافي بلس الثانوية */
-    .btn-close { background: #d81b60; }
-  </style>
-
-    
-    
-        
-
-    
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اضافة سند صرف/قبض - المحاسب الإحترافي بلس</title>
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0277bd;
+            --primary-dark: #01579b;
+            --accent-pink: #c2185b;
+            --accent-green: #2e7d32;
+            --bg-light: #f5f8fa;
+            --border-color: #b0bec5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-light); color: #263238; min-height: 100vh; padding: 12px; }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .top-title {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .close-on-save {
+            color: var(--accent-pink);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Mic & Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .status-badge {
+            background: #0277bd;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .mic-icon {
+            font-size: 20px;
+            color: #546e7a;
+            cursor: pointer;
+        }
+
+        /* Input Rows */
+        .form-row {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        .form-row input, .form-row select {
+            border: none;
+            outline: none;
+            padding: 8px 12px;
+            font-size: 13px;
+            flex: 1;
+            text-align: center;
+            background: transparent;
+        }
+        .row-btn {
+            background: #eceff1;
+            border: none;
+            border-left: 1px solid var(--border-color);
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #37474f;
+            font-size: 14px;
+        }
+        .balance-box {
+            background: #f0f4f8;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* Radio Options */
+        .radio-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 16px 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .radio-container label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .radio-spend { color: #d81b60; }
+        .radio-receipt { color: #0277bd; }
+
+        /* Action Buttons */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .btn-act {
+            padding: 10px 4px;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .btn-save { background: #0277bd; }
+        .btn-send { background: var(--accent-green); }
+        .btn-photo { background: #37474f; }
+        .btn-close { background: var(--accent-pink); }
+
+        /* Account Autocomplete Dropdown */
+        .autocomplete-items {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            background: #fff;
+            border: 1px solid #b0bec5;
+            border-radius: 0 0 6px 6px;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+            text-align: right;
+        }
+        .autocomplete-item:hover {
+            background-color: #e1f5fe;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- الهيدر العلوي -->
-  <div class="top-header">
-    <label class="close-after-save">
-      <input type="checkbox" id="close_after_save" checked>
-      الإغلاق بعد الحفظ
-    </label>
-    <span class="header-title-text">اضافة سند صرف/قبض</span>
-  </div>
-
-  <!-- التاريخ والميكروفون -->
-  <div class="date-mic-row">
-    <div class="mic-icon" onclick="startVoiceSearch()" title="بحث صوتي">🎤</div>
-    <div class="date-badge" id="current_date_display">جارٍ التحديث...</div>
-  </div>
-
-  <!-- بحث عن حساب مع زر + -->
-  <div class="field-card">
-    <span style="padding:0 10px; color:#0b5cab; font-size:12px;">▾</span>
-    <input type="text" class="input-inner" id="account_name" placeholder="بحث عن حساب" oninput="updateBalancePreview()">
-    <button class="action-square-btn" onclick="addNewAccount()" title="إضافة حساب جديد">+</button>
-  </div>
-
-  <!-- شريط عرض الرصيد -->
-  <div class="balance-banner" id="balance_display">
-    0.00 الرصيد
-  </div>
-
-  <!-- المبلغ والعملة وزر الآلة الحاسبة -->
-  <div class="field-card">
-    <div class="select-currency">
-      <span style="font-size:12px;">▾</span>
-      <select id="currency_select" style="border:none; outline:none; background:transparent; font-weight:bold; color:#0b5cab;">
-<option value="YER">عمله محليه (YER)</option>
-<option value="SAR">ريال سعودي (SAR)</option>
-<option value="USD">دولار (USD)</option>
-</select>
+    <!-- Top Navigation -->
+    <div class="top-bar">
+        <div class="top-title">
+            <i class="fa-solid fa-arrow-right" onclick="window.history.back()" style="cursor:pointer;"></i>
+            <span>اضافة سند صرف/قبض</span>
+        </div>
+        <label class="close-on-save">
+            <input type="checkbox" id="closeOnSave" checked>
+            <span>الإغلاق بعد الحفظ</span>
+        </label>
     </div>
-    <input type="number" class="input-inner" id="amount_input" placeholder="المبلغ" style="font-size:16px; font-weight:bold; color:#0b5cab;">
-    <div class="calc-btn" onclick="openMiniCalc()" title="آلة حاسبة">🖩</div>
-  </div>
 
-  <!-- التفاصيل والصورة بالكاميرا -->
-  <div class="field-card">
-    <input type="text" class="input-inner" id="details_input" placeholder="التفاصيل / البيان">
-    <div class="camera-btn" onclick="document.getElementById('file_input').click()" title="إرفاق صورة">📷+</div>
-    <input type="file" id="file_input" accept="image/*" style="display:none;" onchange="handleImage(this)">
-  </div>
+    <!-- Status & Mic -->
+    <div class="status-bar">
+        <div class="status-badge" id="statusBadge">جاهز</div>
+        <i class="fa-solid fa-microphone mic-icon" onclick="startVoiceInput()" title="تسجيل صوتي"></i>
+    </div>
 
-  <!-- حساب الصندوق -->
-  <div class="field-card">
-    <span style="padding:0 10px; color:#0b5cab; font-size:12px;">▾</span>
-    <select id="fund_box" class="input-inner" style="color:#0b5cab; font-weight:bold;">
-      <option value="الصندوق الرئيسي">الصندوق الرئيسي</option>
-      <option value="بنك الكريمي">بنك الكريمي</option>
-      <option value="شبكة النجم">شبكة النجم</option>
-      <option value="بنك التضامن">بنك التضامن</option>
-    </select>
-    <span style="padding: 0 12px; font-size:13px; font-weight:bold; color:#0b5cab; border-right:1px solid #d0e0f5; height:42px; display:flex; align-items:center; background:#f4f8fd;">حساب الصندوق</span>
-  </div>
+    <!-- Account Search -->
+    <div class="form-row">
+        <button class="row-btn" type="button" onclick="quickAddAccount()" title="إضافة حساب سريع">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <input type="text" id="accountSearch" placeholder="بحث عن حساب (مثال: العكبار)" autocomplete="off" oninput="filterAccounts()">
+        <div class="row-btn" style="border-left:none; border-right: 1px solid var(--border-color); cursor:pointer;" onclick="toggleAllAccounts()">
+            <i class="fa-solid fa-caret-down"></i>
+        </div>
+        <div class="autocomplete-items" id="accountDropdown"></div>
+    </div>
 
-  <!-- راديو صرف / قبض -->
-  <div class="type-radio-group">
-    <label class="radio-sarf">
-      صرف
-      <input type="radio" name="v_type" value="صرف" checked>
-    </label>
-    <label class="radio-qabd">
-      قبض
-      <input type="radio" name="v_type" value="قبض">
-    </label>
-  </div>
+    <!-- Balance Box -->
+    <div class="balance-box" id="accountBalanceText">
+        0.00 الرصيد
+    </div>
 
-  <!-- الأزرار السفلية الأربعة المنسقة بهوية التطبيق -->
-  <div class="bottom-buttons">
-    <button class="btn-act btn-save" onclick="saveVoucherAction(false)">حفظ</button>
-    <button class="btn-act btn-send" onclick="sendVoucherWhatsApp()">ارسال</button>
-    <button class="btn-act btn-image" onclick="document.getElementById('file_input').click()">صوره</button>
-    <button class="btn-act btn-close" onclick="closeVoucherScreen()">اغلاق</button>
-  </div>
+    <!-- Amount & Currency -->
+    <div class="form-row">
+        <input type="number" id="amountInput" placeholder="المبلغ" step="any" required>
+        <select id="currencySelect" style="flex: 1.2; border-right: 1px solid var(--border-color);">
+            <option value="SAR">ريال سعودي (SAR)</option>
+            <option value="YER">ريال يمني (YER)</option>
+            <option value="USD">دولار أمريكي (USD)</option>
+        </select>
+    </div>
 
-  
+    <!-- Notes & Attachments -->
+    <div class="form-row">
+        <button class="row-btn" type="button" onclick="document.getElementById('fileInput').click()" title="إرفاق صورة">
+            <i class="fa-solid fa-camera"></i>+
+        </button>
+        <input type="text" id="notesInput" placeholder="التفاصيل / البيان">
+        <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleImage(this)">
+    </div>
 
+    <!-- Cash Fund / Box -->
+    <div class="form-row">
+        <input type="text" value="حساب الصندوق" readonly style="flex:0.8; background:#fafafa; font-size:12px; color:#546e7a;">
+        <select id="fundSelect" style="flex:1.4; border-right: 1px solid var(--border-color);">
+            <option value="main_fund">الصندوق الرئيسي</option>
+            <option value="sub_fund">صندوق الفرع</option>
+            <option value="bank">حساب البنك</option>
+        </select>
+    </div>
 
+    <!-- Voucher Type -->
+    <div class="radio-container">
+        <label class="radio-spend">
+            <input type="radio" name="voucherType" value="spend" checked onchange="updateVoucherTypeColor()">
+            صرف
+        </label>
+        <label class="radio-receipt">
+            <input type="radio" name="voucherType" value="receipt" onchange="updateVoucherTypeColor()">
+            قبض
+        </label>
+    </div>
 
+    <!-- Action Buttons -->
+    <div class="action-grid">
+        <button type="button" class="btn-act btn-save" onclick="saveVoucher()">حفظ</button>
+        <button type="button" class="btn-act btn-send" onclick="sendVoucherWhatsApp()">ارسال</button>
+        <button type="button" class="btn-act btn-photo" onclick="document.getElementById('fileInput').click()">صوره</button>
+        <button type="button" class="btn-act btn-close" onclick="closePage()">اغلاق</button>
+    </div>
 
+    <script>
+        // تحميل الموردين والعملاء المدمجين في التطبيق
+        let suppliers = JSON.parse(localStorage.getItem('hisabak_suppliers') || '[]');
+        let customers = JSON.parse(localStorage.getItem('hisabak_customers') || '[]');
 
-<script>
-(function() {
-  function getLiveCurrencies() {
-    try {
-      const stored = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch(e) {}
-    return [
-      { name: "عمله محليه", symbol: "YER", rate: 1 },
-      { name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { name: "دولار", symbol: "USD", rate: 1 }
-    ];
-  }
-
-  function applyCurrenciesToAllSelects() {
-    const list = getLiveCurrencies();
-    const selects = document.querySelectorAll("select");
-
-    selects.forEach(sel => {
-      // فحص إذا كان الحقل مخصصاً للعملة
-      const info = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      let isCurr = info.includes("curr") || info.includes("عملة") || info.includes("currency") || info.includes("coin");
-      
-      if (!isCurr) {
-        // فحص نصوص الخيارات الحالية
-        for (let i = 0; i < sel.options.length; i++) {
-          const txt = sel.options[i].text;
-          if (txt.includes("ريال") || txt.includes("دولار") || txt.includes("YER") || txt.includes("SAR") || txt.includes("USD") || txt.includes("ر.ي") || txt.includes("ر.س")) {
-            isCurr = true;
-            break;
-          }
-        }
-      }
-
-      if (isCurr) {
-        const currentVal = sel.value;
-        const currentText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
-        
-        // التحقق إن كانت القائمة محدثة مسبقاً بنفس عدد الخيارات والرموز لتفادي التكرار
-        const firstOpt = sel.options[0] ? sel.options[0].text : "";
-        if (sel.getAttribute("data-synced-ver") === "2.0" && firstOpt.includes("YER")) {
-          return;
+        // إضافة المورد "العكبار" تلقائياً إذا لم يكن مضافاً مسبقاً
+        let allAccounts = [...suppliers, ...customers];
+        if (!allAccounts.some(acc => acc.name && acc.name.includes('العكبار'))) {
+            const akbarAcc = {
+                id: 'akbar_1',
+                name: 'المورد العكبار',
+                phone: '',
+                openingBalance: 0,
+                balType: 'credit'
+            };
+            suppliers.push(akbarAcc);
+            localStorage.setItem('hisabak_suppliers', JSON.stringify(suppliers));
+            allAccounts.push(akbarAcc);
         }
 
-        sel.innerHTML = "";
-        list.forEach(c => {
-          const opt = document.createElement("option");
-          opt.value = c.symbol;
-          opt.textContent = `${c.name} (${c.symbol})`;
-          opt.setAttribute("data-rate", c.rate || 1);
-          if (c.symbol === currentVal || currentText.includes(c.symbol) || currentText.includes(c.name)) {
-            opt.selected = true;
-          }
-          sel.appendChild(opt);
+        let selectedAccount = null;
+        let attachedImageBase64 = null;
+
+        function filterAccounts() {
+            const val = document.getElementById('accountSearch').value.trim().toLowerCase();
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.innerHTML = '';
+
+            const filtered = allAccounts.filter(acc => acc.name && acc.name.toLowerCase().includes(val));
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div class="autocomplete-item" style="color:#888;">لا توجد حسابات مطابقة (اضغط + للإضافة)</div>';
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            filtered.forEach(acc => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.innerText = acc.name + (acc.phone ? ' - ' + acc.phone : '');
+                item.onclick = function() {
+                    selectAccount(acc);
+                };
+                dropdown.appendChild(item);
+            });
+            dropdown.style.display = 'block';
+        }
+
+        function toggleAllAccounts() {
+            const dropdown = document.getElementById('accountDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            } else {
+                filterAccounts();
+            }
+        }
+
+        function selectAccount(acc) {
+            selectedAccount = acc;
+            document.getElementById('accountSearch').value = acc.name;
+            const bal = parseFloat(acc.openingBalance) || 0;
+            const typeStr = acc.balType === 'credit' ? 'لــه' : 'عليه';
+            document.getElementById('accountBalanceText').innerText = `${bal.toLocaleString()} الرصيد (${typeStr})`;
+            document.getElementById('accountDropdown').style.display = 'none';
+        }
+
+        function quickAddAccount() {
+            const name = prompt('أدخل اسم الحساب الجديد (عميل / مورد):');
+            if (!name) return;
+            const newAcc = {
+                id: Date.now(),
+                name: name.trim(),
+                phone: '',
+                openingBalance: 0,
+                balType: 'credit'
+            };
+            suppliers.push(newAcc);
+            localStorage.setItem('hisabak_suppliers', JSON.stringify(suppliers));
+            allAccounts.push(newAcc);
+            selectAccount(newAcc);
+        }
+
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    attachedImageBase64 = e.target.result;
+                    alert('تم إرفاق صورة السند بنجاح!');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveVoucher() {
+            const accountName = document.getElementById('accountSearch').value.trim();
+            const amount = parseFloat(document.getElementById('amountInput').value);
+
+            if (!accountName) {
+                alert('يرجى اختيار أو كتابة اسم الحساب');
+                return;
+            }
+            if (!amount || amount <= 0) {
+                alert('يرجى إدخال مبلغ صحيح للسند');
+                return;
+            }
+
+            const type = document.querySelector('input[name="voucherType"]:checked').value;
+            const currency = document.getElementById('currencySelect').value;
+            const notes = document.getElementById('notesInput').value.trim();
+            const fund = document.getElementById('fundSelect').value;
+
+            const voucher = {
+                id: Date.now(),
+                type: type, // spend (صرف) or receipt (قبض)
+                accountName: accountName,
+                amount: amount,
+                currency: currency,
+                notes: notes,
+                fund: fund,
+                image: attachedImageBase64,
+                date: new Date().toLocaleDateString('ar-EG'),
+                time: new Date().toLocaleTimeString('ar-EG')
+            };
+
+            let vouchers = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
+            vouchers.push(voucher);
+            localStorage.setItem('hisabak_vouchers', JSON.stringify(vouchers));
+
+            alert(`تم حفظ سند ال${type === 'spend' ? 'صرف' : 'قبض'} بنجاح!`);
+
+            if (document.getElementById('closeOnSave').checked) {
+                closePage();
+            } else {
+                document.getElementById('amountInput').value = '';
+                document.getElementById('notesInput').value = '';
+            }
+        }
+
+        function sendVoucherWhatsApp() {
+            const accountName = document.getElementById('accountSearch').value.trim();
+            const amount = document.getElementById('amountInput').value.trim();
+            const type = document.querySelector('input[name="voucherType"]:checked').value === 'spend' ? 'سند صرف' : 'سند قبض';
+            const currency = document.getElementById('currencySelect').value;
+            const notes = document.getElementById('notesInput').value.trim();
+
+            if (!accountName || !amount) {
+                alert('يرجى تحديد الحساب والمبلغ أولاً قبل الإرسال');
+                return;
+            }
+
+            const msg = `*المحاسب الإحترافي بلس*%0A` +
+                        `*إشعار ${type}*%0A` +
+                        `الحساب: ${accountName}%0A` +
+                        `المبلغ: ${amount} ${currency}%0A` +
+                        `البيان: ${notes || 'بدون بيان'}%0A` +
+                        `التاريخ: ${new Date().toLocaleDateString('ar-EG')}`;
+
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+        }
+
+        function closePage() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('خاصية الإدخال الصوتي غير مدعومة في متصفحك الحالي');
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.onstart = () => { document.getElementById('statusBadge').innerText = 'جارٍ الاستماع...'; };
+            recognition.onresult = (e) => {
+                document.getElementById('notesInput').value = e.results[0][0].transcript;
+                document.getElementById('statusBadge').innerText = 'جاهز';
+            };
+            recognition.onerror = () => { document.getElementById('statusBadge').innerText = 'جاهز'; };
+            recognition.start();
+        }
+
+        // إغلاق قائمة البحث عند الضغط خارجها
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.form-row')) {
+                document.getElementById('accountDropdown').style.display = 'none';
+            }
         });
-        sel.setAttribute("data-synced-ver", "2.0");
-      }
-    });
-  }
-
-  // 1. تشغيل عند التحميل
-  document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
-  window.addEventListener("load", applyCurrenciesToAllSelects);
-
-  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
-  const observer = new MutationObserver(function() {
-    applyCurrenciesToAllSelects();
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  // 3. فحص عند أي نقرة زر داخل الصفحة
-  document.addEventListener("click", function() {
-    setTimeout(applyCurrenciesToAllSelects, 50);
-    setTimeout(applyCurrenciesToAllSelects, 300);
-  });
-})();
-</script>
-
+    </script>
 </body>
 </html>
