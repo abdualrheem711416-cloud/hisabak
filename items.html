@@ -1,301 +1,346 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>المحاسب الإحترافي بلس</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    :root {
-      --primary-color: #1a5276;
-      --accent-color: #f39c12;
-      --bg-color: #f8f9fa;
-      --card-bg: #ffffff;
-      --text-color: #2c3e50;
-      --border-color: #e2e8f0;
-      --success-color: #27ae60;
-      --danger-color: #e74c3c;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-color); direction: rtl; }
-    .header { background: var(--primary-color); color: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-    .header h1 { font-size: 1.1rem; }
-    .header a { color: white; text-decoration: none; font-size: 1.2rem; }
-    .container { padding: 15px; max-width: 800px; margin: auto; }
-    
-    .card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-    .card h3 { font-size: 1rem; margin-bottom: 12px; color: var(--primary-color); }
-    
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: bold; }
-    .form-control { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
-    
-    .row { display: flex; gap: 10px; }
-    .col { flex: 1; }
-    
-    .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-    .btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-primary { background: var(--primary-color); color: white; }
-    .btn-success { background: var(--success-color); color: white; }
-    .btn-accent { background: var(--accent-color); color: white; }
-    .btn-danger { background: var(--danger-color); color: white; }
-    
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
-    th { background: #f1f5f9; color: var(--primary-color); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ملف الأصناف</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root { --p: #1976D2; --pk: #d81b60; --bg: #f5f5f5; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom: 75px; }
 
-    
-    
-        
+/* الشريط العلوي */
+.hdr { background: var(--p); color: #fff; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.hdr-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+.hdr-icons { display: flex; gap: 16px; font-size: 18px; align-items: center; cursor: pointer; }
 
-    
-    
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+/* القائمة العلوية المنبثقة */
+.top-pop { display: none; position: absolute; top: 50px; left: 12px; background: #fff; border: 1px solid #cfd8dc; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 2000; min-width: 180px; }
+.top-pop div { padding: 10px 14px; font-size: 13px; color: #37474f; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+/* حقل البحث السريع */
+.search-box { display: none; background: #fff; padding: 8px 12px; border-bottom: 1px solid #cfd8dc; }
+.search-box input { width: 100%; padding: 8px 12px; border: 1px solid var(--p); border-radius: 20px; font-size: 13px; text-align: right; outline: none; }
+
+/* الفلاتر والقوائم */
+.flts { background: #fff; padding: 8px 12px; border-bottom: 1px solid #cfd8dc; display: flex; flex-direction: column; gap: 8px; }
+.sel-pill { width: 100%; border: 1px solid var(--p); border-radius: 20px; padding: 6px 12px; font-size: 13px; text-align: center; background: #fff; outline: none; }
+.row-flt { display: flex; gap: 8px; align-items: center; }
+.sort-wrap { flex: 1; display: flex; justify-content: space-around; align-items: center; border: 1px solid var(--p); border-radius: 20px; padding: 4px 8px; font-size: 12px; background: #fff; }
+
+/* ترويسة الجدول وجسم الجدول */
+.tbl-hdr { background: #039be5; color: #fff; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 8px 6px; font-size: 12px; font-weight: bold; text-align: center; margin-top: 4px; }
+.tbl-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 10px 6px; font-size: 12px; text-align: center; border-bottom: 1px solid #e0e0e0; background: #fff; align-items: center; }
+.tbl-row:nth-child(even) { background: #fafafa; }
+
+/* زر الإضافة العائم */
+.fab { position: fixed; bottom: 55px; right: 20px; width: 54px; height: 54px; background: var(--pk); color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 500; cursor: pointer; }
+
+/* الشريط السفلي للإجماليات */
+.bot-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--p); color: #fff; display: flex; justify-content: space-around; padding: 8px 4px; font-size: 11px; font-weight: bold; text-align: center; z-index: 100; }
+.bot-bar span { display: block; font-size: 13px; margin-top: 2px; }
+
+/* نافذة إضافة صنف جديد المنبثقة */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 12px; }
+.modal-box { background: #fff; width: 100%; max-width: 360px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+.inp-wrap { position: relative; display: flex; align-items: center; }
+.inp-wrap input, .inp-wrap select { width: 100%; padding: 7px 10px; border: 1px solid #b0bec5; border-radius: 6px; font-size: 13px; text-align: center; outline: none; }
+.inp-wrap .inp-icon { position: absolute; left: 10px; font-size: 15px; color: #546e7a; cursor: pointer; }
+.inp-wrap .inp-mic { position: absolute; right: 10px; font-size: 15px; color: #546e7a; cursor: pointer; }
+.lbl-tag { font-size: 11px; color: #546e7a; text-align: center; margin-bottom: -4px; }
+.modal-btn-row { display: flex; gap: 8px; margin-top: 6px; }
+.btn-save { flex: 1; padding: 9px; border: none; border-radius: 6px; background: var(--p); color: #fff; font-weight: bold; font-size: 13px; cursor: pointer; }
+.btn-close { flex: 1; padding: 9px; border: none; border-radius: 6px; background: #8e24aa; color: #fff; font-weight: bold; font-size: 13px; cursor: pointer; }
+</style>
 </head>
 <body>
-  <div class="header">
-    <a href="settings_menu.html"><i class="fas fa-arrow-right"></i></a>
-    <h1>إدارة المخازن والأصناف</h1>
-    <div style="width:24px;"></div>
-  </div>
 
-  <div class="container">
-    <!-- كرت إضافة صنف جديد -->
-    <div class="card">
-      <h3><i class="fas fa-plus-circle"></i> إضافة صنف جديد</h3>
-      <form id="item-form">
-        <div class="form-group">
-          <label>اسم الصنف</label>
-          <input type="text" id="item-name" class="form-control" placeholder="أدخل اسم الصنف" required>
+<div class="hdr">
+    <div class="hdr-title" onclick="location.href='settings_menu.html'">
+        <i class="fa-solid fa-arrow-right"></i>
+        <span>ملف الأصناف</span>
+    </div>
+    <div class="hdr-icons">
+        <i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()"></i>
+        <i class="fa-solid fa-print" onclick="window.print()"></i>
+        <i class="fa-solid fa-share-nodes" onclick="shareReport()"></i>
+        <i class="fa-solid fa-ellipsis-vertical" onclick="toggleTopMenu(event)"></i>
+    </div>
+</div>
+
+<div class="top-pop" id="topMenuPop">
+    <div onclick="alert('استيراد الأصناف من إكسل')"><i class="fa-solid fa-file-import" style="color:var(--p)"></i> استيراد من إكسل</div>
+    <div onclick="alert('تصدير الأصناف إلى إكسل')"><i class="fa-solid fa-file-excel" style="color:#2e7d32"></i> تصدير إلى إكسل</div>
+    <div onclick="resetItems()" style="color:#d32f2f"><i class="fa-solid fa-trash"></i> حذف وتصفير الأصناف</div>
+</div>
+
+<div class="search-box" id="searchBox">
+    <input type="text" id="searchInp" oninput="render()" placeholder="اكتب اسم الصنف أو الباركود للبحث...">
+</div>
+
+<div class="flts">
+    <select class="sel-pill" id="fltCurrency" onchange="render()">
+        <option value="YER">جميع العملات الى عمله محليه</option>
+        <option value="SAR">ريال سعودي</option>
+        <option value="USD">دولار أمريكي</option>
+    </select>
+    <select class="sel-pill" id="fltCategory" onchange="render()">
+        <option value="all">التصنيف (الكل)</option>
+        <option value="مواد غذائية">مواد غذائية</option>
+        <option value="إلكترونيات">إلكترونيات</option>
+        <option value="عام">عام</option>
+    </select>
+    <div class="row-flt">
+        <select class="sel-pill" style="flex:1" id="fltSort" onchange="render()">
+            <option value="all">جميع الأصناف</option>
+            <option value="name">حسب الاسم</option>
+            <option value="stock">حسب الرصيد</option>
+        </select>
+        <div class="sort-wrap">
+            <label><input type="radio" name="sortDir" value="asc" checked onchange="render()"> تصاعدي</label>
+            <label><input type="radio" name="sortDir" value="desc" onchange="render()"> تنازلي</label>
         </div>
-        <div class="row">
-          <div class="col form-group">
-            <label>المخزن</label>
-            <select id="item-warehouse" class="form-control">
-              <option value="المخزن الرئيسي">المخزن الرئيسي</option>
-              <option value="مخزن الفرع">مخزن الفرع</option>
+    </div>
+</div>
+
+<div class="tbl-hdr">
+    <div>اسم الصنف</div>
+    <div>الوحده</div>
+    <div>التكلفه</div>
+    <div>س البيع</div>
+    <div>الرصيد</div>
+</div>
+
+<div id="itemsList"></div>
+
+<button type="button" class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+
+<div class="bot-bar">
+    <div>الرصيد س التكلفه<span id="totCost">0</span></div>
+    <div>الرصيد س البيع<span id="totSale">0</span></div>
+    <div>الرصيد<span id="totQty">0</span></div>
+</div>
+
+<div class="modal-overlay" id="itemModal" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-head">
+            <span>اضافة صنف جديد</span>
+            <label style="font-size:11px; color:#8e24aa; font-weight:normal; cursor:pointer;">
+                <input type="checkbox" id="closeAfterSave" checked> الإغلاق بعد الحفظ
+            </label>
+        </div>
+
+        <div class="lbl-tag">الباركود</div>
+        <div class="inp-wrap">
+            <input type="text" id="itemBarcode" value="1">
+            <i class="fa-solid fa-barcode inp-icon"></i>
+        </div>
+
+        <div class="lbl-tag">رقم القطعه</div>
+        <div class="inp-wrap">
+            <input type="text" id="itemPartNo" placeholder="رقم القطعه">
+        </div>
+
+        <div class="lbl-tag">اسم الصنف</div>
+        <div class="inp-wrap">
+            <i class="fa-solid fa-microphone inp-mic"></i>
+            <input type="text" id="itemName" placeholder="اسم الصنف" style="padding-right:30px; padding-left:30px;">
+            <i class="fa-solid fa-camera inp-icon"></i>
+        </div>
+
+        <div class="lbl-tag">الوحده الاساسيه</div>
+        <div class="inp-wrap">
+            <input type="text" id="itemUnit" value="حبه">
+        </div>
+
+        <div class="lbl-tag">العملة</div>
+        <div class="inp-wrap">
+            <select id="itemCurr">
+                <option value="YER">ر.ي (يمني)</option>
+                <option value="SAR">ر.س (سعودي)</option>
+                <option value="USD">$ (دولار)</option>
             </select>
-          </div>
-          <div class="col form-group">
-            <label>الوحدة</label>
-            <input type="text" id="item-unit" class="form-control" value="حبه" placeholder="حبه / كرتون">
-          </div>
         </div>
-        <div class="row">
-          <div class="col form-group">
-            <label>الكمية الافتتاحية</label>
-            <input type="number" id="item-qty" class="form-control" value="0" min="0">
-          </div>
-          <div class="col form-group">
-            <label>سعر البيع</label>
-            <input type="number" id="item-price" class="form-control" value="0" min="0" step="any">
-          </div>
-          <div class="col form-group">
-            <label>العملة</label>
-            <select id="item-currency" class="form-control">
-              <option value="YER">عمله محليه (YER)</option>
-              <option value="SAR">ريال سعودي (SAR)</option>
-              <option value="USD">دولار (USD)</option>
-            </select>
-          </div>
+
+        <div class="lbl-tag">التصنيف</div>
+        <div class="inp-wrap">
+            <input type="text" id="itemCat" placeholder="التصنيف" value="عام">
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:6px;">
-          <i class="fas fa-save"></i> حفظ الصنف
-        </button>
-      </form>
+
+        <div class="lbl-tag">التكلفه</div>
+        <div class="inp-wrap">
+            <input type="number" id="itemCost" placeholder="التكلفه" value="0">
+        </div>
+
+        <div class="lbl-tag">سعر البيع</div>
+        <div class="inp-wrap">
+            <input type="number" id="itemPrice" placeholder="سعر البيع" value="0">
+            <i class="fa-solid fa-calculator inp-icon"></i>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:2px;">
+            <div>
+                <div class="lbl-tag">الرصيد الافتتاحي</div>
+                <div class="inp-wrap"><input type="number" id="itemStock" value="0"></div>
+            </div>
+            <div>
+                <div class="lbl-tag">تاريخ الانتهاء</div>
+                <div class="inp-wrap"><input type="text" id="itemExp" value="03/10/2029"></div>
+            </div>
+        </div>
+
+        <div class="modal-btn-row">
+            <button type="button" class="btn-save" onclick="saveItem()">حفظ</button>
+            <button type="button" class="btn-close" onclick="closeModal()">اغلاق</button>
+        </div>
     </div>
+</div>
 
-    <!-- كرت الاستيراد والتصدير عبر Excel -->
-    <div class="card">
-      <h3><i class="fas fa-file-excel"></i> عمليات Excel المتقدمة</h3>
-      <input type="file" id="excel-file" accept=".xlsx, .xls" style="display: none;">
-      <div class="btn-group">
-        <button class="btn btn-success" onclick="document.getElementById('excel-file').click()">
-          <i class="fas fa-file-import"></i> استيراد من Excel
-        </button>
-        <button class="btn btn-accent" onclick="exportItemsToExcel()">
-          <i class="fas fa-file-export"></i> تصدير إلى Excel
-        </button>
-      </div>
-    </div>
+<script>
+var KEY = 'hisabak_items';
+var items = [];
 
-    <!-- جدول قائمة الأصناف -->
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3><i class="fas fa-boxes"></i> قائمة الأصناف بالمخازن</h3>
-        <span id="items-count" style="font-size:0.85rem; font-weight:bold; color:var(--primary-color);">0 صنف</span>
-      </div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>الصنف</th>
-              <th>المخزن</th>
-              <th>الوحدة</th>
-              <th>الكمية</th>
-              <th>السعر</th>
-              <th>العملة</th>
-              <th>إجراء</th>
-            </tr>
-          </thead>
-          <tbody id="items-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const STORAGE_KEY = "المحاسب الإحترافي بلس_items_data";
-
-    function getItems() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch(e) {
-        return [];
-      }
+function loadData() {
+    try {
+        var d = localStorage.getItem(KEY);
+        if(d) items = JSON.parse(d);
+    } catch(e){}
+        items = [
+            { id: '1', barcode: '1', partNo: '', name: 'صنف تجريبي', unit: 'حبه', curr: 'YER', cat: 'عام', cost: 100, price: 150, stock: 14, exp: '03/10/2029' }
+        ];
+        saveData();
     }
+}
 
-    function saveItems(items) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-      renderItems();
-    }
+function saveData() {
+    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch(e){}
+}
 
-    function renderItems() {
-      const items = getItems();
-      const tbody = document.getElementById("items-table-body");
-      const countEl = document.getElementById("items-count");
-      tbody.innerHTML = "";
-      countEl.textContent = `${items.length} صنف`;
+function render() {
+    var box = document.getElementById('itemsList');
+    box.innerHTML = '';
+    var q = (document.getElementById('searchInp')?.value || '').trim().toLowerCase();
+    var cat = document.getElementById('fltCategory').value;
+    
+    var tCost = 0, tSale = 0, tQty = 0;
 
-      if (items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="color:#777; padding:15px;">لا توجد أصناف مدخلة بعد</td></tr>`;
-        return;
-      }
-
-      items.forEach((item, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td style="font-weight:bold; text-align:right;">${item.name}</td>
-          <td>${item.warehouse || "المخزن الرئيسي"}</td>
-          <td>${item.unit || "حبه"}</td>
-          <td>${item.qty || 0}</td>
-          <td>${item.price || 0}</td>
-          <td><span style="font-weight:bold; color:var(--primary-color);">${item.currency || "YER"}</span></td>
-          <td>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem; margin:auto;" onclick="deleteItem(${index})">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    document.getElementById("item-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = document.getElementById("item-name").value.trim();
-      const warehouse = document.getElementById("item-warehouse").value;
-      const unit = document.getElementById("item-unit").value.trim();
-      const qty = parseFloat(document.getElementById("item-qty").value) || 0;
-      const price = parseFloat(document.getElementById("item-price").value) || 0;
-      const currency = document.getElementById("item-currency").value || "YER";
-
-      if (!name) return;
-
-      const items = getItems();
-      items.push({ name, warehouse, unit, qty, price, currency });
-      saveItems(items);
-      this.reset();
-      document.getElementById("item-qty").value = "0";
-      document.getElementById("item-price").value = "0";
-      document.getElementById("item-unit").value = "حبه";
+    var list = items.filter(function(x) {
+        var mCat = (cat === 'all') || (x.cat === cat);
+        return mQ && mCat;
     });
 
-    function deleteItem(index) {
-      if (confirm("هل تريد حذف هذا الصنف بالتأكيد؟")) {
-        const items = getItems();
-        items.splice(index, 1);
-        saveItems(items);
-      }
-    }
-
-    // استيراد من ملف Excel
-    document.getElementById("excel-file").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const data = new Uint8Array(evt.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
-          if (rows.length < 2) {
-            alert("الملف فارغ أو لا يحتوي على صفوف صالحة.");
-            return;
-          }
-
-          const currentItems = getItems();
-          let added = 0;
-
-          // تخطي الصف الأول كترويسة
-          for (let i = 1; i < rows.length; i++) {
-            const row = rows[i];
-            if (!row || !row[0]) continue;
-            currentItems.push({
-              name: String(row[0]).trim(),
-              warehouse: row[1] ? String(row[1]).trim() : "المخزن الرئيسي",
-              unit: row[2] ? String(row[2]).trim() : "حبه",
-              qty: parseFloat(row[3]) || 0,
-              price: parseFloat(row[4]) || 0,
-              currency: row[5] ? String(row[5]).trim() : "YER"
-            });
-            added++;
-          }
-
-          saveItems(currentItems);
-          alert(`تم استيراد ${added} صنف بنجاح من Excel!`);
-        } catch(err) {
-          alert("حدث خطأ أثناء قراءة ملف Excel: " + err.message);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-      this.value = "";
+    var isAsc = document.querySelector('input[name="sortDir"]:checked').value === 'asc';
+    list.sort(function(a, b) {
+        return isAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
     });
 
-    // تصدير الأصناف إلى ملف Excel
-    function exportItemsToExcel() {
-      const items = getItems();
-      if (items.length === 0) {
-        alert("لا توجد أصناف لتصديرها.");
-        return;
-      }
+    list.forEach(function(it) {
+        var qty = parseFloat(it.stock || 0);
+        var cost = parseFloat(it.cost || 0);
+        var price = parseFloat(it.price || 0);
 
-      const excelData = [
-        ["اسم الصنف", "المخزن", "الوحدة", "الكمية", "سعر البيع", "العملة"]
-      ];
+        tQty += qty;
+        tCost += (qty * cost);
+        tSale += (qty * price);
 
-      items.forEach(it => {
-        excelData.push([it.name, it.warehouse, it.unit, it.qty, it.price, it.currency || "YER"]);
-      });
+        var row = document.createElement('div');
+        row.className = 'tbl-row';
+        row.innerHTML = 
+            '<div style="font-weight:bold; text-align:right; padding-right:6px;">' + it.name + '</div>' +
+            '<div>' + (it.unit || 'حبه') + '</div>' +
+            '<div>' + cost.toLocaleString() + '</div>' +
+            '<div>' + price.toLocaleString() + '</div>' +
+            '<div style="font-weight:bold; color:' + (qty <= 0 ? 'red' : 'green') + '">' + qty.toLocaleString() + '</div>';
+        box.appendChild(row);
+    });
 
-      const ws = XLSX.utils.aoa_to_sheet(excelData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "الأصناف والمخازن");
-      XLSX.writeFile(wb, "المحاسب الإحترافي بلس_inventory_items.xlsx");
+    document.getElementById('totCost').innerText = tCost.toLocaleString();
+    document.getElementById('totSale').innerText = tSale.toLocaleString();
+    document.getElementById('totQty').innerText = tQty.toLocaleString();
+}
+
+function openModal() {
+    document.getElementById('itemBarcode').value = String(items.length + 1);
+    document.getElementById('itemPartNo').value = '';
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemUnit').value = 'حبه';
+    document.getElementById('itemCat').value = 'عام';
+    document.getElementById('itemCost').value = '0';
+    document.getElementById('itemPrice').value = '0';
+    document.getElementById('itemStock').value = '0';
+    document.getElementById('itemModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('itemModal').style.display = 'none';
+}
+
+function saveItem() {
+    var name = document.getElementById('itemName').value.trim();
+
+    items.push({
+        id: String(Date.now()),
+        barcode: document.getElementById('itemBarcode').value.trim(),
+        partNo: document.getElementById('itemPartNo').value.trim(),
+        name: name,
+        unit: document.getElementById('itemUnit').value.trim() || 'حبه',
+        curr: document.getElementById('itemCurr').value,
+        cat: document.getElementById('itemCat').value.trim() || 'عام',
+        cost: parseFloat(document.getElementById('itemCost').value) || 0,
+        price: parseFloat(document.getElementById('itemPrice').value) || 0,
+        stock: parseFloat(document.getElementById('itemStock').value) || 0,
+        exp: document.getElementById('itemExp').value.trim()
+    });
+
+    saveData();
+    render();
+
+    if(document.getElementById('closeAfterSave').checked) {
+        closeModal();
+    } else {
+        document.getElementById('itemBarcode').value = String(items.length + 1);
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemName').focus();
     }
+}
 
-    window.addEventListener("DOMContentLoaded", renderItems);
-  </script>
+function toggleSearch() {
+    var s = document.getElementById('searchBox');
+    s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+    if(s.style.display === 'block') document.getElementById('searchInp').focus();
+}
+
+function toggleTopMenu(e) {
+    e.stopPropagation();
+    var m = document.getElementById('topMenuPop');
+    m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+}
+
+function resetItems() {
+    if(confirm('هل تريد تصفير وحذف جميع الأصناف؟')) {
+        items = [];
+        saveData();
+        render();
+    }
+}
+
+function shareReport() {
+    var txt = '*تقرير جرد الأصناف*
+';
+    items.forEach(function(x) { txt += '- ' + x.name + ' (الرصيد: ' + x.stock + ')
+'; });
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(txt), '_blank');
+}
+
+window.onclick = function() {
+    var m = document.getElementById('topMenuPop');
+    if(m) m.style.display = 'none';
+};
+
+loadData();
+render();
+</script>
 </body>
 </html>
