@@ -311,6 +311,7 @@ function toggleExpDate(checked) {
 }
 
 
+
 function saveProduct() {
     var nameInp = document.getElementById('inName');
     var name = nameInp ? nameInp.value.trim() : '';
@@ -318,23 +319,19 @@ function saveProduct() {
     var barcode = document.getElementById('inBarcode')?.value.trim() || String(Date.now()).slice(-6);
     var curr = document.getElementById('inCurr')?.value || 'سعودي';
     
-    // الوحدة الأولى (الحقول في الواجهة: الحقل الأيمن للأعلى أو التكلفة واليسار للبيع)
-    var inputs = document.querySelectorAll('#productScreen input');
+    // التقاط التكلفة وسعر البيع من الحقول النشطة
     var cost = 0, price = 0;
-    
-    // التقاط الأسعار من حقول الوحدة الأولى والثانية والثالثة ديناميكياً
-    var costInput = document.getElementById('inCost1');
-    var priceInput = document.getElementById('inPrice1');
-    
-    if(costInput) cost = parseFloat(costInput.value) || 0;
-    if(priceInput) price = parseFloat(priceInput.value) || 0;
-
-    // إذا لم تُعرف بالمعرّفات، نأخذ أول حقول رقمية تظهر في الوحدة الأولى
-    if(cost === 0 && price === 0) {
-        var numInps = document.querySelectorAll('#productScreen input[type="number"]');
-        if(numInps.length >= 2) {
-            cost = parseFloat(numInps[0].value) || 0;
-            price = parseFloat(numInps[1].value) || 0;
+    var numInps = document.querySelectorAll('#productScreen input[type="number"]');
+    if(numInps.length >= 2) {
+        cost = parseFloat(numInps[0].value) || 0;
+        price = parseFloat(numInps[1].value) || 0;
+    } else {
+        var allInps = document.querySelectorAll('#productScreen input');
+        // البحث عن أول حقول رقمية تم إدخالها
+        for(var i=0; i<allInps.length; i++) {
+                if(cost === 0) cost = parseFloat(allInps[i].value) || 0;
+                else if(price === 0) { price = parseFloat(allInps[i].value) || 0; break; }
+            }
         }
     }
 
@@ -349,10 +346,12 @@ function saveProduct() {
         curr: curr
     });
 
-    saveData();
-    closeProductScreen();
+    try { localStorage.setItem('hisabak_items_master', JSON.stringify(items)); } catch(e){}
+    
+    document.getElementById('productScreen').style.display = 'none';
     render();
 }
+
 
 
     var cost = parseFloat(document.getElementById('inCost1').value) || 0;
