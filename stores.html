@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ملف المخازن</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root { --p: #1976d2; --sec: #0288d1; --accent: #7b1fa2; --bg: #f8f9fa; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg); min-height: 100vh; padding-bottom: 75px; }
+
+/* الشريط العلوي */
+.main-hdr { background: var(--p); color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+/* أزرار العمليات العلوية */
+.actions-container { padding: 14px; display: flex; flex-direction: column; gap: 10px; max-width: 480px; margin: 0 auto; }
+.action-btn { width: 100%; padding: 12px 16px; border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: bold; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: opacity 0.2s; }
+.action-btn:active { opacity: 0.85; }
+.btn-blue { background: var(--sec); }
+.btn-purple { background: var(--accent); }
+
+/* بطاقة المخزن الرئيسي */
+.store-card { background: #fff; border-radius: 10px; padding: 14px; margin: 0 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; }
+.store-info { display: flex; align-items: center; gap: 12px; }
+.store-icon { width: 40px; height: 40px; background: #e3f2fd; color: var(--sec); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.store-name { font-size: 16px; font-weight: bold; color: #333; }
+.store-id { background: #fce4ec; color: #c2185b; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: bold; }
+
+/* زر الإضافة العائم (+) */
+.fab-btn { position: fixed; bottom: 25px; right: 20px; width: 56px; height: 56px; background: #e91e63; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 500; cursor: pointer; }
+
+/* نافذة إضافة مخزن جديد */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 16px; }
+.modal-card { background: #fff; width: 100%; max-width: 340px; border-radius: 10px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); display: flex; flex-direction: column; gap: 12px; }
+.modal-title { font-size: 17px; font-weight: bold; text-align: center; color: #333; margin-bottom: 4px; }
+.modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid #1976d2; border-radius: 8px; font-size: 14px; outline: none; text-align: right; }
+.modal-btns { display: flex; gap: 10px; margin-top: 8px; }
+.modal-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; color: #fff; text-align: center; }
+.btn-save { background: #01579b; }
+.btn-cancel { background: #d32f2f; }
+</style>
+</head>
+<body>
+
+<!-- الشريط العلوي -->
+<div class="main-hdr" onclick="location.href='settings_menu.html'">
+    <i class="fa-solid fa-arrow-right"></i>
+    <span>ملف المخازن</span>
+</div>
+
+<!-- الأزرار الرئيسية -->
+<div class="actions-container">
+    <button type="button" class="action-btn btn-blue" onclick="alert('سند توريد / صرف مخزني')">سند توريد / صرف مخزني</button>
+    <button type="button" class="action-btn btn-blue" onclick="alert('سند تحويل مخزني')">سند تحويل مخزني</button>
+    <button type="button" class="action-btn btn-purple" onclick="alert('جرد المخزون')">جرد المخزون</button>
+    <button type="button" class="action-btn btn-purple" onclick="alert('ملخص الجرد')">ملخص الجرد</button>
+    <button type="button" class="action-btn btn-purple" onclick="alert('مراجعة حركات المخازن')">مراجعة حركات المخازن</button>
+</div>
+
+<!-- قائمة المخازن -->
+<div style="max-width: 480px; margin: 0 auto; padding: 0 0;">
+    <div id="storesList"></div>
+</div>
+
+<!-- زر الإضافة العائم (+) -->
+<button type="button" class="fab-btn" onclick="openStoreModal()"><i class="fa-solid fa-plus"></i></button>
+
+<!-- نافذة إضافة مخزن جديد -->
+<div class="modal-overlay" id="storeModal" onclick="closeStoreModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-title">إضافة مخزن جديد</div>
+        <input type="text" id="storeNameInput" class="modal-input" placeholder="ادخل اسم المخزن...">
+        <div class="modal-btns">
+            <button type="button" class="modal-btn btn-save" onclick="saveStore()">حفظ</button>
+            <button type="button" class="modal-btn btn-cancel" onclick="closeStoreModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var STORE_KEY = 'hisabak_stores_master';
+var stores = [];
+
+function loadStores() {
+    try {
+        var d = localStorage.getItem(STORE_KEY);
+        if(d) stores = JSON.parse(d);
+    } catch(e){}
+    if(!stores || !stores.length) {
+        stores = [
+            { id: '1', name: 'المخزن الرئيسي' }
+        ];
+        saveStores();
+    }
+}
+
+function saveStores() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(stores)); } catch(e){}
+}
+
+function renderStores() {
+    var box = document.getElementById('storesList');
+    box.innerHTML = '';
+    stores.forEach(function(st) {
+        var card = document.createElement('div');
+        card.className = 'store-card';
+        card.innerHTML = `
+            <div class="store-info">
+                <div class="store-icon"><i class="fa-solid fa-warehouse"></i></div>
+                <div class="store-name">${st.name}</div>
+            </div>
+            <div class="store-id">${st.id}</div>
+        `;
+        box.appendChild(card);
+    });
+}
+
+function openStoreModal() {
+    document.getElementById('storeNameInput').value = '';
+    document.getElementById('storeModal').style.display = 'flex';
+    document.getElementById('storeNameInput').focus();
+}
+
+function closeStoreModal() {
+    document.getElementById('storeModal').style.display = 'none';
+}
+
+function saveStore() {
+    var name = document.getElementById('storeNameInput').value.trim();
+    if(!name) { alert('الرجاء إدخال اسم المخزن'); return; }
+
+    stores.push({
+        id: String(stores.length + 1),
+        name: name
+    });
+
+    saveStores();
+    closeStoreModal();
+    renderStores();
+}
+
+loadStores();
+renderStores();
+</script>
+</body>
+</html>
