@@ -3,53 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>حسابك - التطبيق الشامل</title>
+<title>نظام حسابك - الشاشة الرئيسية المتكاملة</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root { --p: #1976d2; --sec: #0288d1; --bg: #f8f9fa; }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; }
+body { background: var(--bg); min-height: 100vh; padding-bottom: 75px; }
 
-/* الشريط العلوي الشامل */
-.app-hdr { background: var(--p); color: #fff; padding: 16px; text-align: center; font-size: 19px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+/* الشريط العلوي */
+.app-header { background: var(--p); color: #fff; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.app-title { font-size: 18px; font-weight: bold; }
+.settings-icon { font-size: 22px; cursor: pointer; color: #fff; text-decoration: none; }
 
-/* القائمة الشاملة للأقسام */
-.modules-container { padding: 16px; display: flex; flex-direction: column; gap: 12px; max-width: 480px; margin: 0 auto; }
-.module-card { background: #fff; padding: 16px 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; text-decoration: none; color: #212121; font-weight: bold; font-size: 16px; border-right: 6px solid var(--p); transition: transform 0.1s; }
-.module-card:active { transform: scale(0.98); background: #f1f1f1; }
-.module-info { display: flex; align-items: center; gap: 14px; }
-.module-icon { width: 44px; height: 44px; background: #e3f2fd; color: var(--p); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.module-name { font-size: 16px; color: #333; }
-.module-arrow { color: #888; font-size: 14px; }
+/* شبكة الأقسام والخدمات */
+.dashboard-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 500px; margin: 0 auto; }
+.dash-card { background: #fff; border-radius: 12px; padding: 20px 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; color: #333; border: 1px solid #e0e0e0; transition: transform 0.1s, background 0.2s; }
+.dash-card:active { transform: scale(0.97); background: #f1f1f1; }
+.dash-icon { width: 50px; height: 50px; background: #e3f2fd; color: var(--p); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.dash-name { font-size: 15px; font-weight: bold; text-align: center; color: #212121; }
+
+/* بطاقة الإعدادات الكاملة بالعرض */
+.settings-full-card { grid-column: span 2; background: #fff; border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; color: #333; border: 1px solid #e0e0e0; }
+.settings-full-card:active { background: #f1f1f1; }
 </style>
 </head>
 <body>
 
-<div class="app-hdr">نظام حسابك - الشاشة الرئيسية</div>
+<div class="app-header">
+    <div class="app-title">المحاسب الإحترافي - نظام حسابك</div>
+    <a href="settings_menu.html" class="settings-icon"><i class="fa-solid fa-gear"></i></a>
+</div>
 
-<div class="modules-container">
-    <a href="items.html" class="module-card">
-        <div class="module-info">
-            <div class="module-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
-            <div class="module-name">ملف الأصناف</div>
-        </div>
-        <i class="fa-solid fa-chevron-left module-arrow"></i>
+<div class="dashboard-grid">
+    <!-- العملاء -->
+    <a href="customers.html" class="dash-card">
+        <div class="dash-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="dash-name">العملاء</div>
     </a>
 
-    <a href="stores.html" class="module-card" style="border-right-color: #0288d1;">
-        <div class="module-info">
-            <div class="module-icon" style="color: #0288d1;"><i class="fa-solid fa-warehouse"></i></div>
-            <div class="module-name">ملف المخازن</div>
-        </div>
-        <i class="fa-solid fa-chevron-left module-arrow"></i>
+    <!-- الموردين -->
+    <a href="suppliers.html" class="dash-card">
+        <div class="dash-icon" style="color: #00796b; background: #e0f2f1;"><i class="fa-solid fa-truck-field"></i></div>
+        <div class="dash-name">الموردين</div>
     </a>
 
-    <a href="settings_menu.html" class="module-card" style="border-right-color: #7b1fa2;">
-        <div class="module-info">
-            <div class="module-icon" style="color: #7b1fa2; background: #f3e5f5;"><i class="fa-solid fa-gear"></i></div>
-            <div class="module-name">إعدادات النظام</div>
+    <!-- الأصناف -->
+    <a href="items.html" class="dash-card">
+        <div class="dash-icon" style="color: #e65100; background: #fff3e0;"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <div class="dash-name">الأصناف</div>
+    </a>
+
+    <!-- المخازن -->
+    <a href="stores.html" class="dash-card">
+        <div class="dash-icon" style="color: #7b1fa2; background: #f3e5f5;"><i class="fa-solid fa-warehouse"></i></div>
+        <div class="dash-name">المخازن</div>
+    </a>
+
+    <!-- الفواتير -->
+    <a href="invoices_list.html" class="dash-card">
+        <div class="dash-icon" style="color: #c2185b; background: #fce4ec;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+        <div class="dash-name">الفواتير</div>
+    </a>
+
+    <!-- السندات -->
+    <a href="vouchers.html" class="dash-card">
+        <div class="dash-icon" style="color: #0288d1; background: #e1f5fe;"><i class="fa-solid fa-receipt"></i></div>
+        <div class="dash-name">السندات</div>
+    </a>
+
+    <!-- إعدادات النظام كاملة -->
+    <a href="settings_menu.html" class="settings-full-card">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="dash-icon" style="color: #37474f; background: #eceff1; width: 44px; height: 44px; font-size: 20px;"><i class="fa-solid fa-gear"></i></div>
+            <div class="dash-name" style="font-size: 16px;">إعدادات النظام وملف المخازن</div>
         </div>
-        <i class="fa-solid fa-chevron-left module-arrow"></i>
+        <i class="fa-solid fa-chevron-left" style="color: #888;"></i>
     </a>
 </div>
 
