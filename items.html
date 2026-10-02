@@ -71,10 +71,19 @@ input:checked + .slider:before { transform: translateX(20px); }
         <span>ملف الأصناف</span>
     </div>
     <div class="main-hdr-icons">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()" style="cursor:pointer;"></i>
         <i class="fa-solid fa-print" onclick="openPrintModal()"></i>
         <i class="fa-solid fa-share-nodes" onclick="openPrintModal()"></i>
         <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+</div>
+
+
+<div id="searchContainer" style="display:none; background:#fff; padding:8px 12px; border-bottom:2px solid #1976d2;">
+    <div style="position:relative; display:flex; align-items:center;">
+        <i class="fa-solid fa-magnifying-glass" style="position:absolute; right:12px; color:#1976d2;"></i>
+        <input type="text" id="searchInput" oninput="render()" placeholder="ابحث باسم الصنف أو رقم الباركود..." style="width:100%; padding:8px 36px 8px 34px; border:1.5px solid #1976d2; border-radius:20px; font-size:13px; text-align:right; outline:none; background:#fafafa;">
+        <i class="fa-solid fa-circle-xmark" onclick="clearSearch()" style="position:absolute; left:12px; color:#888; font-size:14px; cursor:pointer;"></i>
     </div>
 </div>
 
@@ -256,9 +265,12 @@ function saveData() {
 function render() {
     var box = document.getElementById('itemsList');
     box.innerHTML = '';
+    var q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
     var tCost = 0, tSale = 0, tQty = 0;
+    var filtered = items.filter(function(it){
+    });
 
-    items.forEach(function(it) {
+    filtered.forEach(function(it) {
         var q = parseFloat(it.stock || 0);
         var c = parseFloat(it.cost || 0);
         var p = parseFloat(it.price || 0);
@@ -347,6 +359,23 @@ function saveProduct() {
 
     saveData();
     closeProductScreen();
+    render();
+}
+
+
+function toggleSearch() {
+    var s = document.getElementById('searchContainer');
+    s.style.display = (s.style.display === 'none' || s.style.display === '') ? 'block' : 'none';
+    if(s.style.display === 'block') {
+        var inp = document.getElementById('searchInput');
+        if(inp) inp.focus();
+    } else {
+        clearSearch();
+    }
+}
+function clearSearch() {
+    var inp = document.getElementById('searchInput');
+    if(inp) inp.value = '';
     render();
 }
 
