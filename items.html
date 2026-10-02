@@ -223,7 +223,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
         <!-- 9. أزرار التحكم السفلية -->
         <div class="action-btns">
-            <button type="button" class="btn-save-prod" onclick="saveProduct()">حفظ</button>
+            <button type="button" class="btn-save-prod" onclick="executeSaveProduct()">حفظ</button>
             <div class="btn-help" onclick="alert('شرح كيفية إضافة وتعديل الأصناف والوحدات المتعددة')">
                 <span>شرح</span>
                 <i class="fa-brands fa-youtube" style="font-size:18px;"></i>
@@ -421,6 +421,67 @@ render();
         </div>
     </div>
 </div>
+
+
+<script>
+function executeSaveProduct() {
+    var nameField = document.getElementById('inName');
+    var nameVal = nameField ? nameField.value.trim() : '';
+    
+        alert('الرجاء إدخال اسم الصنف');
+        if(nameField) nameField.focus();
+        return;
+    }
+
+    var barcodeVal = document.getElementById('inBarcode')?.value.trim() || String(Date.now()).slice(-6);
+    
+    // قراءة التكلفة وسعر البيع من الحقول المتاحة بدقة
+    var costVal = 0;
+    var priceVal = 0;
+    
+    var numInputs = document.querySelectorAll('#productScreen input[type="number"], #productScreen input');
+    var numericFound = [];
+    
+    numInputs.forEach(function(inp) {
+            numericFound.push(parseFloat(inp.value));
+        }
+    });
+
+    if(numericFound.length >= 2) {
+        costVal = numericFound[0];
+        priceVal = numericFound[1];
+    } else if(numericFound.length === 1) {
+        priceVal = numericFound[0];
+    }
+
+    // إضافة الصنف للقائمة
+    if(typeof items === 'undefined') { window.items = []; }
+    
+    items.push({
+        id: String(Date.now()),
+        name: nameVal,
+        barcode: barcodeVal,
+        unit: 'حبة',
+        cost: costVal,
+        price: priceVal,
+        stock: 0
+    });
+
+    try {
+        localStorage.setItem('hisabak_items_master', JSON.stringify(items));
+    } catch(e) {}
+
+    // إغلاق الشاشة وتحديث الجدول
+    var screen = document.getElementById('productScreen');
+    if(screen) screen.style.display = 'none';
+
+    if(typeof render === 'function') {
+        render();
+    } else {
+        location.reload();
+    }
+}
+</script>
 
 </body>
 </html>
