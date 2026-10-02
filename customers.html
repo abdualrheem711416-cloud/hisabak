@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>العملاء - المحاسب الإحترافي بلس</title>
+<title>العملاء</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root { --p: #0288d1; --pk: #d81b60; --g: #2e7d32; --bg: #f5f7fa; }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: rgba(0,0,0,0); }
 body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom: 70px; }
 .hdr { background: var(--p); color: #fff; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 .hdr h2 { font-size: 16px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .hdr-icons { display: flex; gap: 16px; font-size: 18px; align-items: center; }
-.hdr-icons i { cursor: pointer; }
 
 .flts { background: #fff; padding: 8px 12px; border-bottom: 1px solid #cfd8dc; display: flex; flex-direction: column; gap: 6px; }
 .r-row { display: flex; justify-content: space-between; font-size: 12px; }
@@ -20,15 +19,14 @@ body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom:
 .dt-row { background: var(--p); color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 11px; display: flex; justify-content: space-between; }
 .dt-v { background: #fff; color: #000; border-radius: 10px; padding: 1px 8px; font-weight: bold; }
 
-.card { background: #fff; border-radius: 8px; padding: 10px 12px; margin: 8px 10px; border: 1px solid #cfd8dc; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.c-info { flex: 1; cursor: pointer; }
+.card { background: #fff; border-radius: 8px; padding: 10px 12px; margin: 8px 10px; border: 1px solid #cfd8dc; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.c-info { flex: 1; pointer-events: none; }
 .c-name { font-size: 15px; font-weight: bold; color: #37474f; }
 .c-sub { font-size: 11px; color: #78909c; margin-top: 2px; }
-.c-tools { display: flex; gap: 14px; align-items: center; margin-top: 6px; font-size: 16px; }
-.c-tools i { cursor: pointer; }
-.c-bal { font-size: 16px; font-weight: bold; color: var(--pk); text-align: left; min-width: 65px; cursor: pointer; }
+.c-tools { display: flex; gap: 14px; align-items: center; margin-top: 6px; font-size: 16px; pointer-events: auto; }
+.c-bal { font-size: 16px; font-weight: bold; color: var(--pk); text-align: left; min-width: 65px; pointer-events: none; }
 
-.fab { position: fixed; bottom: 35px; right: 20px; width: 56px; height: 56px; background: #e91e63; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 999; cursor: pointer; outline: none; }
+.fab { position: fixed; bottom: 35px; right: 20px; width: 56px; height: 56px; background: #e91e63; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 999; cursor: pointer; }
 .bot-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--p); color: #fff; display: flex; justify-content: space-around; padding: 6px; font-size: 11px; font-weight: bold; text-align: center; z-index: 100; }
 
 .modal-bg { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
@@ -47,13 +45,8 @@ body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom:
 <div class="hdr">
     <h2 onclick="location.href='index.html'"><i class="fa-solid fa-arrow-right"></i> العملاء</h2>
     <div class="hdr-icons">
-        <i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()"></i>
         <i class="fa-solid fa-print" onclick="window.print()"></i>
     </div>
-</div>
-
-<div id="searchBar" style="display:none; padding:8px 10px; background:#fff; border-bottom:1px solid #ddd;">
-    <input type="text" id="searchInput" oninput="render()" placeholder="بحث باسم العميل..." style="width:100%; padding:8px; border:1px solid #b0bec5; border-radius:6px; text-align:right;">
 </div>
 
 <div class="flts">
@@ -62,37 +55,14 @@ body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom:
     <div class="dt-row"><span>من تاريخ: 01/01/2026</span><span>الى تاريخ: 02/10/2026</span></div>
 </div>
 
-<div id="accList">
-    <div class="card" onclick="openStatement('1')">
-        <div class="c-info">
-            <div class="c-name">عميل نقدي عام</div>
-            <div class="c-sub">سقف المديونية : 0</div>
-            <div class="c-tools" onclick="event.stopPropagation()">
-                <i class="fa-solid fa-comment-sms" style="color:#00897b;"></i>
-                <i class="fa-brands fa-whatsapp" style="color:var(--g);" onclick="sendWhatsApp('', 'عميل نقدي عام', 0)"></i>
-            </div>
-        </div>
-        <div class="c-bal">0</div>
-    </div>
-    <div class="card" onclick="openStatement('2')">
-        <div class="c-info">
-            <div class="c-name">عبد الرحيم</div>
-            <div class="c-sub">سقف المديونية : 0</div>
-            <div class="c-tools" onclick="event.stopPropagation()">
-                <i class="fa-solid fa-comment-sms" style="color:#00897b;" onclick="location.href='sms:776332929'"></i>
-                <i class="fa-brands fa-whatsapp" style="color:var(--g);" onclick="sendWhatsApp('776332929', 'عبد الرحيم', 100000)"></i>
-            </div>
-        </div>
-        <div class="c-bal">100,000</div>
-    </div>
-</div>
+<div id="accList"></div>
 
-<button type="button" class="fab" id="fabBtn" onclick="openAddModal()"><i class="fa-solid fa-plus"></i></button>
+<button type="button" class="fab" onclick="document.getElementById('addModal').style.display='flex'"><i class="fa-solid fa-plus"></i></button>
 
 <div class="bot-bar">
-    <div>له<br><span id="totC">100,000</span></div>
+    <div>له<br><span id="totC">0</span></div>
     <div>عليه<br><span id="totD">0</span></div>
-    <div>الرصيد عليه<br><span id="totN">-100,000</span></div>
+    <div>الرصيد عليه<br><span id="totN">0</span></div>
 </div>
 
 <div class="modal-bg" id="addModal">
@@ -106,20 +76,20 @@ body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom:
             <label style="color:var(--p);"><input type="radio" name="balT" value="credit"> له</label>
         </div>
         <div style="display:flex; gap:8px;">
-            <button type="button" class="btn-m" style="background:var(--p);" onclick="saveCustomer()">حفظ</button>
-            <button type="button" class="btn-m" style="background:#78909c;" onclick="closeAddModal()">إلغاء</button>
+            <button type="button" class="btn-m" style="background:var(--p);" onclick="addCustomer()">حفظ</button>
+            <button type="button" class="btn-m" style="background:#78909c;" onclick="document.getElementById('addModal').style.display='none'">إلغاء</button>
         </div>
     </div>
 </div>
 
 <div class="st-view" id="statementModal">
     <div class="hdr">
-        <h2 onclick="closeStatement()"><i class="fa-solid fa-arrow-right"></i> <span id="stTitle">كشف الحساب</span></h2>
+        <h2 onclick="document.getElementById('statementModal').style.display='none'"><i class="fa-solid fa-arrow-right"></i> <span id="stTitle">كشف الحساب</span></h2>
         <div class="hdr-icons"><i class="fa-solid fa-print" onclick="window.print()"></i></div>
     </div>
     <div class="st-th"><div>النوع</div><div>المبلغ</div><div>التاريخ</div></div>
     <div id="stRows" style="flex:1; overflow-y:auto;"></div>
-    <button type="button" class="fab" onclick="openVoucherModal()"><i class="fa-solid fa-plus"></i></button>
+    <button type="button" class="fab" onclick="document.getElementById('voucherModal').style.display='flex'"><i class="fa-solid fa-plus"></i></button>
     <div class="bot-bar"><div>الرصيد الحالي: <span id="stBal">0</span></div></div>
 </div>
 
@@ -133,106 +103,68 @@ body { background: var(--bg); color: #263238; min-height: 100vh; padding-bottom:
             <label style="color:var(--p);"><input type="radio" name="vKind" value="قبض"> قبض</label>
         </div>
         <div style="display:flex; gap:8px;">
-            <button type="button" class="btn-m" style="background:var(--p);" onclick="saveVoucher()">حفظ السند</button>
-            <button type="button" class="btn-m" style="background:#78909c;" onclick="closeVoucherModal()">إلغاء</button>
+            <button type="button" class="btn-m" style="background:var(--p);" onclick="addVoucher()">حفظ السند</button>
+            <button type="button" class="btn-m" style="background:#78909c;" onclick="document.getElementById('voucherModal').style.display='none'">إلغاء</button>
         </div>
     </div>
 </div>
 
 <script>
 var KEY = 'hisabak_customers';
-var customers = [
+var defaultList = [
     { id: '1', name: 'عميل نقدي عام', phone: '', balance: 0, balType: 'debit' },
     { id: '2', name: 'عبد الرحيم', phone: '776332929', balance: 100000, balType: 'credit' }
 ];
 
+var customers = defaultList;
 try {
-    var raw = localStorage.getItem(KEY);
-    if (raw) {
-        var parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-            customers = parsed;
-        }
+    var saved = localStorage.getItem(KEY);
+    if (saved) {
+        var p = JSON.parse(saved);
+        if (Array.isArray(p) && p.length > 0) customers = p;
     }
 } catch(e) {}
 
-var selectedCust = null;
+var activeId = null;
 
-function render() {
-    try {
-        var container = document.getElementById('accList');
-        container.innerHTML = '';
-        var totC = 0, totD = 0;
-        var q = '';
-        var sInp = document.getElementById('searchInput');
-        if (sInp && sInp.value) q = sInp.value.trim().toLowerCase();
+function renderCards() {
+    var container = document.getElementById('accList');
+    container.innerHTML = '';
+    var cTot = 0, dTot = 0;
 
-        for (var i = 0; i < customers.length; i++) {
-            var c = customers[i];
-            if (q && c.name && c.name.toLowerCase().indexOf(q) === -1) continue;
-            var bal = parseFloat(c.balance || c.bal || 0);
-            if (c.balType === 'credit') { totC += bal; } else { totD += bal; }
+    customers.forEach(function(cust) {
+        var bal = parseFloat(cust.balance || cust.bal || 0);
+        if (cust.balType === 'credit') cTot += bal; else dTot += bal;
 
-            var card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('onclick', 'openStatement('' + c.id + '')');
-            card.innerHTML = 
-                '<div class="c-info">' +
-                    '<div class="c-name">' + c.name + '</div>' +
-                    '<div class="c-sub">سقف المديونية : 0</div>' +
-                    '<div class="c-tools" onclick="event.stopPropagation()">' +
-                        '<i class="fa-solid fa-comment-sms" style="color:#00897b;" onclick="location.href='sms:' + (c.phone||'') + ''"></i>' +
-                        '<i class="fa-brands fa-whatsapp" style="color:var(--g);" onclick="sendWhatsApp('' + (c.phone||'') + '', '' + c.name + '', ' + bal + ')"></i>' +
-                    '</div>' +
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = function() { openCustomer(cust.id); };
+
+        card.innerHTML = 
+            '<div class="c-info">' +
+                '<div class="c-name">' + cust.name + '</div>' +
+                '<div class="c-sub">سقف المديونية : 0</div>' +
+                '<div class="c-tools">' +
+                    '<i class="fa-solid fa-comment-sms" style="color:#00897b;" onclick="event.stopPropagation(); location.href='sms:' + (cust.phone||'') + ''"></i>' +
+                    '<i class="fa-brands fa-whatsapp" style="color:var(--g);" onclick="event.stopPropagation(); window.open('https://wa.me/' + (cust.phone||'') + '?text='+encodeURIComponent('رصيدكم: '+' + bal), '_blank')"></i>' +
                 '</div>' +
-                '<div class="c-bal">' + bal.toLocaleString() + '</div>';
+            '</div>' +
+            '<div class="c-bal">' + bal.toLocaleString() + '</div>';
 
-            container.appendChild(card);
-        }
+        container.appendChild(card);
+    });
 
-        document.getElementById('totC').innerText = totC.toLocaleString();
-        document.getElementById('totD').innerText = totD.toLocaleString();
-        document.getElementById('totN').innerText = (totD - totC).toLocaleString();
-    } catch(err) {}
+    document.getElementById('totC').innerText = cTot.toLocaleString();
+    document.getElementById('totD').innerText = dTot.toLocaleString();
+    document.getElementById('totN').innerText = (dTot - cTot).toLocaleString();
 }
 
-function openAddModal() {
-    document.getElementById('custName').value = '';
-    document.getElementById('custPhone').value = '';
-    document.getElementById('custBal').value = '0';
-    document.getElementById('addModal').style.display = 'flex';
-}
+function openCustomer(id) {
+    activeId = id;
+    var cust = customers.find(function(x) { return x.id === id; });
 
-function closeAddModal() {
-    document.getElementById('addModal').style.display = 'none';
-}
-
-function saveCustomer() {
-    var nameInp = document.getElementById('custName');
-    var name = nameInp ? nameInp.value.trim() : '';
-
-    var phoneInp = document.getElementById('custPhone');
-    var phone = phoneInp ? phoneInp.value.trim() : '';
-    var balInp = document.getElementById('custBal');
-    var bal = balInp ? (parseFloat(balInp.value) || 0) : 0;
-    var balType = 'debit';
-    var checkedRadio = document.querySelector('input[name="balT"]:checked');
-    if (checkedRadio) balType = checkedRadio.value;
-
-    customers.push({ id: String(Date.now()), name: name, phone: phone, balance: bal, balType: balType });
-    try { localStorage.setItem(KEY, JSON.stringify(customers)); } catch(e){}
-    closeAddModal();
-    render();
-}
-
-function openStatement(id) {
-    selectedCust = null;
-    for (var i = 0; i < customers.length; i++) {
-        if (customers[i].id === id) { selectedCust = customers[i]; break; }
-    }
-
-    document.getElementById('stTitle').innerText = selectedCust.name;
-    var bal = parseFloat(selectedCust.balance || selectedCust.bal || 0);
+    var bal = parseFloat(cust.balance || cust.bal || 0);
+    document.getElementById('stTitle').innerText = cust.name;
     document.getElementById('stBal').innerText = bal.toLocaleString();
     document.getElementById('stRows').innerHTML = 
         '<div class="st-tr"><div>رصيد افتتاحي</div><div style="color:var(--pk);font-weight:bold;">' + bal.toLocaleString() + '</div><div>02/10/2026</div></div>';
@@ -240,48 +172,40 @@ function openStatement(id) {
     document.getElementById('statementModal').style.display = 'flex';
 }
 
-function closeStatement() {
-    document.getElementById('statementModal').style.display = 'none';
+function addCustomer() {
+    var name = document.getElementById('custName').value.trim();
+    var phone = document.getElementById('custPhone').value.trim();
+    var bal = parseFloat(document.getElementById('custBal').value) || 0;
+    var balType = document.querySelector('input[name="balT"]:checked').value;
+
+    customers.push({ id: String(Date.now()), name: name, phone: phone, balance: bal, balType: balType });
+    try { localStorage.setItem(KEY, JSON.stringify(customers)); } catch(e){}
+
+    document.getElementById('addModal').style.display = 'none';
+    document.getElementById('custName').value = '';
+    document.getElementById('custPhone').value = '';
+    renderCards();
 }
 
-function openVoucherModal() {
+function addVoucher() {
+    var amt = parseFloat(document.getElementById('vAmt').value) || 0;
+
+    var kind = document.querySelector('input[name="vKind"]:checked').value;
+    var cust = customers.find(function(x) { return x.id === activeId; });
+    if (cust) {
+        var cur = parseFloat(cust.balance || cust.bal || 0);
+        cust.balance = (kind === 'صرف') ? (cur - amt) : (cur + amt);
+        try { localStorage.setItem(KEY, JSON.stringify(customers)); } catch(e){}
+        openCustomer(activeId);
+        renderCards();
+    }
+
+    document.getElementById('voucherModal').style.display = 'none';
     document.getElementById('vAmt').value = '';
     document.getElementById('vNote').value = '';
-    document.getElementById('voucherModal').style.display = 'flex';
 }
 
-function closeVoucherModal() {
-    document.getElementById('voucherModal').style.display = 'none';
-}
-
-function saveVoucher() {
-    var amtInp = document.getElementById('vAmt');
-    var amt = amtInp ? (parseFloat(amtInp.value) || 0) : 0;
-
-    var kind = 'صرف';
-    var kindRadio = document.querySelector('input[name="vKind"]:checked');
-    if (kindRadio) kind = kindRadio.value;
-
-    var cur = parseFloat(selectedCust.balance || selectedCust.bal || 0);
-    selectedCust.balance = (kind === 'صرف') ? (cur - amt) : (cur + amt);
-
-    try { localStorage.setItem(KEY, JSON.stringify(customers)); } catch(e){}
-    closeVoucherModal();
-    openStatement(selectedCust.id);
-    render();
-}
-
-function sendWhatsApp(phone, name, bal) {
-    window.open('https://wa.me/' + (phone ? phone : '') + '?text=' + encodeURIComponent('عزيزي ' + name + '، رصيد حسابكم الحالي: ' + bal), '_blank');
-}
-
-function toggleSearch() {
-    var b = document.getElementById('searchBar');
-    if (b) b.style.display = (b.style.display === 'block') ? 'none' : 'block';
-}
-
-window.onload = function() { render(); };
-render();
+renderCards();
 </script>
 </body>
 </html>
