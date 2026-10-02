@@ -121,7 +121,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 <div id="itemsList"></div>
 
 <!-- زر الإضافة العائم (+) لفتح شاشة إضافة منتج جديد -->
-<button type="button" class="fab-btn" onclick="openProductScreen()"><i class="fa-solid fa-plus"></i></button>
+<button type="button" class="fab-btn" onclick="document.getElementById('productScreen').style.display='flex';"><i class="fa-solid fa-plus"></i></button>
 
 <div class="bot-bar">
     <div>الرصيد س التكلفه<span id="totCost">0</span></div>
@@ -132,10 +132,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 <!-- ============================================== -->
 <!-- شاشة إضافة منتج جديد المطابقة تماماً للصورة المرفقة -->
 <!-- ============================================== -->
-<div class="product-screen" id="productScreen">
+<div class="product-screen" id="productScreen" style="display:none; position:fixed; inset:0; background:#fff; z-index:99999; flex-direction:column; overflow-y:auto;">
     <div class="prod-hdr">
         <h2>اضافة منتج جديد</h2>
-        <i class="fa-solid fa-arrow-left" onclick="closeProductScreen()" style="font-size:20px; cursor:pointer;"></i>
+        <i class="fa-solid fa-arrow-left" onclick="document.getElementById('productScreen').style.display='none';" style="font-size:20px; cursor:pointer;"></i>
     </div>
 
     <div class="prod-body">
@@ -228,7 +228,7 @@ input:checked + .slider:before { transform: translateX(20px); }
                 <span>شرح</span>
                 <i class="fa-brands fa-youtube" style="font-size:18px;"></i>
             </div>
-            <button type="button" class="btn-cancel-prod" onclick="closeProductScreen()">الغاء</button>
+            <button type="button" class="btn-cancel-prod" onclick="document.getElementById('productScreen').style.display='none';">الغاء</button>
         </div>
     </div>
 </div>
