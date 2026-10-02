@@ -310,9 +310,50 @@ function toggleExpDate(checked) {
     document.getElementById('expDateWrap').style.display = checked ? 'block' : 'none';
 }
 
+
 function saveProduct() {
-    var name = document.getElementById('inName').value.trim();
-    if(!name) { alert('الرجاء إدخال اسم الصنف'); return; }
+    var nameInp = document.getElementById('inName');
+    var name = nameInp ? nameInp.value.trim() : '';
+
+    var barcode = document.getElementById('inBarcode')?.value.trim() || String(Date.now()).slice(-6);
+    var curr = document.getElementById('inCurr')?.value || 'سعودي';
+    
+    // الوحدة الأولى (الحقول في الواجهة: الحقل الأيمن للأعلى أو التكلفة واليسار للبيع)
+    var inputs = document.querySelectorAll('#productScreen input');
+    var cost = 0, price = 0;
+    
+    // التقاط الأسعار من حقول الوحدة الأولى والثانية والثالثة ديناميكياً
+    var costInput = document.getElementById('inCost1');
+    var priceInput = document.getElementById('inPrice1');
+    
+    if(costInput) cost = parseFloat(costInput.value) || 0;
+    if(priceInput) price = parseFloat(priceInput.value) || 0;
+
+    // إذا لم تُعرف بالمعرّفات، نأخذ أول حقول رقمية تظهر في الوحدة الأولى
+    if(cost === 0 && price === 0) {
+        var numInps = document.querySelectorAll('#productScreen input[type="number"]');
+        if(numInps.length >= 2) {
+            cost = parseFloat(numInps[0].value) || 0;
+            price = parseFloat(numInps[1].value) || 0;
+        }
+    }
+
+    items.push({
+        id: String(Date.now()),
+        name: name,
+        barcode: barcode,
+        unit: 'حبة',
+        cost: cost,
+        price: price,
+        stock: 0,
+        curr: curr
+    });
+
+    saveData();
+    closeProductScreen();
+    render();
+}
+
 
     var cost = parseFloat(document.getElementById('inCost1').value) || 0;
     var price = parseFloat(document.getElementById('inPrice1').value) || 0;
