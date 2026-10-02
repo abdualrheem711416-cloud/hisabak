@@ -65,6 +65,34 @@ input:checked + .slider:before { transform: translateX(20px); }
 </head>
 <body>
 
+
+<div id="moreMenu" style="display:none; position:fixed; top:52px; left:10px; background:#fff; border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,0.2); z-index:4000; min-width:210px; border:1px solid #e0e0e0; overflow:hidden;">
+    <div onclick="actionPrintPDF()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">طباعة كملف pdf</span>
+        <i class="fa-solid fa-file-pdf" style="color:#d32f2f; font-size:18px;"></i>
+    </div>
+    <div onclick="actionSharePDF()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">مشاركة كملف pdf</span>
+        <i class="fa-solid fa-share-nodes" style="color:#0288d1; font-size:16px;"></i>
+    </div>
+    <div onclick="actionExportExcel()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">تصدير الى ملف إكسل</span>
+        <i class="fa-solid fa-file-excel" style="color:#2e7d32; font-size:18px;"></i>
+    </div>
+    <div onclick="actionShareExcel()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">مشاركة كملف إكسل</span>
+        <i class="fa-solid fa-share-nodes" style="color:#0288d1; font-size:16px;"></i>
+    </div>
+    <div onclick="actionPrintPriceList()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">طباعة تسعيرة الاصناف</span>
+        <i class="fa-solid fa-circle-dollar-to-slot" style="color:#f57c00; font-size:18px;"></i>
+    </div>
+    <div onclick="actionSharePriceList()" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; cursor:pointer;">
+        <span style="font-size:14px; color:#212121; font-weight:500;">مشاركة تسعيرة الاصناف</span>
+        <i class="fa-solid fa-share-nodes" style="color:#0288d1; font-size:16px;"></i>
+    </div>
+</div>
+
 <div class="main-hdr">
     <div class="main-hdr-title" onclick="location.href='settings_menu.html'">
         <i class="fa-solid fa-arrow-right"></i>
@@ -74,7 +102,7 @@ input:checked + .slider:before { transform: translateX(20px); }
         <i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()" style="cursor:pointer;"></i>
         <i class="fa-solid fa-print" onclick="openPrintModal()"></i>
         <i class="fa-solid fa-share-nodes" onclick="openPrintModal()"></i>
-        <i class="fa-solid fa-ellipsis-vertical"></i>
+        <i class="fa-solid fa-ellipsis-vertical" onclick="toggleMoreMenu(event)" style="cursor:pointer;" title="خيارات"></i>
     </div>
 </div>
 
@@ -378,6 +406,77 @@ function clearSearch() {
     if(inp) inp.value = '';
     render();
 }
+
+
+function toggleMoreMenu(e) {
+    if(e) e.stopPropagation();
+    var m = document.getElementById('moreMenu');
+    m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+}
+
+function closeMoreMenu() {
+    var m = document.getElementById('moreMenu');
+    if(m) m.style.display = 'none';
+}
+
+function actionPrintPDF() {
+    closeMoreMenu();
+    window.print();
+}
+
+function actionSharePDF() {
+    closeMoreMenu();
+    var txt = '*ملف الأصناف (PDF)*
+';
+    items.forEach(function(it, i){ txt += (i+1) + '- ' + it.name + ' | الرصيد: ' + it.stock + ' ' + it.unit + ' | السعر: ' + it.price + '
+'; });
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(txt), '_blank');
+}
+
+function actionExportExcel() {
+    closeMoreMenu();
+    var csv = '﻿اسم الصنف,الوحدة,التكلفة,سعر البيع,الرصيد
+';
+    items.forEach(function(it){
+        csv += '"' + it.name + '","' + it.unit + '",' + it.cost + ',' + it.price + ',' + it.stock + '
+';
+    });
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'قائمة_الأصناف.csv';
+    link.click();
+}
+
+function actionShareExcel() {
+    closeMoreMenu();
+    var txt = '*ملف الأصناف (Excel)*
+';
+    items.forEach(function(it, i){ txt += (i+1) + '- ' + it.name + ' | الرصيد: ' + it.stock + ' | التكلفة: ' + it.cost + ' | البيع: ' + it.price + '
+'; });
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(txt), '_blank');
+}
+
+function actionPrintPriceList() {
+    closeMoreMenu();
+    window.print();
+}
+
+function actionSharePriceList() {
+    closeMoreMenu();
+    var txt = '*قائمة تسعيرة الأصناف*
+';
+    items.forEach(function(it, i){ txt += (i+1) + '- ' + it.name + ' | سعر البيع: ' + it.price + '
+'; });
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(txt), '_blank');
+}
+
+window.addEventListener('click', function(e) {
+    var m = document.getElementById('moreMenu');
+    if(m && m.style.display === 'block') {
+        m.style.display = 'none';
+    }
+});
 
 loadData();
 render();
