@@ -6,106 +6,96 @@
 <title>المحاسب الإحترافي بلس</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root { --p: #0d47a1; --sec: #1976d2; --orange: #f57c00; --bg: #f0f2f5; }
+:root { --p: #1565c0; --sec: #1976d2; --orange: #f57c00; --bg: #f0f2f5; }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; }
+body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; direction: rtl; }
 
-/* شريط التاريخ العلوي الصغير */
+/* شريط التاريخ العلوي */
 .top-date-bar { background: #fff; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #555; border-bottom: 1px solid #e0e0e0; }
 
 /* الشريط العلوي الرئيسي الأزرق */
-.main-header { background: #1565c0; color: #fff; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
-.header-icons { display: flex; align-items: center; gap: 14px; font-size: 18px; }
+.main-header { background: var(--p); color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+.header-right { display: flex; align-items: center; gap: 12px; font-size: 18px; }
+.header-left { display: flex; align-items: center; gap: 10px; font-size: 18px; }
 .app-title-hdr { font-size: 18px; font-weight: bold; }
-.ar-badge { background: #fff; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+.ar-badge { background: #fff; color: var(--p); padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
 
-/* أزرار العمليات السريعة (الشبكة العلوية) */
-.quick-actions { background: #1565c0; padding: 0 10px 10px 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.q-btn { background: #1976d2; color: #fff; border: none; border-radius: 6px; padding: 10px 4px; font-size: 13px; font-weight: bold; text-align: center; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-.q-btn.orange { background: #f57c00; }
+/* أزرار العمليات السريعة */
+.quick-actions { background: var(--p); padding: 0 10px 10px 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.q-btn { background: var(--sec); color: #fff; border: none; border-radius: 6px; padding: 10px 4px; font-size: 13px; font-weight: bold; text-align: center; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.q-btn.orange { background: var(--orange); }
 .q-btn:active { opacity: 0.85; }
 
 /* شبكة البطاقات الرئيسية */
 .cards-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 600px; margin: 0 auto; }
 .stat-card { background: #fff; border-radius: 10px; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border: 1px solid #e8e8e8; }
 .stat-card:active { background: #f8f8f8; }
-.card-icon-circle { width: 48px; height: 48px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
+.card-icon-circle { width: 48px; height: 48px; background: #e3f2fd; color: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
 .card-label { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
 .card-amount { font-size: 14px; font-weight: bold; color: #c62828; }
 
 /* زر الإضافة العائم البرتقالي */
-.fab-orange { position: fixed; bottom: 65px; left: 20px; width: 52px; height: 52px; background: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 500; cursor: pointer; }
+.fab-orange { position: fixed; bottom: 65px; right: 20px; width: 52px; height: 52px; background: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 500; cursor: pointer; }
 
-/* الشريط السفلي الأزرق والمعلومات */
-.bottom-footer { background: #1565c0; color: #fff; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+/* الشريط السفلي */
+.bottom-footer { background: var(--p); color: #fff; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
 .footer-socials { display: flex; gap: 14px; font-size: 16px; }
 </style>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1565c0">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js');
-  });
-}
-</script>
 </head>
-
 <body>
 
 <!-- شريط التاريخ العلوي -->
 <div class="top-date-bar">
-    <i class="fa-solid fa-rotate-right" onclick="location.reload()" style="cursor:pointer;"></i>
+    <i class="fa-solid fa-arrow-right" style="cursor:pointer;"></i>
     <span>١ أكتوبر، ٢٠٢٦</span>
-    <i class="fa-solid fa-arrow-left"></i>
+    <i class="fa-solid fa-rotate-right" onclick="location.reload()" style="cursor:pointer;"></i>
 </div>
 
-<!-- الشريط العلوي الرئيسي -->
+<!-- الشريط العلوي الرئيسي (الترس والخيارات في اليمين، والبحث في اليسار) -->
 <div class="main-header">
-    <div class="header-icons">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <i class="fa-solid fa-bell"></i>
-        <i class="fa-solid fa-rotate"></i>
-        <i class="fa-solid fa-plus"></i>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-        <span class="app-title-hdr">حسابك</span>
-        <span class="ar-badge">AR</span>
-        <i class="fa-solid fa-bars"></i>
+    <div class="header-right">
         <a href="settings_menu.html" style="color: #fff;"><i class="fa-solid fa-gear"></i></a>
+        <i class="fa-solid fa-bars"></i>
+        <span class="ar-badge">AR</span>
+        <span class="app-title-hdr">المحاسب الإحترافي بلس</span>
+    </div>
+    <div class="header-left">
+        <i class="fa-solid fa-plus"></i>
+        <i class="fa-solid fa-rotate"></i>
+        <i class="fa-solid fa-bell"></i>
+        <i class="fa-solid fa-magnifying-glass"></i>
     </div>
 </div>
 
 <!-- أزرار العمليات السريعة -->
 <div class="quick-actions">
-    <button type="button" class="q-btn" onclick="alert('كشف حساب')">كشف حساب</button>
-    <button type="button" class="q-btn" onclick="alert('حوالة جديدة')">حوالة جديدة</button>
     <button type="button" class="q-btn" onclick="alert('سند جديد')">سند جديد</button>
+    <button type="button" class="q-btn" onclick="alert('حوالة جديدة')">حوالة جديدة</button>
+    <button type="button" class="q-btn" onclick="alert('كشف حساب')">كشف حساب</button>
     
-    <button type="button" class="q-btn orange" onclick="alert('صناديق النقدية')">صناديق النقدية</button>
-    <button type="button" class="q-btn orange" onclick="alert('الحركة اليومية')">الحركة اليومية</button>
     <button type="button" class="q-btn orange" onclick="alert('قيد بسيط')">قيد بسيط</button>
+    <button type="button" class="q-btn orange" onclick="alert('الحركة اليومية')">الحركة اليومية</button>
+    <button type="button" class="q-btn orange" onclick="alert('صناديق النقدية')">صناديق النقدية</button>
     
-    <button type="button" class="q-btn" onclick="alert('البحث السريع')">البحث السريع</button>
-    <button type="button" class="q-btn" onclick="alert('صرف عملات')">صرف عملات</button>
     <button type="button" class="q-btn" onclick="alert('فاتورة جديدة')">فاتورة جديدة</button>
+    <button type="button" class="q-btn" onclick="alert('صرف عملات')">صرف عملات</button>
+    <button type="button" class="q-btn" onclick="alert('البحث السريع')">البحث السريع</button>
 </div>
 
-<!-- شبكة البطاقات الست الرئيسية -->
+<!-- شبكة البطاقات -->
 <div class="cards-grid">
     <!-- الموردين -->
     <a href="suppliers.html" class="stat-card">
         <div class="card-icon-circle"><i class="fa-solid fa-truck"></i></div>
         <div class="card-label">الموردين</div>
-        <div class="card-amount" style="color:#c62828;">3,507,845 ر.ي</div>
+        <div class="card-amount">3,507,845 ر.ي</div>
     </a>
 
     <!-- العملاء -->
     <a href="customers.html" class="stat-card">
         <div class="card-icon-circle"><i class="fa-solid fa-users"></i></div>
         <div class="card-label">العملاء</div>
-        <div class="card-amount">0 ر.ي</div>
+        <div class="card-amount" style="color:#c62828;">0 ر.ي</div>
     </a>
 
     <!-- الديون -->
@@ -122,17 +112,17 @@ if ('serviceWorker' in navigator) {
         <div class="card-amount">0 ر.ي</div>
     </a>
 
-    <!-- أخرى (يمكن ربطها بالأصناف) -->
-    <a href="items.html" class="stat-card">
-        <div class="card-icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
-        <div class="card-label">أخرى</div>
-        <div class="card-amount">0 ر.ي</div>
-    </a>
-
     <!-- المصروفات -->
     <a href="vouchers.html" class="stat-card">
         <div class="card-icon-circle"><i class="fa-solid fa-money-bill-transfer"></i></div>
         <div class="card-label">المصروفات</div>
+        <div class="card-amount">0 ر.ي</div>
+    </a>
+
+    <!-- أخرى / الأصناف -->
+    <a href="items.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <div class="card-label">أخرى</div>
         <div class="card-amount">0 ر.ي</div>
     </a>
 </div>
@@ -142,13 +132,13 @@ if ('serviceWorker' in navigator) {
 
 <!-- الشريط السفلي -->
 <div class="bottom-footer">
+    <div>رقم الإصدار: 135.0.1</div>
     <div class="footer-socials">
         <i class="fa-solid fa-paper-plane"></i>
         <i class="fa-brands fa-youtube"></i>
         <i class="fa-brands fa-facebook"></i>
         <i class="fa-brands fa-whatsapp"></i>
     </div>
-    <div>رقم الإصدار: 135.0.1</div>
 </div>
 
 </body>
