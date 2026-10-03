@@ -3,31 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>قائمة الإعدادات - حسابك</title>
+<title>إعدادات النظام - المحاسب الإحترافي بلس</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background: #f8f9fa; min-height: 100vh; padding: 16px; }
-.header { background: #1976d2; color: #fff; padding: 14px 16px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+body { background: #f0f2f5; min-height: 100vh; padding: 16px; direction: rtl; }
+.header { background: #1565c0; color: #fff; padding: 14px 16px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
 .menu-list { display: flex; flex-direction: column; gap: 12px; max-width: 480px; margin: 0 auto; }
-.menu-item { background: #fff; padding: 16px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; text-decoration: none; color: #212121; font-weight: bold; font-size: 16px; border-right: 5px solid #1976d2; transition: background 0.2s; }
+.menu-item { background: #fff; padding: 16px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; text-decoration: none; color: #212121; font-weight: bold; font-size: 16px; border-right: 5px solid #1565c0; }
 .menu-item:active { background: #f1f1f1; }
-.menu-item i { color: #1976d2; font-size: 22px; }
+.menu-icon-circle { width: 40px; height: 40px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 </style>
 </head>
 <body>
 
-<div class="header">قائمة إعدادات النظام</div>
+<div class="header">
+    <i class="fa-solid fa-arrow-right" onclick="location.href='index.html'" style="cursor:pointer;"></i>
+    <span>إعدادات النظام</span>
+    <div></div>
+</div>
 
 <div class="menu-list">
-    <a href="https://abdualrheem711416-cloud.github.io/hisabak/items.html?v=hub_refresh_2026" class="menu-item">
-        <span>ملف الأصناف</span>
-        <i class="fa-solid fa-boxes-stacked"></i>
+    <!-- العملات (أيقونة زرقاء وبداخلها علامة الدولار) -->
+    <a href="currencies.html" class="menu-item">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="menu-icon-circle"><i class="fa-solid fa-dollar-sign"></i></div>
+            <span>العملات وأسعار الصرف</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
+    </a>
+
+    <!-- ملف الأصناف -->
+    <a href="items.html" class="menu-item">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="menu-icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <span>ملف الأصناف</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
     </a>
     
-    <a href="https://abdualrheem711416-cloud.github.io/hisabak/stores.html?v=hub_refresh_2026" class="menu-item">
-        <span>ملف المخازن</span>
-        <i class="fa-solid fa-warehouse"></i>
+    <!-- ملف المخازن -->
+    <a href="stores.html" class="menu-item" style="border-right-color: #0288d1;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="menu-icon-circle" style="color: #0288d1;"><i class="fa-solid fa-warehouse"></i></div>
+            <span>ملف المخازن</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
     </a>
 </div>
 
