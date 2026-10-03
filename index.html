@@ -3,82 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>نظام حسابك - الشاشة الرئيسية المتكاملة</title>
+<title>حسابك</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root { --p: #1976d2; --sec: #0288d1; --bg: #f8f9fa; }
+:root { --p: #0d47a1; --sec: #1976d2; --orange: #f57c00; --bg: #f0f2f5; }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); min-height: 100vh; padding-bottom: 75px; }
+body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; }
 
-/* الشريط العلوي */
-.app-header { background: var(--p); color: #fff; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-.app-title { font-size: 18px; font-weight: bold; }
-.settings-icon { font-size: 22px; cursor: pointer; color: #fff; text-decoration: none; }
+/* شريط التاريخ العلوي الصغير */
+.top-date-bar { background: #fff; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #555; border-bottom: 1px solid #e0e0e0; }
 
-/* شبكة الأقسام والخدمات */
-.dashboard-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 500px; margin: 0 auto; }
-.dash-card { background: #fff; border-radius: 12px; padding: 20px 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; color: #333; border: 1px solid #e0e0e0; transition: transform 0.1s, background 0.2s; }
-.dash-card:active { transform: scale(0.97); background: #f1f1f1; }
-.dash-icon { width: 50px; height: 50px; background: #e3f2fd; color: var(--p); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-.dash-name { font-size: 15px; font-weight: bold; text-align: center; color: #212121; }
+/* الشريط العلوي الرئيسي الأزرق */
+.main-header { background: #1565c0; color: #fff; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
+.header-icons { display: flex; align-items: center; gap: 14px; font-size: 18px; }
+.app-title-hdr { font-size: 18px; font-weight: bold; }
+.ar-badge { background: #fff; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
 
-/* بطاقة الإعدادات الكاملة بالعرض */
-.settings-full-card { grid-column: span 2; background: #fff; border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; color: #333; border: 1px solid #e0e0e0; }
-.settings-full-card:active { background: #f1f1f1; }
+/* أزرار العمليات السريعة (الشبكة العلوية) */
+.quick-actions { background: #1565c0; padding: 0 10px 10px 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.q-btn { background: #1976d2; color: #fff; border: none; border-radius: 6px; padding: 10px 4px; font-size: 13px; font-weight: bold; text-align: center; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.q-btn.orange { background: #f57c00; }
+.q-btn:active { opacity: 0.85; }
+
+/* شبكة البطاقات الرئيسية */
+.cards-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 600px; margin: 0 auto; }
+.stat-card { background: #fff; border-radius: 10px; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border: 1px solid #e8e8e8; }
+.stat-card:active { background: #f8f8f8; }
+.card-icon-circle { width: 48px; height: 48px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
+.card-label { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.card-amount { font-size: 14px; font-weight: bold; color: #c62828; }
+
+/* زر الإضافة العائم البرتقالي */
+.fab-orange { position: fixed; bottom: 65px; left: 20px; width: 52px; height: 52px; background: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 500; cursor: pointer; }
+
+/* الشريط السفلي الأزرق والمعلومات */
+.bottom-footer { background: #1565c0; color: #fff; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.footer-socials { display: flex; gap: 14px; font-size: 16px; }
 </style>
 </head>
 <body>
 
-<div class="app-header">
-    <div class="app-title">المحاسب الإحترافي - نظام حسابك</div>
-    <a href="settings_menu.html" class="settings-icon"><i class="fa-solid fa-gear"></i></a>
+<!-- شريط التاريخ العلوي -->
+<div class="top-date-bar">
+    <i class="fa-solid fa-rotate-right" onclick="location.reload()" style="cursor:pointer;"></i>
+    <span>١ أكتوبر، ٢٠٢٦</span>
+    <i class="fa-solid fa-arrow-left"></i>
 </div>
 
-<div class="dashboard-grid">
-    <!-- العملاء -->
-    <a href="customers.html" class="dash-card">
-        <div class="dash-icon"><i class="fa-solid fa-users"></i></div>
-        <div class="dash-name">العملاء</div>
-    </a>
+<!-- الشريط العلوي الرئيسي -->
+<div class="main-header">
+    <div class="header-icons">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-bell"></i>
+        <i class="fa-solid fa-rotate"></i>
+        <i class="fa-solid fa-plus"></i>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="app-title-hdr">حسابك</span>
+        <span class="ar-badge">AR</span>
+        <i class="fa-solid fa-bars"></i>
+        <a href="settings_menu.html" style="color: #fff;"><i class="fa-solid fa-gear"></i></a>
+    </div>
+</div>
 
+<!-- أزرار العمليات السريعة -->
+<div class="quick-actions">
+    <button type="button" class="q-btn" onclick="alert('كشف حساب')">كشف حساب</button>
+    <button type="button" class="q-btn" onclick="alert('حوالة جديدة')">حوالة جديدة</button>
+    <button type="button" class="q-btn" onclick="alert('سند جديد')">سند جديد</button>
+    
+    <button type="button" class="q-btn orange" onclick="alert('صناديق النقدية')">صناديق النقدية</button>
+    <button type="button" class="q-btn orange" onclick="alert('الحركة اليومية')">الحركة اليومية</button>
+    <button type="button" class="q-btn orange" onclick="alert('قيد بسيط')">قيد بسيط</button>
+    
+    <button type="button" class="q-btn" onclick="alert('البحث السريع')">البحث السريع</button>
+    <button type="button" class="q-btn" onclick="alert('صرف عملات')">صرف عملات</button>
+    <button type="button" class="q-btn" onclick="alert('فاتورة جديدة')">فاتورة جديدة</button>
+</div>
+
+<!-- شبكة البطاقات الست الرئيسية -->
+<div class="cards-grid">
     <!-- الموردين -->
-    <a href="suppliers.html" class="dash-card">
-        <div class="dash-icon" style="color: #00796b; background: #e0f2f1;"><i class="fa-solid fa-truck-field"></i></div>
-        <div class="dash-name">الموردين</div>
+    <a href="suppliers.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-truck"></i></div>
+        <div class="card-label">الموردين</div>
+        <div class="card-amount" style="color:#c62828;">3,507,845 ر.ي</div>
     </a>
 
-    <!-- الأصناف -->
-    <a href="items.html" class="dash-card">
-        <div class="dash-icon" style="color: #e65100; background: #fff3e0;"><i class="fa-solid fa-boxes-stacked"></i></div>
-        <div class="dash-name">الأصناف</div>
+    <!-- العملاء -->
+    <a href="customers.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-users"></i></div>
+        <div class="card-label">العملاء</div>
+        <div class="card-amount">0 ر.ي</div>
     </a>
 
-    <!-- المخازن -->
-    <a href="stores.html" class="dash-card">
-        <div class="dash-icon" style="color: #7b1fa2; background: #f3e5f5;"><i class="fa-solid fa-warehouse"></i></div>
-        <div class="dash-name">المخازن</div>
+    <!-- الديون -->
+    <a href="statement.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div class="card-label">الديون</div>
+        <div class="card-amount">0 ر.ي</div>
     </a>
 
-    <!-- الفواتير -->
-    <a href="invoices_list.html" class="dash-card">
-        <div class="dash-icon" style="color: #c2185b; background: #fce4ec;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-        <div class="dash-name">الفواتير</div>
+    <!-- الموظفين -->
+    <a href="settings_menu.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="card-label">الموظفين</div>
+        <div class="card-amount">0 ر.ي</div>
     </a>
 
-    <!-- السندات -->
-    <a href="vouchers.html" class="dash-card">
-        <div class="dash-icon" style="color: #0288d1; background: #e1f5fe;"><i class="fa-solid fa-receipt"></i></div>
-        <div class="dash-name">السندات</div>
+    <!-- أخرى (يمكن ربطها بالأصناف) -->
+    <a href="items.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <div class="card-label">أخرى</div>
+        <div class="card-amount">0 ر.ي</div>
     </a>
 
-    <!-- إعدادات النظام كاملة -->
-    <a href="settings_menu.html" class="settings-full-card">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="dash-icon" style="color: #37474f; background: #eceff1; width: 44px; height: 44px; font-size: 20px;"><i class="fa-solid fa-gear"></i></div>
-            <div class="dash-name" style="font-size: 16px;">إعدادات النظام وملف المخازن</div>
-        </div>
-        <i class="fa-solid fa-chevron-left" style="color: #888;"></i>
+    <!-- المصروفات -->
+    <a href="vouchers.html" class="stat-card">
+        <div class="card-icon-circle"><i class="fa-solid fa-money-bill-transfer"></i></div>
+        <div class="card-label">المصروفات</div>
+        <div class="card-amount">0 ر.ي</div>
     </a>
+</div>
+
+<!-- زر الإضافة العائم البرتقالي -->
+<button type="button" class="fab-orange"><i class="fa-solid fa-plus"></i></button>
+
+<!-- الشريط السفلي -->
+<div class="bottom-footer">
+    <div class="footer-socials">
+        <i class="fa-solid fa-paper-plane"></i>
+        <i class="fa-brands fa-youtube"></i>
+        <i class="fa-brands fa-facebook"></i>
+        <i class="fa-brands fa-whatsapp"></i>
+    </div>
+    <div>رقم الإصدار: 135.0.1</div>
 </div>
 
 </body>
