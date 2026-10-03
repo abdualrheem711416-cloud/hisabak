@@ -141,5 +141,16 @@ body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; direction
     </div>
 </div>
 
+
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // إظهار تنبيه أو زر تثبيت واضح للمستخدم
+  console.log('App can be installed');
+});
+</script>
 </body>
+
 </html>
