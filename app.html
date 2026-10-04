@@ -1234,11 +1234,11 @@ function bindTxButtons() {
     const txt = el.textContent.trim();
     if (el.children.length === 0) {
       if (txt === "سند جديد") {
-        const btn = el.closest(".card") || el.parentElement || el;
+        const btn = el;
         btn.style.cursor = "pointer";
         btn.onclick = () => window.openReceiptModal();
       } else if (txt === "فاتورة جديدة") {
-        const btn = el.closest(".card") || el.parentElement || el;
+        const btn = el;
         btn.style.cursor = "pointer";
         btn.onclick = () => window.openInvoiceModal();
       }
