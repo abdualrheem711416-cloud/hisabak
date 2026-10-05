@@ -1,240 +1,366 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>المحاسب الإحترافي بلس</title>
+<title>المحاسب الاحترافي بلس</title>
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1565c0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1556c0">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, Tahoma, sans-serif;
-            background: #f5f7fa;
-            color: #222;
-        }
+body{
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:#f5f7fa;
+  color:#172033;
+  padding-bottom:82px;
+}
 
-        header {
-            background: #1565c0;
-            color: white;
-            padding: 18px 15px;
-            text-align: center;
-        }
+/* الهيدر */
+.header{
+  background:linear-gradient(135deg,#0d47a1,#1976d2);
+  color:#fff;
+  padding:22px 18px 28px;
+  border-radius:0 0 24px 24px;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 23px;
-        }
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
 
-        .container {
-            padding: 15px;
-            max-width: 900px;
-            margin: auto;
-        }
+.header h1{
+  margin:0;
+  font-size:21px;
+}
 
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 18px;
-        }
+.header p{
+  margin:7px 0 0;
+  opacity:.85;
+  font-size:13px;
+}
 
-        .quick-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            min-height: 55px;
-            background: white;
-            border-radius: 12px;
-            padding: 10px;
-            color: #1565c0;
-            box-shadow: 0 2px 7px rgba(0,0,0,.08);
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-        }
+.header-icon{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
 
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+/* المحتوى */
+.container{
+  padding:18px;
+  max-width:700px;
+  margin:auto;
+}
 
-        .card {
-            background: white;
-            min-height: 105px;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            color: #222;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
+.section-title{
+  font-size:17px;
+  font-weight:bold;
+  margin:4px 0 14px;
+}
 
-        .card i {
-            font-size: 30px;
-            color: #1565c0;
-            margin-bottom: 9px;
-        }
+/* الإجراءات */
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 
-        .card span {
-            font-weight: bold;
-            font-size: 15px;
-        }
+.action{
+  background:#fff;
+  border:1px solid #e8edf3;
+  border-radius:16px;
+  padding:18px 12px;
+  text-decoration:none;
+  color:#172033;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+  transition:.15s;
+}
 
-        .fab-orange {
-            position: fixed;
-            left: 20px;
-            bottom: 20px;
-            width: 58px;
-            height: 58px;
-            border: 0;
-            border-radius: 50%;
-            background: #ff9800;
-            color: white;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.25);
-            cursor: pointer;
-        }
+.action:active{
+  transform:scale(.98);
+}
 
-        @media (max-width: 480px) {
-            .quick-actions,
-            .cards {
-                grid-template-columns: 1fr 1fr;
-            }
+.action-icon{
+  width:45px;
+  height:45px;
+  border-radius:13px;
+  background:#edf4ff;
+  color:#1556c0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+}
 
-            header h1 {
-                font-size: 20px;
-            }
-        }
-    </style>
-    <script src="core/storage.js"></script>
-<script src="core/accounting.js"></script><script src="core/inventory.js"></script>
+.action-text{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.action-sub{
+  display:block;
+  margin-top:4px;
+  color:#8a94a6;
+  font-size:11px;
+  font-weight:normal;
+}
+
+/* آخر العمليات */
+.latest{
+  margin-top:28px;
+}
+
+.operation{
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:9px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid #edf0f4;
+}
+
+.operation-right{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.operation-icon{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  background:#f1f5fa;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#1556c0;
+}
+
+.operation-title{
+  font-size:13px;
+  font-weight:bold;
+}
+
+.operation-date{
+  font-size:11px;
+  color:#929baa;
+  margin-top:4px;
+}
+
+.operation-amount{
+  font-size:13px;
+  font-weight:bold;
+  color:#333;
+}
+
+/* زر الإضافة */
+.floating{
+  position:fixed;
+  bottom:70px;
+  left:50%;
+  transform:translateX(-50%);
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:5px solid #f5f7fa;
+  background:#1556c0;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  text-decoration:none;
+  box-shadow:0 5px 18px rgba(21,86,192,.35);
+  z-index:10;
+}
+
+/* التنقل */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  right:0;
+  left:0;
+  height:65px;
+  background:#fff;
+  border-top:1px solid #e8ebef;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  z-index:9;
+}
+
+.nav-item{
+  text-decoration:none;
+  color:#8993a3;
+  font-size:10px;
+  text-align:center;
+  min-width:55px;
+}
+
+.nav-item i{
+  display:block;
+  font-size:18px;
+  margin-bottom:5px;
+}
+
+.nav-item.active{
+  color:#1556c0;
+}
+
+@media(max-width:360px){
+  .action{
+    padding:14px 9px;
+  }
+
+  .action-icon{
+    width:40px;
+    height:40px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<header>
-    <h1>المحاسب الإحترافي بلس</h1>
+<header class="header">
+  <div class="header-top">
+    <div>
+      <h1>المحاسب الاحترافي بلس</h1>
+      <p>نظام المحاسبة والإدارة الذكي</p>
+    </div>
+
+    <div class="header-icon">
+      <i class="fa-solid fa-user"></i>
+    </div>
+  </div>
 </header>
 
-<div class="container">
+<main class="container">
 
-    <div class="quick-actions">
+  <div class="section-title">الإجراءات السريعة</div>
 
-        <a href="vouchers.html" class="quick-btn">
-            <i class="fa-solid fa-file-invoice"></i>
-            سند جديد
-        </a>
+  <section class="actions">
 
-        <a href="vouchers.html" class="quick-btn">
-            <i class="fa-solid fa-money-bill-transfer"></i>
-            حوالة جديدة
-        </a>
+    <a class="action" href="vouchers.html">
+      <div class="action-icon">
+        <i class="fa-solid fa-file-circle-plus"></i>
+      </div>
+      <div>
+        <div class="action-text">سند جديد</div>
+        <span class="action-sub">إضافة حركة مالية</span>
+      </div>
+    </a>
 
-        <a href="statement.html" class="quick-btn">
-            <i class="fa-solid fa-file-lines"></i>
-            كشف حساب
-        </a>
+    <a class="action" href="invoice.html">
+      <div class="action-icon">
+        <i class="fa-solid fa-file-invoice"></i>
+      </div>
+      <div>
+        <div class="action-text">فاتورة جديدة</div>
+        <span class="action-sub">بيع أو شراء</span>
+      </div>
+    </a>
 
-        <a href="vouchers.html" class="quick-btn">
-            <i class="fa-solid fa-pen-to-square"></i>
-            قيد بسيط
-        </a>
+    <a class="action" href="vouchers.html">
+      <div class="action-icon">
+        <i class="fa-solid fa-money-bill-transfer"></i>
+      </div>
+      <div>
+        <div class="action-text">قبض / صرف</div>
+        <span class="action-sub">إيصال أو دفع</span>
+      </div>
+    </a>
 
-        <a href="vouchers.html" class="quick-btn">
-            <i class="fa-solid fa-list"></i>
-            الحركة اليومية
-        </a>
+    <a class="action" href="statement.html">
+      <div class="action-icon">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div>
+        <div class="action-text">كشف حساب</div>
+        <span class="action-sub">حركة الحسابات</span>
+      </div>
+    </a>
 
-        <a href="vouchers.html" class="quick-btn">
-            <i class="fa-solid fa-cash-register"></i>
-            صناديق النقدية
-        </a>
+  </section>
 
-        <a href="invoice.html" class="quick-btn">
-            <i class="fa-solid fa-receipt"></i>
-            فاتورة جديدة
-        </a>
+  <section class="latest">
+    <div class="section-title">آخر العمليات</div>
 
-        <a href="currencies.html" class="quick-btn">
-            <i class="fa-solid fa-money-bill"></i>
-            صرف عملات
-        </a>
-
-        <a href="items.html" class="quick-btn">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            البحث السريع
-        </a>
-
+    <div class="operation">
+      <div class="operation-right">
+        <div class="operation-icon">
+          <i class="fa-solid fa-file-invoice"></i>
+        </div>
+        <div>
+          <div class="operation-title">لا توجد عمليات حديثة</div>
+          <div class="operation-date">ستظهر العمليات هنا تلقائيًا</div>
+        </div>
+      </div>
+      <div class="operation-amount">—</div>
     </div>
 
-    <div class="cards">
+  </section>
 
-        <a href="suppliers.html" class="card">
-            <i class="fa-solid fa-truck"></i>
-            <span>الموردين</span>
-        </a>
+</main>
 
-        <a href="customers.html" class="card">
-            <i class="fa-solid fa-users"></i>
-            <span>العملاء</span>
-        </a>
+<a href="vouchers.html" class="floating" aria-label="إضافة">
+  <i class="fa-solid fa-plus"></i>
+</a>
 
-        <a href="statement.html" class="card">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
-            <span>الديون</span>
-        </a>
+<nav class="bottom-nav">
 
-        <a href="settings_menu.html" class="card">
-            <i class="fa-solid fa-user-tie"></i>
-            <span>الموظفين</span>
-        </a>
+  <a href="index.html" class="nav-item active">
+    <i class="fa-solid fa-house"></i>
+    الرئيسية
+  </a>
 
-        <a href="vouchers.html" class="card">
-            <i class="fa-solid fa-money-bill-wave"></i>
-            <span>المصروفات</span>
-        </a>
+  <a href="invoices_list.html" class="nav-item">
+    <i class="fa-solid fa-file-invoice"></i>
+    الفواتير
+  </a>
 
-        <a href="items.html" class="card">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            <span>الأصناف</span>
-        </a>
+  <a href="items.html" class="nav-item">
+    <i class="fa-solid fa-boxes-stacked"></i>
+    المخزون
+  </a>
 
-        <a href="stores.html" class="card">
-            <i class="fa-solid fa-store"></i>
-            <span>المخازن</span>
-        </a>
+  <a href="statement.html" class="nav-item">
+    <i class="fa-solid fa-wallet"></i>
+    الحسابات
+  </a>
 
-        <a href="settings.html" class="card">
-            <i class="fa-solid fa-gear"></i>
-            <span>الإعدادات</span>
-        </a>
+  <a href="settings.html" class="nav-item">
+    <i class="fa-solid fa-chart-pie"></i>
+    التقارير
+  </a>
 
-    </div>
+</nav>
 
-</div>
+<script src="core/storage.js"></script>
+<script src="core/accounting.js"></script>
+<script src="core/inventory.js"></script>
 
-<button type="button" class="fab-orange"
-        onclick="location.href='vouchers.html'">
-    <i class="fa-solid fa-plus"></i>
-</button>
-
-<script>
-    </body>
+</body>
 </html>
