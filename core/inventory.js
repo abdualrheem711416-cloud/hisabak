@@ -337,7 +337,7 @@ if (
     return addMovement({
       ...data,
       type: MOVEMENT_TYPES.adjustment,
-      quantity: Math.abs(quantity),
+      quantity:  quantity,
       description:
         data.description ||
         'تسوية مخزون'
