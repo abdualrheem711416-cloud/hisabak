@@ -60,9 +60,16 @@
 
     const quantity = Number(data.quantity || 0);
 
-    if (quantity <= 0) {
-      throw new Error('الكمية يجب أن تكون أكبر من صفر');
-    }
+if (quantity === 0) {
+  throw new Error('الكمية لا يمكن أن تكون صفرًا');
+}
+
+if (
+  quantity < 0 &&
+  data.type !== MOVEMENT_TYPES.adjustment
+) {
+  throw new Error('الكمية السالبة مسموحة فقط في التسوية');
+}
 
     const movement = {
       id: data.id || Storage.generateId('im'),
