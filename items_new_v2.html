@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>الأصناف - المحاسب الاحترافي بلس</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f5f8fc;color:#172033}
+button,input,select{font:inherit}button{cursor:pointer;border:0}
+.header{background:linear-gradient(135deg,#0d47b5,#1769e8);color:#fff;padding:18px 16px 20px;box-shadow:0 4px 16px #0d47b533}
+.header-row{display:flex;align-items:center;gap:12px}.back{width:42px;height:42px;border-radius:12px;background:#ffffff22;color:#fff;font-size:25px}
+.title{flex:1}.title h1{font-size:21px;margin:0 0 5px}.title p{font-size:12px;margin:0;opacity:.85}
+.add{background:#fff;color:#0d56c8;border-radius:12px;padding:11px 14px;font-weight:700}.add b{font-size:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 12px}
+.stat{background:#fff;border-radius:15px;padding:12px 8px;text-align:center;box-shadow:0 3px 12px #17365d12;border:1px solid #e8edf5}
+.stat .num{font-size:22px;font-weight:800;margin:5px 0}.stat .lab{font-size:11px;color:#68758a}.blue .num{color:#1565d8}.green .num{color:#169b62}.orange .num{color:#e88913}.red .num{color:#e53935}
+.panel{margin:0 12px 14px;background:#fff;border-radius:16px;padding:12px;box-shadow:0 3px 14px #17365d10}
+.search{display:flex;gap:8px}.search input{flex:1;border:1px solid #dce4ef;border-radius:12px;padding:12px;background:#f9fbfe;outline:none}.search input:focus{border-color:#2876df}
+.filters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:9px}.filters select{border:1px solid #dce4ef;border-radius:10px;padding:10px;background:#fff;color:#344054}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:720px}.table th{background:#f2f6fb;color:#526176;font-size:12px;padding:12px;text-align:right}.table td{padding:11px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:middle}.name{font-weight:700}.code{font-size:10px;color:#7b8798;margin-top:3px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:700}.ok{background:#e8f8ef;color:#16844f}.low{background:#fff4df;color:#b86b00}.out{background:#ffe9e9;color:#c62828}.actions{display:flex;gap:5px}.act{padding:7px 9px;border-radius:8px;background:#eef4fc;color:#1759b7;font-size:11px}.act.danger{color:#c62828;background:#fff0f0}
+.empty{text-align:center;padding:35px 10px;color:#8793a5}.bottom{height:68px}
+.modal{display:none;position:fixed;inset:0;background:#06142a88;z-index:20;padding:18px;align-items:flex-end;justify-content:center}.modal.show{display:flex}.sheet{background:#fff;width:min(620px,100%);max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px;box-shadow:0 -8px 35px #06142a30}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.sheet-head h2{margin:0;font-size:18px}.close{width:36px;height:36px;border-radius:10px;background:#f1f4f8;color:#344054;font-size:20px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field.full{grid-column:1/-1}.field label{display:block;font-size:11px;color:#667085;margin:0 0 5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d9e1ec;border-radius:10px;outline:none;background:#fff}.field input:focus{border-color:#2876df}
+.modal-actions{display:flex;gap:8px;margin-top:15px}.save{flex:1;background:#1264df;color:#fff;padding:12px;border-radius:11px;font-weight:700}.cancel{padding:12px 18px;border-radius:11px;background:#eef1f5;color:#344054}
+.notice{position:fixed;top:15px;left:15px;right:15px;z-index:50;background:#163f87;color:#fff;padding:12px 15px;border-radius:12px;display:none;text-align:center;box-shadow:0 5px 18px #0003}
+@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.add{padding:9px 10px;font-size:12px}}
+</style>
+</head>
+<body>
+<div id="notice" class="notice"></div>
+
+<header class="header">
+  <div class="header-row">
+    <button class="back" onclick="history.back()">‹</button>
+    <div class="title"><h1>الأصناف (المخزون)</h1><p>إدارة جميع الأصناف والمخزون</p></div>
+    <button class="add" onclick="openAdd()">＋ صنف جديد</button>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="stat blue"><div>📦</div><div class="num" id="total">0</div><div class="lab">إجمالي الأصناف</div></div>
+  <div class="stat green"><div>●</div><div class="num" id="available">0</div><div class="lab">أصناف متوفرة</div></div>
+  <div class="stat orange"><div>!</div><div class="num" id="low">0</div><div class="lab">منخفضة</div></div>
+  <div class="stat red"><div>×</div><div class="num" id="out">0</div><div class="lab">نافدة</div></div>
+</section>
+
+<section class="panel">
+  <div class="search"><input id="search" placeholder="🔎 ابحث باسم الصنف أو الباركود..." oninput="render()"></div>
+  <div class="filters">
+    <select id="status" onchange="render()"><option value="">جميع الحالات</option><option value="ok">متوفر</option><option value="low">منخفض</option><option value="out">نافد</option></select>
+    <select id="category" onchange="render()"><option value="">جميع الأقسام</option><option>هواتف ذكية</option><option>تابلت</option><option>إكسسوارات</option><option>أخرى</option></select>
+    <select id="unitFilter" onchange="render()"><option value="">جميع الوحدات</option><option>حبة</option><option>قطعة</option><option>كرتون</option></select>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>#</th><th>الصنف</th><th>الباركود</th><th>الكمية</th><th>سعر الشراء</th><th>سعر البيع</th><th>العملة</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</section>
+<div class="bottom"></div>
+
+<div id="itemModal" class="modal">
+ <div class="sheet">
+  <div class="sheet-head"><h2 id="modalTitle">إضافة صنف جديد</h2><button class="close" onclick="closeModal()">×</button></div>
+  <div class="form">
+   <div class="field full"><label>اسم الصنف *</label><input id="fName" placeholder="مثال: Redmi Note 13"></div>
+   <div class="field"><label>الباركود</label><input id="fBarcode" placeholder="اختياري"></div>
+   <div class="field"><label>الوحدة</label><select id="fUnit"><option>حبة</option><option>قطعة</option><option>كرتون</option></select></div>
+   <div class="field"><label>القسم</label><select id="fCategory"><option>هواتف ذكية</option><option>تابلت</option><option>إكسسوارات</option><option>أخرى</option></select></div>
+   <div class="field"><label>العملة</label><select id="fCurrency"><option value="YER">ريال يمني</option><option value="SAR">ريال سعودي</option><option value="USD">دولار أمريكي</option></select></div>
+   <div class="field"><label>الكمية الافتتاحية</label><input id="fStock" type="number" min="0" value="0"></div>
+   <div class="field"><label>سعر الشراء</label><input id="fCost" type="number" min="0" value="0"></div>
+   <div class="field"><label>سعر البيع</label><input id="fPrice" type="number" min="0" value="0"></div>
+  </div>
+  <div class="modal-actions"><button class="cancel" onclick="closeModal()">إلغاء</button><button class="save" onclick="saveItem()">حفظ الصنف</button></div>
+ </div>
+</div>
+
+<script>
+const KEY='hisabak_items_master';
+let items=load();
+let editingId=null;
+
+function load(){
+ try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}
+ catch(e){return []}
+}
+function persist(){localStorage.setItem(KEY,JSON.stringify(items))}
+function money(n){return Number(n||0).toLocaleString('ar-YE')}
+function getStatus(q){q=Number(q||0);return q<=0?'out':q<=10?'low':'ok'}
+function statusText(s){return s==='out'?'نافد':s==='low'?'منخفض':'متوفر'}
+function currencyName(c){return c==='SAR'?'ريال سعودي':c==='USD'?'دولار أمريكي':'ريال يمني'}
+
+function render(){
+ const q=(document.getElementById('search').value||'').trim().toLowerCase();
+ const st=document.getElementById('status').value, cat=document.getElementById('category').value, unit=document.getElementById('unitFilter').value;
+ let filtered=items.filter(x=>(!q||String(x.name||'').toLowerCase().includes(q)||String(x.barcode||'').toLowerCase().includes(q))&&(!cat||x.category===cat)&&(!unit||x.unit===unit)&&(!st||getStatus(x.stock)===st));
+ document.getElementById('total').textContent=items.length;
+ document.getElementById('available').textContent=items.filter(x=>getStatus(x.stock)==='ok').length;
+ document.getElementById('low').textContent=items.filter(x=>getStatus(x.stock)==='low').length;
+ document.getElementById('out').textContent=items.filter(x=>getStatus(x.stock)==='out').length;
+ const rows=document.getElementById('rows');
+ if(!filtered.length){rows.innerHTML='<tr><td colspan="9"><div class="empty">لا توجد أصناف مطابقة للبحث<br><small>اضغط «صنف جديد» لإضافة أول صنف</small></div></td></tr>';return}
+ rows.innerHTML=filtered.map((x,i)=>{
+  const s=getStatus(x.stock);
+  return `<tr>
+   <td>${i+1}</td><td><div class="name">${esc(x.name||'بدون اسم')}</div><div class="code">${esc(x.category||'')}</div></td>
+   <td>${esc(x.barcode||'—')}</td><td><b>${Number(x.stock||0)}</b> ${esc(x.unit||'حبة')}</td>
+   <td>${money(x.cost)}</td><td>${money(x.price)}</td>
+   <td>${currencyName(x.currency)}</td>
+   <td><span class="badge ${s}">${statusText(s)}</span></td>
+   <td><div class="actions"><button class="act" onclick="editItem('${x.id}')">تعديل</button><button class="act danger" onclick="deleteItem('${x.id}')">حذف</button></div></td>
+  </tr>`
+ }).join('');
+}
+function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function openAdd(){
+ editingId=null;document.getElementById('modalTitle').textContent='إضافة صنف جديد';
+ ['fName','fBarcode'].forEach(id=>document.getElementById(id).value='');
+ document.getElementById('fUnit').value='حبة';document.getElementById('fCategory').value='هواتف ذكية';document.getElementById('fCurrency').value='YER';
+ document.getElementById('fStock').value=0;document.getElementById('fCost').value=0;document.getElementById('fPrice').value=0;
+ document.getElementById('itemModal').classList.add('show');setTimeout(()=>document.getElementById('fName').focus(),100);
+}
+function editItem(id){
+ const x=items.find(a=>String(a.id)===String(id));if(!x)return;
+ editingId=id;document.getElementById('modalTitle').textContent='تعديل بيانات الصنف';
+ document.getElementById('fName').value=x.name||'';document.getElementById('fBarcode').value=x.barcode||'';
+ document.getElementById('fUnit').value=x.unit||'حبة';document.getElementById('fCategory').value=x.category||'أخرى';document.getElementById('fCurrency').value=x.currency||'YER';
+ document.getElementById('fStock').value=Number(x.stock||0);document.getElementById('fCost').value=Number(x.cost||0);document.getElementById('fPrice').value=Number(x.price||0);
+ document.getElementById('itemModal').classList.add('show');
+}
+function closeModal(){document.getElementById('itemModal').classList.remove('show')}
+function saveItem(){
+ const name=document.getElementById('fName').value.trim();if(!name){notice('أدخل اسم الصنف أولاً');return}
+ const obj={id:editingId||String(Date.now()),name,barcode:document.getElementById('fBarcode').value.trim(),unit:document.getElementById('fUnit').value,category:document.getElementById('fCategory').value,currency:document.getElementById('fCurrency').value,stock:Number(document.getElementById('fStock').value)||0,cost:Number(document.getElementById('fCost').value)||0,price:Number(document.getElementById('fPrice').value)||0};
+ if(editingId){const i=items.findIndex(x=>String(x.id)===String(editingId));if(i>=0)items[i]=obj}else items.push(obj);
+ persist();closeModal();render();notice(editingId?'تم تعديل الصنف بنجاح':'تم حفظ الصنف بنجاح');editingId=null;
+}
+function deleteItem(id){
+ const x=items.find(a=>String(a.id)===String(id));if(!x)return;
+ if(!confirm('حذف الصنف «'+x.name+'»؟'))return;
+ items=items.filter(a=>String(a.id)!==String(id));persist();render();notice('تم حذف الصنف');
+}
+function notice(t){const n=document.getElementById('notice');n.textContent=t;n.style.display='block';clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display='none',2200)}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeModal()});
+render();
+</script>
+</body>
+</html>
