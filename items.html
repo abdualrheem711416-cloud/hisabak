@@ -354,25 +354,7 @@ function saveProduct() {
 
 
 
-    var cost = parseFloat(document.getElementById('inCost1').value) || 0;
-    var price = parseFloat(document.getElementById('inPrice1').value) || 0;
-    var barcode = document.getElementById('inBarcode').value.trim();
-    var unit = document.getElementById('inU1').value.trim() || 'حبة';
-
-    items.push({
-        id: String(Date.now()),
-        name: name,
-        barcode: barcode,
-        unit: unit,
-        cost: cost,
-        price: price,
-        stock: 0
-    });
-
-    saveData();
-    closeProductScreen();
-    render();
-}
+    
 
 
 function shareViaApp() {
