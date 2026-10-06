@@ -843,7 +843,68 @@ function chooseAccount(id){
 
   closeAccountsModal();
 }
+function getOrCreateAccountingAccount(party){
 
+  const code =
+    (party.type === 'عميل' ? 'CUST-' : 'SUP-') +
+    String(party.id);
+
+  let account =
+    HisabakAccounting.getAccounts()
+      .find(item => item.code === code);
+
+  if(!account){
+
+    account =
+      HisabakAccounting.createAccount({
+
+        code: code,
+
+        name:
+          party.name + ' - ' + party.type,
+
+        type:
+          party.type === 'عميل'
+            ? HisabakAccounting.ACCOUNT_TYPES.asset
+            : HisabakAccounting.ACCOUNT_TYPES.liability
+
+      });
+
+  }
+
+  return account;
+}
+
+function getOrCreateCashAccount(fund){
+
+  const code =
+    'CASH-' +
+    String(fund || 'MAIN')
+      .replace(/\s+/g,'-');
+
+  let account =
+    HisabakAccounting.getAccounts()
+      .find(item => item.code === code);
+
+  if(!account){
+
+    account =
+      HisabakAccounting.createAccount({
+
+        code: code,
+
+        name:
+          fund || 'الصندوق الرئيسي',
+
+        type:
+          HisabakAccounting.ACCOUNT_TYPES.asset
+
+      });
+
+  }
+
+  return account;
+}
 function saveVoucherTransaction(clearAfter){
 
   const amount =
