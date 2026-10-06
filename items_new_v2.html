@@ -149,5 +149,12 @@ function notice(t){const n=document.getElementById('notice');n.textContent=t;n.s
 document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeModal()});
 render();
 </script>
+  <script>
+history.pushState(null, '', location.href);
+
+window.addEventListener('popstate', function () {
+  location.replace('index.html');
+});
+  </script>
 </body>
 </html>
