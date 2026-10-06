@@ -1,356 +1,250 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>المحاسب الإحترافي بلس</title>
-  <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f7f9fc; color: #333; padding-bottom: 160px; }
-    
-    /* Top Navigation Bar */
-    .top-bar { background-color: #2b7de9; color: white; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-    .btn-close-inv { color: #ff3366; font-size: 26px; font-weight: bold; background: none; border: none; cursor: pointer; text-decoration: none; }
-    .top-center { display: flex; flex-direction: column; align-items: center; font-size: 13px; font-weight: bold; }
-    .print-options { display: flex; gap: 8px; align-items: center; margin-top: 2px; font-size: 12px; }
-    .top-left-actions { display: flex; align-items: center; gap: 10px; }
-    .btn-save-floppy { background: none; border: none; font-size: 26px; cursor: pointer; color: white; }
-    
-    /* Invoice Header Info */
-    .invoice-title-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px; background: #eaf2fb; }
-    .inv-title { color: #d81b60; font-size: 17px; font-weight: bold; }
-    .inv-num-box { font-size: 13px; color: #555; }
-    .inv-num-box input { width: 75px; border: none; border-bottom: 1px solid #777; background: transparent; text-align: center; }
-    
-    .form-section { padding: 4px 10px; display: flex; flex-direction: column; gap: 6px; }
-    .bordered-box { border: 1.5px solid #2b7de9; border-radius: 12px; padding: 6px 10px; background: white; margin-bottom: 4px; }
-    
-    /* Radio Rows */
-    .radio-row { display: flex; justify-content: space-around; align-items: center; font-size: 13px; font-weight: bold; }
-    .radio-item { display: flex; align-items: center; gap: 4px; color: #222; }
-    .checkbox-item { display: flex; align-items: center; gap: 4px; color: #d81b60; }
-    
-    /* Input Lines */
-    .line-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
-    .line-input { flex: 1; border: none; border-bottom: 1.5px solid #2b7de9; outline: none; padding: 4px 6px; font-size: 14px; background: transparent; }
-    .btn-add-circle { background: none; border: none; font-size: 22px; color: #2b7de9; font-weight: bold; cursor: pointer; }
-    
-    .notes-box { display: flex; align-items: center; gap: 6px; border: 1px solid #bbb; border-radius: 6px; padding: 4px 8px; background: white; }
-    .notes-box input { border: none; outline: none; flex: 1; font-size: 13px; }
-    
-    /* Item Entry Section */
-    .item-entry-card { background: white; border-radius: 8px; padding: 8px; border: 1px solid #ddd; margin-top: 4px; display: flex; flex-direction: column; gap: 6px; }
-    .item-controls-row { display: flex; align-items: center; gap: 6px; }
-    .num-input-group { border: 1px solid #ccc; border-radius: 6px; text-align: center; padding: 4px; position: relative; }
-    .num-input-group label { position: absolute; top: -7px; right: 8px; background: white; font-size: 10px; color: #666; padding: 0 2px; }
-    .num-input-group input { width: 55px; border: none; text-align: center; font-weight: bold; outline: none; }
-    
-    .btn-free { border: 1px solid #aaa; background: #fff; padding: 5px 8px; border-radius: 6px; font-size: 12px; }
-    
-    /* Add Button Action Bar */
-    .add-to-inv-bar { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; }
-    .btn-add-item { flex: 1; margin: 0 8px; border: 1.5px solid #2b7de9; background: white; color: #2b7de9; font-weight: bold; padding: 8px; border-radius: 8px; font-size: 14px; cursor: pointer; text-align: center; }
-    .arrow-icon { color: #2b7de9; font-size: 20px; font-weight: bold; cursor: pointer; }
-    
-    /* Items Table */
-    .table-header { background-color: #2b7de9; color: white; display: flex; border-radius: 8px 8px 0 0; font-size: 12px; font-weight: bold; padding: 8px 4px; text-align: center; }
-    .col-name { flex: 3; text-align: right; padding-right: 6px; }
-    .col-unit { flex: 1.5; }
-    .col-qty { flex: 1; }
-    .col-price { flex: 1.5; }
-    .col-total { flex: 2; }
-    
-    .items-body { background: white; min-height: 120px; border: 1px solid #e0e0e0; border-top: none; }
-    .item-row { display: flex; font-size: 12px; padding: 8px 4px; border-bottom: 1px solid #eee; text-align: center; align-items: center; }
-    
-    /* Bottom Summary Floating Footer */
-    .footer-summary { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #2b7de9; padding: 6px 12px; z-index: 100; font-size: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
-    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
-    .summary-row { display: flex; justify-content: space-between; align-items: center; }
-    .summary-box { border: 1px solid #2b7de9; border-radius: 5px; width: 65px; text-align: center; padding: 2px 4px; font-weight: bold; }
-    .adj-control { display: flex; align-items: center; gap: 4px; }
-    .btn-circle-adj { background: #d0e2ff; border: none; width: 18px; height: 18px; border-radius: 4px; color: #0b5cab; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>فاتورة المبيعات - المحاسب الاحترافي بلس</title>
 
 <style>
-@media print {
-  body { padding: 0 !important; background: white !important; }
-  .top-bar, .invoice-title-row, .form-section, .footer-summary, #calc-modal, #toast-msg { display: none !important; }
-  #print-area { display: block !important; }
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+background:#f5f7fa;
+color:#263238;
+padding-bottom:88px
 }
-#print-area { display: none; font-family: monospace, system-ui; direction: rtl; }
-.receipt-80mm { width: 78mm; margin: 0 auto; padding: 5px; font-size: 12px; }
-.receipt-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-.receipt-table th, .receipt-table td { border-bottom: 1px dashed #444; padding: 4px 2px; text-align: center; }
-</style>
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
 
+.header{
+background:linear-gradient(135deg,#1556c0,#1976d2);
+color:#fff;
+padding:12px 14px 16px;
+position:sticky;
+top:0;
+z-index:20;
+box-shadow:0 3px 12px rgba(0,0,0,.15)
+}
+.header-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px
+}
+.back{
+border:0;
+background:transparent;
+color:#fff;
+font-size:28px;
+width:40px
+}
+.header-title{
+text-align:center;
+flex:1
+}
+.header-title b{
+display:block;
+font-size:19px
+}
+.header-title small{
+font-size:11px;
+opacity:.9
+}
+.header-icon{font-size:25px}
 
-    
-    
-        
+.tabs{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:4px;
+background:#fff;
+padding:5px;
+margin:8px 8px 0;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08)
+}
+.tab{
+border:0;
+background:#f1f4f8;
+color:#54606b;
+padding:10px 3px;
+border-radius:9px;
+font-size:11px;
+font-weight:700
+}
+.tab.active{
+background:#1976e8;
+color:#fff
+}
 
-    
-    
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-</head>
-<body>
+.page{padding:9px}
+.section{
+background:#fff;
+border:1px solid #e4e8ed;
+border-radius:12px;
+margin-bottom:9px;
+padding:10px
+}
+.section-title{
+font-weight:800;
+font-size:14px;
+color:#1556c0;
+margin-bottom:9px;
+display:flex;
+align-items:center;
+gap:6px
+}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+.field label{
+display:block;
+font-size:11px;
+font-weight:700;
+color:#66727d;
+margin-bottom:4px
+}
+.field input,
+.field select,
+.field textarea{
+width:100%;
+border:1px solid #d9e0e7;
+border-radius:8px;
+padding:10px 9px;
+font-size:13px;
+background:#fff;
+outline:none
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+border-color:#1976d2
+}
+.full{grid-column:1/-1}
 
-  <!-- Top Blue Bar -->
-  <div class="top-bar">
-    <a href="index.html" class="btn-close-inv">&#10005;</a>
-    <div class="top-center">
-      <span id="current-clock">18:43 30/09/2026</span>
-      <div class="print-options">
-        <label><input type="radio" name="paper_size" checked> A4</label>
-        <label><input type="radio" name="paper_size"> 80m</label>
-      </div>
-    </div>
-    <div class="top-left-actions">
-      <button class="btn-save-floppy" onclick="saveInvoice()">&#128190;</button>
-      <span style="font-size:20px;">&#8942;</span>
-    </div>
-  </div>
+.balance{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:6px;
+margin-bottom:9px
+}
+.balance-box{
+background:#f5f8fc;
+border-radius:10px;
+padding:9px 4px;
+text-align:center
+}
+.balance-box small{
+display:block;
+font-size:10px;
+color:#65717d
+}
+.balance-box b{
+display:block;
+font-size:15px;
+margin-top:3px
+}
+.balance-box.total{
+background:#eaf3ff
+}
+.balance-box.total b{color:#1565c0}
+.balance-box.new{
+background:#eefaf2
+}
+.balance-box.new b{color:#23833e}
 
-  <!-- Invoice Title & Number -->
-  <div class="invoice-title-row">
-    <div class="inv-title" id="inv-type-label" style="color:#d81b60; font-size:18px; font-weight:bold;">فاتورة</div>
-    <div class="inv-num-box">
-      رقم الفاتوره <input type="text" id="inv-no" value="101" readonly>
-    </div>
-  </div>
+.add-row{
+display:flex;
+gap:7px;
+align-items:center
+}
+.search{
+flex:1
+}
+.add-btn{
+border:0;
+background:#1976e8;
+color:#fff;
+border-radius:9px;
+padding:11px 13px;
+font-weight:800;
+white-space:nowrap
+}
 
-  <div class="form-section">
-    <!-- Box 1: الصندوق و خيارات الفاتورة -->
-    <div class="bordered-box">
-      <div class="line-row">
-        <span style="color:#d81b60; font-size:13px; font-weight:bold;">حساب الصندوق</span>
-        <select class="line-input" id="cash-account" style="text-align:center;">
-          <option>الصندوق</option>
-          <option>البنك</option>
-        </select>
-        <span>&#9660;</span>
-      </div>
-    </div>
+.items{
+overflow-x:auto
+}
+table{
+width:100%;
+border-collapse:collapse;
+min-width:610px
+}
+th{
+background:#edf4fc;
+color:#1556c0;
+font-size:11px;
+padding:9px 5px
+}
+td{
+border-bottom:1px solid #edf0f3;
+padding:7px 5px;
+font-size:11px;
+text-align:center
+}
+.qty,.price{
+width:70px;
+border:1px solid #dce2e8;
+border-radius:6px;
+padding:7px 4px;
+text-align:center
+}
+.delete{
+border:0;
+background:#fff0f0;
+color:#d32f2f;
+border-radius:6px;
+padding:6px 8px
+}
 
-    <!-- Box 2: بيع / شراء - نقدا / آجل -->
-    <div class="bordered-box">
-      <div class="radio-row">
-        <label class="radio-item"><input type="radio" name="op_type" value="sale" checked onchange="updateTitle()"> بيع</label>
-        <label class="radio-item"><input type="radio" name="op_type" value="buy" onchange="updateTitle()"> شراء</label>
-        <label class="radio-item"><input type="radio" name="pay_type" value="cash" checked onchange="updateTitle()"> نقدا</label>
-        <label class="radio-item"><input type="radio" name="pay_type" value="credit" onchange="updateTitle()"> اجل</label>
-        <label class="checkbox-item"><input type="checkbox" id="is-return" onchange="updateTitle()"> مرتجع</label>
-      </div>
-    </div>
+.summary{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px
+}
+.sum-box{
+border:1px solid #e3e8ee;
+border-radius:9px;
+padding:9px
+}
+.sum-box label{
+font-size:10px;
+color:#697680;
+display:block;
+margin-bottom:3px
+}
+.sum-box input{
+width:100%;
+border:0;
+outline:0;
+font-weight:800;
+font-size:14px
+}
+.grand{
+background:#eaf3ff;
+border:1px solid #cfe3fa;
+border-radius:11px;
+padding:12px;
+margin-top:8px;
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+.grand span{font-weight:700}
+.grand b{
+font-size:21px;
+color:#1556c0
+}
 
-    <!-- البحث عن حساب -->
-    <div class="line-row" style="padding: 0 4px;">
-      <button class="btn-add-circle" onclick="window.location.href='customers.html'">+</button>
-      <input type="text" id="account-search" class="line-input" placeholder="بحث عن حساب" style="text-align:center; color:#2b7de9;">
-      <span style="color:#d81b60; font-size:13px; font-weight:bold;" id="account-bal">0.00 &#9660;</span>
-    </div>
-
-    <!-- ملاحظات والعملة والكاميرا -->
-    <div class="line-row">
-      <span>&#128247;</span>
-      <div class="notes-box" style="flex:1;">
-        <input type="text" id="notes" placeholder="ملاحظات" style="text-align:center;">
-      </div>
-      <span style="font-size:13px; font-weight:bold;">ر.ي &#9660;</span>
-    </div>
-
-    <!-- اختيار المخزن والصنف -->
-    <div class="item-entry-card">
-      <div class="line-row">
-        <span class="btn-add-circle">+</span>
-        <span style="font-size:13px; font-weight:bold;">المخزن الرئيسي &#9660;</span>
-        <span style="font-size:16px;">&#127908;</span>
-        <span style="color:#d81b60; font-weight:bold;">/ /</span>
-        <button class="btn-free">مجانيه</button>
-      </div>
-
-      <div style="display:flex; align-items:center; gap:6px; margin-top:6px; width:100%;">
-        <span style="font-size:18px; cursor:pointer;" title="باركود">&#9647;&#9647;&#9647;</span>
-        <input type="text" id="item-name" class="line-input" placeholder="بحث عن صنف" style="flex:1; min-width:80px; text-align:right; font-size:13px; color:#2b7de9;">
-        
-        <div class="num-input-group" style="width:48px; flex-shrink:0;">
-          <label style="font-size:9px;">العدد</label>
-          <input type="number" id="item-qty" value="1" min="1" style="width:100%; font-size:13px;">
-        </div>
-
-        <div class="num-input-group" style="width:55px; flex-shrink:0;">
-          <label style="font-size:9px; color:#d81b60; font-weight:bold;">السعر</label>
-          <input type="number" id="item-price" value="0" style="width:100%; font-size:13px; color:#d81b60; font-weight:bold;">
-        </div>
-
-        <button type="button" onclick="openCalculatorModal()" style="background:#eaf2fb; border:1px solid #2b7de9; border-radius:6px; padding:4px 6px; font-size:16px; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;" title="آلة حاسبة">🖩</button>
-      </div>
-
-      <!-- Add to Invoice Bar with Arrows -->
-      <div class="add-to-inv-bar">
-        <span class="arrow-icon">&#9664;</span>
-        <span class="arrow-icon">&#10094;</span>
-        <button class="btn-add-item" onclick="addItemToInvoice()">اضافة الصنف الى الفاتوره</button>
-        <span class="arrow-icon">&#10095;</span>
-        <span class="arrow-icon">&#9654;</span>
-      </div>
-    </div>
-
-    <!-- Items Table Header -->
-    <div class="table-header">
-      <div class="col-name">اسم الصنف</div>
-      <div class="col-unit">الوحده</div>
-      <div class="col-qty">العدد</div>
-      <div class="col-price">السعر</div>
-      <div class="col-total">الاجمالي</div>
-    </div>
-    <div class="items-body" id="invoice-items-table">
-      <!-- Items will be appended here -->
-    </div>
-  </div>
-
-  <!-- Bottom Floating Summary -->
-  <div class="footer-summary">
-    <div style="text-align:left; font-size:12px; font-weight:bold; margin-bottom:2px;">
-      عدد القطع <span id="lbl-total-qty">0.00</span>
-    </div>
-    <div class="summary-grid">
-      <div>
-        <div class="summary-row">
-          <span>الاجمالي</span>
-          <div class="summary-box" id="sum-subtotal">0.00</div>
-        </div>
-        <div class="summary-row">
-          <span>الخصم</span>
-          <div class="summary-box" id="sum-discount">0.00</div>
-        </div>
-        <div class="summary-row">
-          <span>الضريبه</span>
-          <div class="summary-box" id="sum-tax">0.00</div>
-        </div>
-        <div class="summary-row">
-          <span>اجور النقل</span>
-          <div class="summary-box" id="sum-transport">0.00</div>
-        </div>
-        <div class="summary-row" style="color:#d81b60;">
-          <span style="font-weight:bold;">صافي الفاتوره</span>
-          <div class="summary-box" id="sum-net" style="border-color:#d81b60; color:#d81b60;">0.00</div>
-        </div>
-      </div>
-      <div>
-        <div class="summary-row">
-          <div class="adj-control">
-            <button class="btn-circle-adj">+</button>
-            <span style="margin:0 4px;">0</span>
-            <button class="btn-circle-adj">-</button>
-          </div>
-          <span>نسبة الخصم%</span>
-        </div>
-        <div class="summary-row" style="margin-top:6px; color:#2e7d32; font-weight:bold;">
-          <input type="number" id="paid-amount" value="0.00" style="width:70px; border:none; border-bottom:1px solid #2e7d32; text-align:center; color:#2e7d32; font-weight:bold;">
-          <span>المبلغ المستلم</span>
-        </div>
-        <div class="summary-row" style="margin-top:6px;">
-          <div class="adj-control">
-            <button class="btn-circle-adj">+</button>
-            <span style="margin:0 4px;">0</span>
-            <button class="btn-circle-adj">-</button>
-          </div>
-          <span>نسبة الضريبه%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  
-
-
-
-
-
-<script>
-(function() {
-  function getLiveCurrencies() {
-    try {
-      const stored = localStorage.getItem("المحاسب الإحترافي بلس_currencies");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch(e) {}
-    return [
-      { name: "عمله محليه", symbol: "YER", rate: 1 },
-      { name: "ريال سعودي", symbol: "SAR", rate: 1 },
-      { name: "دولار", symbol: "USD", rate: 1 }
-    ];
-  }
-
-  function applyCurrenciesToAllSelects() {
-    const list = getLiveCurrencies();
-    const selects = document.querySelectorAll("select");
-
-    selects.forEach(sel => {
-      // فحص إذا كان الحقل مخصصاً للعملة
-      const info = (sel.id + " " + sel.name + " " + sel.className).toLowerCase();
-      let isCurr = info.includes("curr") || info.includes("عملة") || info.includes("currency") || info.includes("coin");
-      
-      if (!isCurr) {
-        // فحص نصوص الخيارات الحالية
-        for (let i = 0; i < sel.options.length; i++) {
-          const txt = sel.options[i].text;
-          if (txt.includes("ريال") || txt.includes("دولار") || txt.includes("YER") || txt.includes("SAR") || txt.includes("USD") || txt.includes("ر.ي") || txt.includes("ر.س")) {
-            isCurr = true;
-            break;
-          }
-        }
-      }
-
-      if (isCurr) {
-        const currentVal = sel.value;
-        const currentText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
-        
-        // التحقق إن كانت القائمة محدثة مسبقاً بنفس عدد الخيارات والرموز لتفادي التكرار
-        const firstOpt = sel.options[0] ? sel.options[0].text : "";
-        if (sel.getAttribute("data-synced-ver") === "2.0" && firstOpt.includes("YER")) {
-          return;
-        }
-
-        sel.innerHTML = "";
-        list.forEach(c => {
-          const opt = document.createElement("option");
-          opt.value = c.symbol;
-          opt.textContent = `${c.name} (${c.symbol})`;
-          opt.setAttribute("data-rate", c.rate || 1);
-          if (c.symbol === currentVal || currentText.includes(c.symbol) || currentText.includes(c.name)) {
-            opt.selected = true;
-          }
-          sel.appendChild(opt);
-        });
-        sel.setAttribute("data-synced-ver", "2.0");
-      }
-    });
-  }
-
-  // 1. تشغيل عند التحميل
-  document.addEventListener("DOMContentLoaded", applyCurrenciesToAllSelects);
-  window.addEventListener("load", applyCurrenciesToAllSelects);
-
-  // 2. مراقبة مستمرة لتغيرات الـ DOM (ظهور نوافذ إضافة عميل، مورد، فاتورة جديدة، إلخ)
-  const observer = new MutationObserver(function() {
-    applyCurrenciesToAllSelects();
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  // 3. فحص عند أي نقرة زر داخل الصفحة
-  document.addEventListener("click", function() {
-    setTimeout(applyCurrenciesToAllSelects, 50);
-    setTimeout(applyCurrenciesToAllSelects, 300);
-  });
-})();
-</script>
-
-</body>
-</html>
+textarea{resize:none;min-height:
