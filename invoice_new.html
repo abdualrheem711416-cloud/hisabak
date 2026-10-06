@@ -702,24 +702,40 @@ function setInvoiceType(type) {
 }
 
 function addItem() {
-  const nameInput = $('itemSearch');
-  const name = nameInput ? nameInput.value.trim() : '';
+  const items = JSON.parse(
+    localStorage.getItem('hisabak_items_master') || '[]'
+  );
 
-  if (!name) {
-    showNotice('اكتب اسم الصنف أولاً', 'error');
+  if (!items.length) {
+    showNotice('لا توجد أصناف مسجلة في المخزون', 'error');
     return;
   }
 
+  const list = items.map((item, index) => {
+    return `${index + 1} - ${item.name} | السعر: ${item.price || 0}`;
+  }).join('\n');
+
+  const choice = prompt(
+    'اختر رقم الصنف:\n\n' + list
+  );
+
+  if (!choice) return;
+
+  const index = Number(choice) - 1;
+
+  if (isNaN(index) || !items[index]) {
+    showNotice('رقم الصنف غير صحيح', 'error');
+    return;
+  }
+
+  const selected = items[index];
+
   invoiceItems.push({
     id: Date.now(),
-    name: name,
+    name: selected.name,
     quantity: 1,
-    price: 0
+    price: Number(selected.price || 0)
   });
-
-  if (nameInput) {
-    nameInput.value = '';
-  }
 
   renderItems();
   calculateTotals();
