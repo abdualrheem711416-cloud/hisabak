@@ -1,388 +1,1039 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>اضافة سند صرف/قبض - المحاسب الإحترافي بلس</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --primary: #0277bd; --accent-pink: #d81b60; --accent-green: #2e7d32; --bg: #f4f6f8; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; touch-action: manipulation; }
-        body { background: var(--bg); padding: 12px; color: #263238; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .header h2 { font-size: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .header label { font-size: 12px; color: var(--accent-pink); font-weight: bold; }
+<title>السندات - المحاسب الاحترافي بلس</title>
 
-        .status-badge { background: #0277bd; color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
+}
 
-        .row-box { background: #fff; border: 1px solid #b0bec5; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; }
-        .row-box input, .row-box select { flex: 1; border: none; padding: 12px; font-size: 14px; text-align: center; outline: none; background: transparent; }
-        .btn-side { padding: 12px 16px; background: #eceff1; border: none; border-left: 1px solid #b0bec5; color: #455a64; font-size: 16px; cursor: pointer; }
+body{
+  background:#f5f7fa;
+  color:#172033;
+  min-height:100vh;
+}
 
-        .account-btn-trigger {
-            flex: 1;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--primary);
-            text-align: center;
-            background: #fff;
-            border: none;
-            cursor: pointer;
-        }
+.app{
+  max-width:720px;
+  margin:auto;
+  min-height:100vh;
+  background:#f5f7fa;
+}
 
-        .balance-card { background: #e1f5fe; border: 1px solid #81d4fa; border-radius: 8px; padding: 10px; text-align: center; font-weight: bold; color: var(--primary); margin-bottom: 10px; font-size: 15px; }
+/* Header */
+.header{
+  background:linear-gradient(135deg,#1556c0,#17439a);
+  color:#fff;
+  padding:18px 16px 22px;
+  border-radius:0 0 22px 22px;
+}
 
-        .radio-grp { display: flex; justify-content: center; gap: 30px; margin: 15px 0; font-size: 16px; font-weight: bold; }
-        .radio-grp label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
 
-        .action-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px; }
-        .btn { border: none; padding: 12px 4px; border-radius: 8px; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; }
-        .btn-save { background: #0277bd; }
-        .btn-send { background: #2e7d32; }
-        .btn-photo { background: #37474f; }
-        .btn-close { background: #d81b60; }
+.back{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+}
 
-        /* نافذة اختيار الحساب المنبثقة للجوال */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 10000;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .modal-sheet {
-            background: #fff;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 16px 16px 0 0;
-            padding: 16px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            animation: slideUp 0.2s ease-out;
-        }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.header-title{
+  flex:1;
+}
 
-        .modal-search {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #90caf9;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            text-align: right;
-        }
-        .account-list {
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 50vh;
-        }
-        .acc-card {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fafafa;
-            cursor: pointer;
-        }
-        .acc-card:active { background: #e1f5fe; }
-    </style>
+.header-title h1{
+  font-size:19px;
+  font-weight:800;
+}
+
+.header-title p{
+  margin-top:4px;
+  font-size:12px;
+  opacity:.82;
+}
+
+.header-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:rgba(255,255,255,.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+}
+
+/* Tabs */
+.tabs{
+  display:flex;
+  gap:8px;
+  padding:12px;
+  margin-top:-4px;
+}
+
+.tab{
+  flex:1;
+  border:1px solid #dfe5ef;
+  background:#fff;
+  color:#596579;
+  padding:12px 8px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.tab.active{
+  background:#1556c0;
+  border-color:#1556c0;
+  color:#fff;
+}
+
+/* Content */
+.content{
+  padding:4px 12px 115px;
+}
+
+.section{
+  background:#fff;
+  border:1px solid #e5eaf1;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:12px;
+}
+
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  color:#1c2d4f;
+  margin-bottom:13px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-size:11px;
+  color:#69758a;
+  font-weight:700;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  border:1px solid #dfe5ee;
+  background:#fbfcfe;
+  border-radius:11px;
+  padding:12px;
+  font-size:14px;
+  color:#172033;
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#1556c0;
+  background:#fff;
+}
+
+textarea{
+  min-height:88px;
+  resize:vertical;
+}
+
+/* Account */
+.account-box{
+  display:flex;
+  gap:8px;
+}
+
+.account-box button{
+  width:46px;
+  border:0;
+  border-radius:11px;
+  background:#1556c0;
+  color:#fff;
+  font-size:20px;
+}
+
+.account-select{
+  flex:1;
+  text-align:right;
+  background:#fbfcfe;
+  border:1px solid #dfe5ee;
+  border-radius:11px;
+  padding:12px;
+  font-size:14px;
+  color:#596579;
+  cursor:pointer;
+}
+
+/* Amount */
+.amount-box{
+  display:grid;
+  grid-template-columns:1fr 120px;
+  gap:10px;
+}
+
+.amount{
+  font-size:21px;
+  font-weight:800;
+  color:#1556c0;
+}
+
+/* Attachment */
+.attach{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px dashed #cbd5e5;
+  padding:12px;
+  border-radius:11px;
+  cursor:pointer;
+  color:#596579;
+  font-size:13px;
+}
+
+.attach input{
+  display:none;
+}
+
+/* Total */
+.total{
+  background:linear-gradient(135deg,#eef5ff,#f8fbff);
+  border:1px solid #d5e4ff;
+  border-radius:16px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.total span{
+  color:#64748b;
+  font-size:13px;
+}
+
+.total strong{
+  color:#1556c0;
+  font-size:24px;
+}
+
+/* Bottom actions */
+.actions{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:50;
+  background:rgba(255,255,255,.96);
+  border-top:1px solid #e3e8ef;
+  padding:10px;
+  backdrop-filter:blur(10px);
+}
+
+.actions-inner{
+  max-width:720px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:8px;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:13px 8px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:#1556c0;
+  color:#fff;
+}
+
+.btn-secondary{
+  background:#eef3fb;
+  color:#1556c0;
+}
+
+.btn-light{
+  background:#f5f6f8;
+  color:#475569;
+}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(15,23,42,.55);
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:720px;
+  max-height:82vh;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:16px;
+}
+
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.modal-head strong{
+  font-size:16px;
+}
+
+.close{
+  border:0;
+  background:#f1f4f8;
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  font-size:18px;
+}
+
+.search{
+  margin-bottom:10px;
+}
+
+.account-list{
+  max-height:55vh;
+  overflow:auto;
+}
+
+.account-item{
+  padding:13px 10px;
+  border-bottom:1px solid #eef1f5;
+  cursor:pointer;
+}
+
+.account-item strong{
+  display:block;
+  font-size:14px;
+}
+
+.account-item small{
+  color:#7b8798;
+}
+
+/* Status */
+.status{
+  margin-top:4px;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#edf7ee;
+  color:#28743a;
+  font-size:12px;
+  text-align:center;
+}
+
+/* Desktop */
+@media(min-width:700px){
+  .actions{
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:720px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="header">
-        <h2><i class="fa-solid fa-arrow-right" onclick="history.back()"></i> اضافة سند صرف/قبض</h2>
-        <label><input type="checkbox" id="closeOnSave" checked> الإغلاق بعد الحفظ</label>
+<div class="app">
+
+  <header class="header">
+    <div class="header-top">
+
+      <button class="back" onclick="goBack()">‹</button>
+
+      <div class="header-title">
+        <h1>إضافة سند</h1>
+        <p>المحاسب الاحترافي بلس</p>
+      </div>
+
+      <div class="header-icon">▣</div>
+
     </div>
+  </header>
 
-    <div>
-        <span class="status-badge">جاهز للعمليات</span>
-    </div>
+  <div class="tabs">
 
-    <!-- حقل اختيار الحساب المستقر -->
-    <div class="row-box">
-        <button class="btn-side" type="button" onclick="quickCreateAccount()" title="إضافة حساب جديد"><i class="fa-solid fa-plus"></i></button>
-        <button type="button" class="account-btn-trigger" id="accDisplayBtn" onclick="openAccountsModal()">
-            اضغط هنا لاختيار العميل أو المورد ▾
-        </button>
-    </div>
+    <button
+      class="tab active"
+      id="tabReceipt"
+      onclick="setVoucherType('قبض')">
+      سند قبض
+    </button>
 
-    <div class="balance-card" id="balanceDisplay">0.00 الرصيد الحالي</div>
+    <button
+      class="tab"
+      id="tabPayment"
+      onclick="setVoucherType('صرف')">
+      سند صرف
+    </button>
 
-    <!-- المبلغ والعملة -->
-    <div class="row-box">
-        <input type="number" id="voucherAmount" placeholder="المبلغ" step="any" required>
-        <select id="voucherCurrency" style="border-right: 1px solid #b0bec5;">
-            <option value="ريال سعودي">ريال سعودي</option>
+    <button
+      class="tab"
+      id="tabReturn"
+      onclick="showReturnNotice()">
+      مرتجع
+    </button>
+
+  </div>
+
+  <main class="content">
+
+    <!-- معلومات السند -->
+    <section class="section">
+
+      <div class="section-title">معلومات السند</div>
+
+      <div class="grid">
+
+        <div class="field">
+          <label>رقم السند</label>
+          <input id="voucherNo" readonly>
+        </div>
+
+        <div class="field">
+          <label>التاريخ</label>
+          <input id="voucherDate" type="date">
+        </div>
+
+        <div class="field full">
+          <label>نوع السند</label>
+          <input id="voucherType" value="قبض" readonly>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- الحساب -->
+    <section class="section">
+
+      <div class="section-title">الحساب والطرف</div>
+
+      <div class="field">
+
+        <label>العميل / المورد</label>
+
+        <div class="account-box">
+
+          <button onclick="openAccountsModal()">+</button>
+
+          <button
+            class="account-select"
+            id="accDisplayBtn"
+            onclick="openAccountsModal()">
+            اضغط لاختيار العميل أو المورد
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- الدفع -->
+    <section class="section">
+
+      <div class="section-title">بيانات الدفع</div>
+
+      <div class="grid">
+
+        <div class="field">
+          <label>طريقة الدفع</label>
+
+          <select id="paymentMethod">
+            <option value="cash">نقدي</option>
+            <option value="bank">حساب بنكي</option>
+            <option value="transfer">تحويل</option>
+            <option value="other">أخرى</option>
+          </select>
+
+        </div>
+
+        <div class="field">
+          <label>الصندوق / الحساب</label>
+
+          <select id="fundBox">
+            <option value="الصندوق الرئيسي">الصندوق الرئيسي</option>
+            <option value="البنك">البنك</option>
+          </select>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- المبلغ -->
+    <section class="section">
+
+      <div class="section-title">المبلغ والعملة</div>
+
+      <div class="amount-box">
+
+        <div class="field">
+          <label>المبلغ</label>
+
+          <input
+            id="voucherAmount"
+            class="amount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            oninput="updateTotal()">
+
+        </div>
+
+        <div class="field">
+          <label>العملة</label>
+
+          <select id="voucherCurrency">
             <option value="ريال يمني">ريال يمني</option>
             <option value="دولار">دولار</option>
-        </select>
-    </div>
+            <option value="سعودي">ريال سعودي</option>
+          </select>
 
-    <!-- التفاصيل وإرفاق الصورة -->
-    <div class="row-box">
-        <button class="btn-side" type="button" onclick="document.getElementById('receiptImage').click()"><i class="fa-solid fa-camera"></i>+</button>
-        <input type="text" id="voucherNotes" placeholder="التفاصيل / البيان">
-        <input type="file" id="receiptImage" accept="image/*" style="display:none;" onchange="alert('تم إرفاق الصورة بنجاح')">
-    </div>
-
-    <!-- الصندوق -->
-    <div class="row-box">
-        <input type="text" value="حساب الصندوق" readonly style="color:#777;">
-        <select id="fundBox" style="border-right: 1px solid #b0bec5;">
-            <option>الصندوق الرئيسي</option>
-            <option>صندوق الفرع</option>
-        </select>
-    </div>
-
-    <!-- نوع السند -->
-    <div class="radio-grp">
-        <label style="color:#d81b60;"><input type="radio" name="vType" value="صرف" checked> صرف</label>
-        <label style="color:#0277bd;"><input type="radio" name="vType" value="قبض"> قبض</label>
-    </div>
-
-    <!-- أزرار الإجراءات -->
-    <div class="action-btns">
-        <button type="button" class="btn btn-save" onclick="saveVoucherTransaction()">حفظ</button>
-        <button type="button" class="btn btn-send" onclick="shareVoucherWhatsApp()">ارسال</button>
-        <button type="button" class="btn btn-photo" onclick="document.getElementById('receiptImage').click()">صوره</button>
-        <button type="button" class="btn btn-close" onclick="location.href='suppliers.html'">اغلاق</button>
-    </div>
-
-    <!-- النافذة المنبثقة لاختيار الحساب -->
-    <div class="modal-overlay" id="accountsModal">
-        <div class="modal-sheet">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="font-size:16px;">اختر العميل أو المورد</strong>
-                <button type="button" onclick="closeAccountsModal()" style="border:none; background:none; font-size:18px; color:#888;">✕</button>
-            </div>
-            <input type="text" id="searchFilter" class="modal-search" placeholder="بحث بالاسم أو الهاتف..." oninput="filterModalAccounts()">
-            <div class="account-list" id="modalAccountsList"></div>
-            <button type="button" class="btn btn-save" style="width:100%;" onclick="quickCreateAccount()">+ إضافة مورد/عميل جديد</button>
         </div>
+
+      </div>
+
+    </section>
+
+    <!-- البيان -->
+    <section class="section">
+
+      <div class="section-title">البيان والمرفقات</div>
+
+      <div class="field">
+
+        <label>البيان</label>
+
+        <textarea
+          id="voucherNotes"
+          placeholder="اكتب بيان السند أو الملاحظات..."></textarea>
+
+      </div>
+
+      <br>
+
+      <label class="attach">
+        <span>📎 إضافة مرفق أو صورة</span>
+        <input id="receiptImage" type="file" accept="image/*,.pdf">
+      </label>
+
+    </section>
+
+    <!-- الإجمالي -->
+    <section class="section">
+
+      <div class="total">
+
+        <span>إجمالي السند</span>
+
+        <strong>
+          <span id="totalAmount">0.00</span>
+        </strong>
+
+      </div>
+
+      <div class="status">
+        جاهز للحفظ
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<!-- أزرار أسفل الشاشة -->
+<div class="actions">
+
+  <div class="actions-inner">
+
+    <button
+      class="btn btn-primary"
+      onclick="saveVoucherTransaction(false)">
+      حفظ السند
+    </button>
+
+    <button
+      class="btn btn-secondary"
+      onclick="saveAndPrint()">
+      حفظ وطباعة
+    </button>
+
+    <button
+      class="btn btn-light"
+      onclick="clearVoucher()">
+      حفظ ومسح جديد
+    </button>
+
+  </div>
+
+</div>
+
+<!-- اختيار الحساب -->
+<div class="modal" id="accountsModal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <strong>اختيار العميل أو المورد</strong>
+
+      <button
+        class="close"
+        onclick="closeAccountsModal()">
+        ×
+      </button>
+
     </div>
 
-    <script>
-        // مزامنة الحسابات والتأكد من وجود المورد العكبار
-        function fetchAllAccounts() {
-            let sups = JSON.parse(localStorage.getItem('hisabak_suppliers') || '[]');
-            let custs = JSON.parse(localStorage.getItem('hisabak_customers') || '[]');
+    <input
+      class="search"
+      id="accountSearch"
+      placeholder="بحث عن حساب..."
+      oninput="filterAccounts()">
 
-            let hasAkbar = sups.some(s => s.name && s.name.includes('العكبار'));
-            if (!hasAkbar) {
-                let akbar = {
-                    id: 'sup_akbar_101',
-                    name: 'المورد العكبار',
-                    phone: '',
-                    openingBalance: 0,
-                    balType: 'credit'
-                };
-                sups.push(akbar);
-                localStorage.setItem('hisabak_suppliers', JSON.stringify(sups));
-            }
+    <div
+      class="account-list"
+      id="accountsList">
+    </div>
 
-            let all = [];
-            sups.forEach(s => all.push({ ...s, roleType: 'مورد' }));
-            custs.forEach(c => all.push({ ...c, roleType: 'عميل' }));
-            return all;
-        }
+  </div>
 
-        let selectedAccount = null;
+</div>
 
-        function openAccountsModal() {
-            document.getElementById('accountsModal').style.display = 'flex';
-            document.getElementById('searchFilter').value = '';
-            filterModalAccounts();
-        }
+<script>
+const VOUCHER_KEY = 'hisabak_vouchers';
+const LEDGER_KEY = 'hisabak_ledger';
 
-        function closeAccountsModal() {
-            document.getElementById('accountsModal').style.display = 'none';
-        }
+let selectedAccount = null;
+let accountsCache = [];
 
-        function filterModalAccounts() {
-            let q = document.getElementById('searchFilter').value.trim().toLowerCase();
-            let list = fetchAllAccounts();
-            let container = document.getElementById('modalAccountsList');
-            container.innerHTML = '';
+function $(id){
+  return document.getElementById(id);
+}
 
-            let filtered = list.filter(a => !q || (a.name && a.name.toLowerCase().includes(q)) || (a.phone && a.phone.includes(q)));
+function today(){
+  const d = new Date();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:15px; color:#777;">لا يوجد حساب بهذا الاسم</div>';
-                return;
-            }
+function init(){
 
-            filtered.forEach(acc => {
-                let card = document.createElement('div');
-                card.className = 'acc-card';
-                let b = parseFloat(acc.openingBalance) || 0;
-                let t = acc.balType === 'credit' ? 'له' : 'عليه';
-                card.innerHTML = `
-                    <div>
-                        <div style="font-weight:bold; font-size:14px;">${acc.name}</div>
-                        <span style="font-size:11px; background:#e0e0e0; padding:2px 6px; border-radius:4px;">${acc.roleType}</span>
-                    </div>
-                    <div style="text-align:left; font-size:13px; font-weight:bold; color:#0277bd;">
-                        ${b.toLocaleString()} (${t})
-                    </div>
-                `;
-                card.onclick = function() {
-                    chooseAccount(acc);
-                };
-                container.appendChild(card);
-            });
-        }
+  $('voucherDate').value = today();
 
-        function chooseAccount(acc) {
-            selectedAccount = acc;
-            document.getElementById('accDisplayBtn').innerText = acc.name + ' (' + acc.roleType + ')';
-            let b = parseFloat(acc.openingBalance) || 0;
-            let t = acc.balType === 'credit' ? 'لــه' : 'عليه';
-            document.getElementById('balanceDisplay').innerText = b.toLocaleString() + ' الرصيد الحالي (' + t + ')';
-            closeAccountsModal();
-        }
+  $('voucherNo').value =
+    'V-' + Date.now().toString().slice(-8);
 
-        function quickCreateAccount() {
-            let n = prompt('أدخل اسم المورد أو العميل الجديد:');
-            if (!n || !n.trim()) return;
+  fetchAllAccounts();
 
-            let sups = JSON.parse(localStorage.getItem('hisabak_suppliers') || '[]');
-            let newObj = {
-                id: 'acc_' + Date.now(),
-                name: n.trim(),
-                phone: '',
-                openingBalance: 0,
-                balType: 'credit'
-            };
-            sups.push(newObj);
-            localStorage.setItem('hisabak_suppliers', JSON.stringify(sups));
-            chooseAccount({ ...newObj, roleType: 'مورد' });
-        }
+  updateTotal();
+}
 
-        // حفظ العملية وتحديث رصيد العميل أو المورد فوراً
-        function saveVoucherTransaction() {
-            if (!selectedAccount) {
-                alert('يرجى اختيار المورد أو العميل أولاً');
-                openAccountsModal();
-                return;
-            }
+function setVoucherType(type){
 
-            let amount = parseFloat(document.getElementById('voucherAmount').value);
-            if (!amount || amount <= 0) {
-                alert('يرجى إدخال مبلغ صحيح');
-                return;
-            }
+  $('voucherType').value = type;
 
-            let vType = document.querySelector('input[name="vType"]:checked').value;
-            let cur = document.getElementById('voucherCurrency').value;
-            let notes = document.getElementById('voucherNotes').value.trim();
-            let fund = document.getElementById('fundBox').value;
-            let vCode = 'V-' + Date.now().toString().slice(-5);
+  $('tabReceipt').classList.toggle(
+    'active',
+    type === 'قبض'
+  );
 
-            // 1. حساب الرصيد الجديد محاسبياً
-            let oldBal = parseFloat(selectedAccount.openingBalance) || 0;
-            let signedBal = selectedAccount.balType === 'credit' ? oldBal : -oldBal;
+  $('tabPayment').classList.toggle(
+    'active',
+    type === 'صرف'
+  );
+}
 
-            if (vType === 'صرف') {
-                signedBal -= amount; // صرفنا له: يقل دائنيه أو تزيد مديونيته
-            } else {
-                signedBal += amount; // قبضنا منه: يزيد دائنيه أو يسدد ما عليه
-            }
+function showReturnNotice(){
+  alert('قسم المرتجعات سيتم ربطه بواجهة الفواتير والمرتجعات في الخطوة القادمة.');
+}
 
-            let newBalType = signedBal >= 0 ? 'credit' : 'debit';
-            let finalBal = Math.abs(signedBal);
+function updateTotal(){
 
-            // 2. تحديث الحساب في جدول الموردين أو العملاء
-            let sups = JSON.parse(localStorage.getItem('hisabak_suppliers') || '[]');
-            let custs = JSON.parse(localStorage.getItem('hisabak_customers') || '[]');
-            let updated = false;
+  const amount =
+    Number($('voucherAmount').value || 0);
 
-            sups = sups.map(s => {
-                if (s.name === selectedAccount.name || (s.id && s.id === selectedAccount.id)) {
-                    updated = true;
-                    return { ...s, openingBalance: finalBal, balType: newBalType };
-                }
-                return s;
-            });
+  $('totalAmount').textContent =
+    amount.toLocaleString('en-US',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+}
 
-            if (updated) {
-                localStorage.setItem('hisabak_suppliers', JSON.stringify(sups));
-            } else {
-                custs = custs.map(c => {
-                    if (c.name === selectedAccount.name || (c.id && c.id === selectedAccount.id)) {
-                        return { ...c, openingBalance: finalBal, balType: newBalType };
-                    }
-                    return c;
-                });
-                localStorage.setItem('hisabak_customers', JSON.stringify(custs));
-            }
+function fetchAllAccounts(){
 
-            // 3. حفظ السند في السجلات
-            let vouchers = JSON.parse(localStorage.getItem('hisabak_vouchers') || '[]');
-            vouchers.push({
-                id: vCode,
-                accountName: selectedAccount.name,
-                type: vType,
-                amount: amount,
-                currency: cur,
-                notes: notes,
-                fund: fund,
-                balanceAfter: finalBal,
-                balType: newBalType,
-                date: new Date().toLocaleDateString('ar-EG'),
-                time: new Date().toLocaleTimeString('ar-EG')
-            });
-            localStorage.setItem('hisabak_vouchers', JSON.stringify(vouchers));
+  accountsCache = [];
 
-            // 4. تسجيل في دفتر الأستاذ (Ledger)
-            let ledger = JSON.parse(localStorage.getItem('hisabak_ledger') || '[]');
-            ledger.push({
-                id: Date.now(),
-                voucherCode: vCode,
-                accountName: selectedAccount.name,
-                type: 'سند ' + vType,
-                debit: vType === 'صرف' ? amount : 0,
-                credit: vType === 'قبض' ? amount : 0,
-                balance: finalBal,
-                balType: newBalType,
-                date: new Date().toLocaleDateString('ar-EG')
-            });
-            localStorage.setItem('hisabak_ledger', JSON.stringify(ledger));
+  const customers =
+    JSON.parse(
+      localStorage.getItem('hisabak_customers') || '[]'
+    );
 
-            alert(`تم حفظ سند ال${vType} برقم (${vCode}) وتحديث رصيد [${selectedAccount.name}] إلى ${finalBal.toLocaleString()} (${newBalType === 'credit' ? 'له' : 'عليه'})`);
+  const suppliers =
+    JSON.parse(
+      localStorage.getItem('hisabak_suppliers') || '[]'
+    );
 
-            if (document.getElementById('closeOnSave').checked) {
-                location.href = 'suppliers.html';
-            } else {
-                selectedAccount.openingBalance = finalBal;
-                selectedAccount.balType = newBalType;
-                chooseAccount(selectedAccount);
-                document.getElementById('voucherAmount').value = '';
-                document.getElementById('voucherNotes').value = '';
-            }
-        }
+  customers.forEach(item => {
 
-        function shareVoucherWhatsApp() {
-            if (!selectedAccount) { alert('اختر الحساب أولاً'); return; }
-            let amt = document.getElementById('voucherAmount').value;
-            if (!amt) { alert('أدخل المبلغ'); return; }
-            let vType = document.querySelector('input[name="vType"]:checked').value;
-            let cur = document.getElementById('voucherCurrency').value;
-            let notes = document.getElementById('voucherNotes').value.trim();
+    accountsCache.push({
+      id:item.id || item.customerId || ('c_'+Math.random()),
+      name:item.name || item.customerName || 'عميل',
+      type:'عميل'
+    });
 
-            let msg = `*المحاسب الإحترافي بلس*%0A*سند ${vType}*%0Aالحساب: ${selectedAccount.name}%0Aالمبلغ: ${amt} ${cur}%0Aالبيان: ${notes || 'بدون بيان'}%0Aالتاريخ: ${new Date().toLocaleDateString('ar-EG')}`;
-            window.open('https://wa.me/?text=' + msg, '_blank');
-        }
-    </script>
+  });
+
+  suppliers.forEach(item => {
+
+    accountsCache.push({
+      id:item.id || item.supplierId || ('s_'+Math.random()),
+      name:item.name || item.supplierName || 'مورد',
+      type:'مورد'
+    });
+
+  });
+
+  renderAccounts(accountsCache);
+}
+
+function renderAccounts(list){
+
+  const box = $('accountsList');
+
+  if(!list.length){
+
+    box.innerHTML =
+      '<div style="padding:25px;text-align:center;color:#7b8798">لا توجد حسابات</div>';
+
+    return;
+  }
+
+  box.innerHTML = list.map(account => `
+
+    <div
+      class="account-item"
+      onclick="chooseAccount('${escapeHtml(account.id)}')">
+
+      <strong>${escapeHtml(account.name)}</strong>
+
+      <small>${escapeHtml(account.type)}</small>
+
+    </div>
+
+  `).join('');
+}
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+function openAccountsModal(){
+
+  fetchAllAccounts();
+
+  $('accountSearch').value = '';
+
+  $('accountsModal').classList.add('show');
+}
+
+function closeAccountsModal(){
+
+  $('accountsModal').classList.remove('show');
+}
+
+function filterAccounts(){
+
+  const q =
+    $('accountSearch').value.trim().toLowerCase();
+
+  const filtered =
+    accountsCache.filter(account =>
+      String(account.name)
+        .toLowerCase()
+        .includes(q)
+    );
+
+  renderAccounts(filtered);
+}
+
+function chooseAccount(id){
+
+  const account =
+    accountsCache.find(item =>
+      String(item.id) === String(id)
+    );
+
+  if(!account) return;
+
+  selectedAccount = account;
+
+  $('accDisplayBtn').textContent =
+    account.name + ' — ' + account.type;
+
+  closeAccountsModal();
+}
+
+function saveVoucherTransaction(clearAfter){
+
+  const amount =
+    Number($('voucherAmount').value || 0);
+
+  if(amount <= 0){
+
+    alert('أدخل مبلغ السند أولاً');
+    return;
+  }
+
+  if(!selectedAccount){
+
+    alert('اختر العميل أو المورد أولاً');
+    return;
+  }
+
+  const voucher = {
+
+    id:
+      'v_' +
+      Date.now(),
+
+    voucherNo:
+      $('voucherNo').value,
+
+    date:
+      $('voucherDate').value,
+
+    type:
+      $('voucherType').value,
+
+    accountId:
+      selectedAccount.id,
+
+    accountName:
+      selectedAccount.name,
+
+    accountType:
+      selectedAccount.type,
+
+    paymentMethod:
+      $('paymentMethod').value,
+
+    fund:
+      $('fundBox').value,
+
+    currency:
+      $('voucherCurrency').value,
+
+    amount:
+      amount,
+
+    notes:
+      $('voucherNotes').value.trim(),
+
+    createdAt:
+      new Date().toISOString()
+
+  };
+
+  const vouchers =
+    JSON.parse(
+      localStorage.getItem(VOUCHER_KEY) || '[]'
+    );
+
+  vouchers.push(voucher);
+
+  localStorage.setItem(
+    VOUCHER_KEY,
+    JSON.stringify(vouchers)
+  );
+
+  /*
+   * السجل القديم محفوظ للتوافق.
+   * الربط المحاسبي المزدوج مع core/accounting.js
+   * سيكون في مرحلة ربط المحرك المحاسبي.
+   */
+  const ledger =
+    JSON.parse(
+      localStorage.getItem(LEDGER_KEY) || '[]'
+    );
+
+  ledger.push({
+
+    id:
+      'l_' +
+      Date.now(),
+
+    date:
+      voucher.date,
+
+    voucherId:
+      voucher.id,
+
+    type:
+      voucher.type,
+
+    accountId:
+      voucher.accountId,
+
+    accountName:
+      voucher.accountName,
+
+    debit:
+      voucher.type === 'صرف'
+        ? amount
+        : 0,
+
+    credit:
+      voucher.type === 'قبض'
+        ? amount
+        : 0,
+
+    currency:
+      voucher.currency,
+
+    description:
+      voucher.notes || 'سند ' + voucher.type
+
+  });
+
+  localStorage.setItem(
+    LEDGER_KEY,
+    JSON.stringify(ledger)
+  );
+
+  alert(
+    'تم حفظ سند ' +
+    voucher.type +
+    ' بنجاح'
+  );
+
+  if(clearAfter){
+
+    clearForm();
+
+  }
+
+}
+
+function saveAndPrint(){
+
+  saveVoucherTransaction(false);
+
+  setTimeout(() => {
+    window.print();
+  },300);
+
+}
+
+function clearVoucher(){
+
+  saveVoucherTransaction(true);
+
+}
+
+function clearForm(){
+
+  $('voucherAmount').value = '';
+
+  $('voucherNotes').value = '';
+
+  $('receiptImage').value = '';
+
+  selectedAccount = null;
+
+  $('accDisplayBtn').textContent =
+    'اضغط لاختيار العميل أو المورد';
+
+  $('voucherNo').value =
+    'V-' + Date.now().toString().slice(-8);
+
+  updateTotal();
+
+}
+
+function goBack(){
+
+  if(document.referrer){
+
+    history.back();
+
+  }else{
+
+    window.location.href = 'index.html';
+
+  }
+
+}
+
+init();
+</script>
+
 </body>
 </html>
