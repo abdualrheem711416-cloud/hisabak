@@ -94,7 +94,21 @@ function money(n){return Number(n||0).toLocaleString('ar-YE')}
 function getStatus(q){q=Number(q||0);return q<=0?'out':q<=10?'low':'ok'}
 function statusText(s){return s==='out'?'نافد':s==='low'?'منخفض':'متوفر'}
 function currencyName(c){return c==='SAR'?'ريال سعودي':c==='USD'?'دولار أمريكي':'ريال يمني'}
+function loadCurrencies(){
+  const select = document.getElementById('fCurrency');
+  const currencies = JSON.parse(
+    localStorage.getItem('hisabak_currencies') || '[]'
+  );
 
+  select.innerHTML = '';
+
+  currencies.forEach(currency => {
+    const option = document.createElement('option');
+    option.value = currency.symbol;
+    option.textContent = `${currency.name} (${currency.symbol})`;
+    select.appendChild(option);
+  });
+}
 function render(){
  const q=(document.getElementById('search').value||'').trim().toLowerCase();
  const st=document.getElementById('status').value, cat=document.getElementById('category').value, unit=document.getElementById('unitFilter').value;
@@ -148,6 +162,7 @@ function deleteItem(id){
 function notice(t){const n=document.getElementById('notice');n.textContent=t;n.style.display='block';clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display='none',2200)}
 document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeModal()});
 render();
+  loadCurrencies();
 </script>
   <script>
 history.pushState(null, '', location.href);
