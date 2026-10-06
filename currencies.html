@@ -83,32 +83,84 @@ body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; direction
 </div>
 
 <script>
-function addCurrency() {
-    const name = document.getElementById('currName').value;
-    const symbol = document.getElementById('currSymbol').value;
-    const rate = document.getElementById('currRate').value;
+const CURRENCY_KEY = 'hisabak_currencies';
 
-    if(!name || !rate) {
-        alert('الرجاء إدخال اسم العملة وسعر الصرف على الأقل');
-        return;
-    }
+function getCurrencies() {
+  return JSON.parse(localStorage.getItem(CURRENCY_KEY) || '[]');
+}
 
-    const list = document.getElementById('currenciesList');
+function saveCurrencies(currencies) {
+  localStorage.setItem(CURRENCY_KEY, JSON.stringify(currencies));
+}
+
+function renderCurrencies() {
+  const list = document.getElementById('currenciesList');
+  const currencies = getCurrencies();
+
+  list.innerHTML = '';
+
+  currencies.forEach(currency => {
     const item = document.createElement('div');
     item.className = 'currency-item';
-    item.innerHTML = `
-        <div class="curr-info">
-            <div class="curr-name">\${name} (\${symbol})</div>
-            <div class="curr-rate">سعر الصرف: \${rate}</div>
-        </div>
-        <div class="curr-actions"><i class="fa-solid fa-trash-can" onclick="this.closest('.currency-item').remove()"></i></div>
-    `;
-    list.appendChild(item);
 
-    document.getElementById('currName').value = '';
-    document.getElementById('currSymbol').value = '';
-    document.getElementById('currRate').value = '';
+    item.innerHTML = `
+      <div class="curr-info">
+        <div class="curr-name">
+          ${currency.name} (${currency.symbol})
+        </div>
+        <div class="curr-rate">
+          سعر الصرف: ${currency.rate}
+        </div>
+      </div>
+
+      <div class="curr-actions">
+        <i class="fa-solid fa-trash"
+           onclick="deleteCurrency('${currency.id}')"></i>
+      </div>
+    `;
+
+    list.appendChild(item);
+  });
 }
+
+function addCurrency() {
+  const name = document.getElementById('currName').value.trim();
+  const symbol = document.getElementById('currSymbol').value.trim();
+  const rate = Number(document.getElementById('currRate').value);
+
+  if (!name || !symbol || !rate || rate <= 0) {
+    alert('الرجاء إدخال اسم العملة والرمز وسعر الصرف بشكل صحيح');
+    return;
+  }
+
+  const currencies = getCurrencies();
+
+  currencies.push({
+    id: Date.now().toString(),
+    name: name,
+    symbol: symbol,
+    rate: rate
+  });
+
+  saveCurrencies(currencies);
+
+  document.getElementById('currName').value = '';
+  document.getElementById('currSymbol').value = '';
+  document.getElementById('currRate').value = '';
+
+  renderCurrencies();
+}
+
+function deleteCurrency(id) {
+  if (!confirm('هل تريد حذف هذه العملة؟')) return;
+
+  const currencies = getCurrencies().filter(c => c.id !== id);
+
+  saveCurrencies(currencies);
+  renderCurrencies();
+}
+
+renderCurrencies();
 </script>
 
 </body>
