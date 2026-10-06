@@ -93,7 +93,11 @@ function persist(){localStorage.setItem(KEY,JSON.stringify(items))}
 function money(n){return Number(n||0).toLocaleString('ar-YE')}
 function getStatus(q){q=Number(q||0);return q<=0?'out':q<=10?'low':'ok'}
 function statusText(s){return s==='out'?'نافد':s==='low'?'منخفض':'متوفر'}
-function currencyName(c){return c==='SAR'?'ريال سعودي':c==='USD'?'دولار أمريكي':'ريال يمني'}
+function currencyName(c){
+  const currencies = JSON.parse(localStorage.getItem('hisabak_currencies') || '[]');
+  const currency = currencies.find(x => x.symbol === c);
+  return currency ? `${currency.name}` : 'ريال يمني';
+}
 function loadCurrencies(){
   const select = document.getElementById('fCurrency');
   const currencies = JSON.parse(
