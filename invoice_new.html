@@ -711,30 +711,59 @@ function addItem() {
     return;
   }
 
-  const list = items.map((item, index) => {
-    return `${index + 1} - ${item.name} | السعر: ${item.price || 0}`;
-  }).join('\n');
+  const search = prompt('🔎 ابحث باسم الصنف أو الباركود');
 
-  const choice = prompt(
-    'اختر رقم الصنف:\n\n' + list
+  if (!search || !search.trim()) return;
+
+  const text = search.trim().toLowerCase();
+
+  const matches = items.filter(item =>
+    String(item.name || '').toLowerCase().includes(text) ||
+    String(item.barcode || '').toLowerCase().includes(text)
   );
 
-  if (!choice) return;
-
-  const index = Number(choice) - 1;
-
-  if (isNaN(index) || !items[index]) {
-    showNotice('رقم الصنف غير صحيح', 'error');
+  if (!matches.length) {
+    showNotice('لم يتم العثور على الصنف', 'error');
     return;
   }
 
-  const selected = items[index];
+  let selected;
+
+  if (matches.length === 1) {
+    selected = matches[0];
+  } else {
+    const exact = matches.find(item =>
+      String(item.name || '').trim().toLowerCase() === text ||
+      String(item.barcode || '').trim() === search.trim()
+    );
+
+    if (exact) {
+      selected = exact;
+    } else {
+      const names = matches.map(item => item.name).join('، ');
+      const name = prompt(
+        'تم العثور على أكثر من صنف.\n\nاكتب اسم الصنف المطلوب:\n' + names
+      );
+
+      if (!name || !name.trim()) return;
+
+      selected = matches.find(item =>
+        String(item.name || '').toLowerCase() === name.trim().toLowerCase()
+      );
+
+      if (!selected) {
+        showNotice('لم يتم اختيار صنف صحيح', 'error');
+        return;
+      }
+    }
+  }
 
   invoiceItems.push({
     id: Date.now(),
     name: selected.name,
     quantity: 1,
-    price: Number(selected.price || 0)
+    price: Number(selected.price || 0),
+    barcode: selected.barcode || ''
   });
 
   renderItems();
