@@ -760,6 +760,7 @@ function addItem() {
 
   invoiceItems.push({
     id: Date.now(),
+    itemId: String(selected.id),
     name: selected.name,
     quantity: 1,
     price: Number(selected.price || 0),
