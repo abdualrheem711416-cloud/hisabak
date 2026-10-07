@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity() {
 
             cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
 
-            databaseEnabled = true
             loadsImagesAutomatically = true
             blockNetworkImage = false
+            databaseEnabled = true
         }
 
         webView.webViewClient = WebViewClient()
@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-
                     if (webView.canGoBack()) {
                         webView.goBack()
                     } else {
