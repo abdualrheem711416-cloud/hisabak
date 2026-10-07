@@ -3,54 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>إعدادات النظام - المحاسب الإحترافي بلس</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background: #f0f2f5; min-height: 100vh; padding: 16px; direction: rtl; }
-.header { background: #1565c0; color: #fff; padding: 14px 16px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
-.menu-list { display: flex; flex-direction: column; gap: 12px; max-width: 480px; margin: 0 auto; }
-.menu-item { background: #fff; padding: 16px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; text-decoration: none; color: #212121; font-weight: bold; font-size: 16px; border-right: 5px solid #1565c0; }
-.menu-item:active { background: #f1f1f1; }
-.menu-icon-circle { width: 40px; height: 40px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    background:#f5f7fa;
+    min-height:100vh;
+    color:#202633;
+}
+
+/* الرأس */
+.header{
+    background:linear-gradient(135deg,#1556c0,#1976d2);
+    color:white;
+    height:105px;
+    border-radius:0 0 28px 28px;
+    display:flex;
+    align-items:center;
+    padding:0 24px;
+    gap:18px;
+    box-shadow:0 4px 15px rgba(21,86,192,.18);
+}
+
+.back-btn{
+    width:48px;
+    height:48px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    color:white;
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.header-title{
+    flex:1;
+}
+
+.header-title h1{
+    font-size:25px;
+    font-weight:800;
+}
+
+.header-title p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.85;
+}
+
+/* المحتوى */
+.container{
+    padding:28px 20px 40px;
+    max-width:600px;
+    margin:auto;
+}
+
+.section-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.settings-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+/* البطاقات */
+.setting-item{
+    background:white;
+    border-radius:18px;
+    min-height:88px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    text-decoration:none;
+    color:#202633;
+    box-shadow:0 4px 14px rgba(30,50,80,.07);
+    border:1px solid #edf0f5;
+    transition:.15s;
+}
+
+.setting-item:active{
+    transform:scale(.98);
+}
+
+/* الأيقونة */
+.icon{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:#eaf2ff;
+    color:#1556c0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    flex-shrink:0;
+}
+
+.currency .icon{
+    background:#e9f6ff;
+    color:#0878bd;
+}
+
+.items .icon{
+    background:#eef2ff;
+    color:#315fc4;
+}
+
+.warehouse .icon{
+    background:#eaf7f3;
+    color:#16836b;
+}
+
+/* النص */
+.setting-info{
+    flex:1;
+}
+
+.setting-name{
+    font-size:17px;
+    font-weight:800;
+}
+
+.setting-desc{
+    font-size:13px;
+    color:#9299a5;
+    margin-top:5px;
+}
+
+/* السهم */
+.arrow{
+    color:#a0a6af;
+    font-size:15px;
+}
 </style>
 </head>
+
 <body>
 
-<div class="header">
-    <i class="fa-solid fa-arrow-right" onclick="location.href='index.html'" style="cursor:pointer;"></i>
-    <span>إعدادات النظام</span>
-    <div></div>
-</div>
+<!-- رأس الصفحة -->
+<header class="header">
 
-<div class="menu-list">
-    <!-- العملات (أيقونة زرقاء وبداخلها علامة الدولار) -->
-    <a href="currencies.html" class="menu-item">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="menu-icon-circle"><i class="fa-solid fa-dollar-sign"></i></div>
-            <span>العملات وأسعار الصرف</span>
-        </div>
-        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
-    </a>
+    <button class="back-btn" onclick="location.href='index.html'">
+        <i class="fa-solid fa-arrow-right"></i>
+    </button>
 
-    <!-- ملف الأصناف -->
-    <a href="items_new_v2.html" class="menu-item">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="menu-icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
-            <span>ملف الأصناف</span>
-        </div>
-        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
-    </a>
-    
-    <!-- ملف المخازن -->
-    <a href="stores.html" class="menu-item" style="border-right-color: #0288d1;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="menu-icon-circle" style="color: #0288d1;"><i class="fa-solid fa-warehouse"></i></div>
-            <span>ملف المخازن</span>
-        </div>
-        <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 14px;"></i>
-    </a>
-</div>
+    <div class="header-title">
+        <h1>إعدادات النظام</h1>
+        <p>إدارة الملفات الأساسية للنظام</p>
+    </div>
+
+</header>
+
+
+<!-- المحتوى -->
+<main class="container">
+
+    <div class="section-title">
+        الملفات الأساسية
+    </div>
+
+    <div class="settings-list">
+
+        <!-- العملات -->
+        <a href="currencies.html" class="setting-item currency">
+
+            <div class="icon">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+
+            <div class="setting-info">
+                <div class="setting-name">
+                    ملف العملات
+                </div>
+
+                <div class="setting-desc">
+                    العملات وأسعار الصرف
+                </div>
+            </div>
+
+            <div class="arrow">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+        </a>
+
+
+        <!-- الأصناف -->
+        <a href="items_new_v2.html" class="setting-item items">
+
+            <div class="icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+
+            <div class="setting-info">
+                <div class="setting-name">
+                    ملف الأصناف
+                </div>
+
+                <div class="setting-desc">
+                    الأصناف والوحدات والأسعار
+                </div>
+            </div>
+
+            <div class="arrow">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+        </a>
+
+
+        <!-- المخازن -->
+        <a href="stores.html" class="setting-item warehouse">
+
+            <div class="icon">
+                <i class="fa-solid fa-warehouse"></i>
+            </div>
+
+            <div class="setting-info">
+                <div class="setting-name">
+                    ملف المخازن
+                </div>
+
+                <div class="setting-desc">
+                    إدارة المخازن والفروع
+                </div>
+            </div>
+
+            <div class="arrow">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+        </a>
+
+    </div>
+
+</main>
 
 </body>
 </html>
