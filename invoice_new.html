@@ -773,52 +773,53 @@ function addItem() {
 function renderItems() {
   const body = $('itemsBody');
 
-  if (!body) {
-    return;
-  }
+  if (!body) return;
 
   body.innerHTML = '';
 
-  invoiceItems.forEach((item, index) => {
-    const row = document.createElement('tr');
+  invoiceItems.forEach(item => {
+    const row = document.createElement('div');
+
+    row.className = 'item-row';
 
     row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${item.name}</td>
+      <input
+        class="item-name"
+        type="text"
+        value="${item.name || ''}"
+        readonly
+      >
 
-      <td>
-        <input
-          class="qty"
-          type="number"
-          min="0"
-          value="${item.quantity}"
-          oninput="changeItem(${item.id}, 'quantity', this.value)"
-        >
-      </td>
+      <input
+        class="item-qty"
+        type="number"
+        min="1"
+        value="${item.quantity || 1}"
+        oninput="changeItem(${item.id}, 'quantity', this.value)"
+      >
 
-      <td>
-        <input
-          class="price"
-          type="number"
-          min="0"
-          value="${item.price}"
-          oninput="changeItem(${item.id}, 'price', this.value)"
-        >
-      </td>
+      <input
+        class="item-price"
+        type="number"
+        min="0"
+        value="${item.price || 0}"
+        oninput="changeItem(${item.id}, 'price', this.value)"
+      >
 
-      <td>
-        ${money(item.quantity * item.price)}
-      </td>
+      <input
+        class="item-total"
+        type="number"
+        value="${Number(item.quantity || 0) * Number(item.price || 0)}"
+        readonly
+      >
 
-      <td>
-        <button
-          class="delete"
-          type="button"
-          onclick="deleteItem(${item.id})"
-        >
-          حذف
-        </button>
-      </td>
+      <button
+        class="delete-item"
+        type="button"
+        onclick="deleteItem(${item.id})"
+      >
+        ×
+      </button>
     `;
 
     body.appendChild(row);
