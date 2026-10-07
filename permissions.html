@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>الصلاحيات - المحاسب الإحترافي بلس</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+    color:#202633;
+    min-height:100vh;
+}
+
+.header{
+    background:linear-gradient(135deg,#1556c0,#1976d2);
+    color:white;
+    height:105px;
+    border-radius:0 0 28px 28px;
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    gap:16px;
+}
+
+.back-btn{
+    width:48px;
+    height:48px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    color:white;
+    font-size:25px;
+}
+
+.header-title{
+    flex:1;
+}
+
+.header-title h1{
+    font-size:24px;
+    font-weight:800;
+}
+
+.header-title p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.85;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:28px 18px 40px;
+}
+
+.section-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.permission-card{
+    background:white;
+    border:1px solid #edf0f5;
+    border-radius:18px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 4px 14px rgba(30,50,80,.07);
+}
+
+.permission-icon{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:#eaf2ff;
+    color:#1556c0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    flex-shrink:0;
+}
+
+.permission-info{
+    flex:1;
+}
+
+.permission-name{
+    font-size:17px;
+    font-weight:800;
+}
+
+.permission-desc{
+    font-size:13px;
+    color:#8d95a2;
+    margin-top:5px;
+    line-height:1.5;
+}
+
+/* المفتاح */
+.switch{
+    position:relative;
+    width:54px;
+    height:31px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#cfd5dd;
+    border-radius:30px;
+    transition:.2s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:25px;
+    height:25px;
+    right:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.2s;
+    box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+
+.switch input:checked + .slider{
+    background:#1976d2;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(-23px);
+}
+
+.note{
+    text-align:center;
+    color:#8b929d;
+    font-size:12px;
+    margin-top:14px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <button class="back-btn" onclick="location.href='settings_menu.html'">
+        <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+    <div class="header-title">
+        <h1>الصلاحيات</h1>
+        <p>التحكم في صلاحيات المستخدمين</p>
+    </div>
+
+</header>
+
+<main class="container">
+
+    <div class="section-title">
+        صلاحيات الفواتير
+    </div>
+
+    <div class="permission-card">
+
+        <div class="permission-icon">
+            <i class="fa-solid fa-copy"></i>
+        </div>
+
+        <div class="permission-info">
+
+            <div class="permission-name">
+                تكرار الصنف في الفاتورة
+            </div>
+
+            <div class="permission-desc">
+                السماح بإضافة نفس الصنف أكثر من مرة في الفاتورة.
+            </div>
+
+        </div>
+
+        <label class="switch">
+            <input type="checkbox" id="allowDuplicate">
+            <span class="slider"></span>
+        </label>
+
+    </div>
+
+    <div class="note">
+        عند إيقاف الخيار، لن يسمح النظام بإضافة نفس الصنف
+        أكثر من مرة في الفاتورة.
+    </div>
+
+</main>
+
+<script>
+
+const permissionKey = "hisabak_permissions";
+
+const permissions = JSON.parse(
+    localStorage.getItem(permissionKey) || "{}"
+);
+
+const duplicateSwitch =
+    document.getElementById("allowDuplicate");
+
+duplicateSwitch.checked =
+    permissions.allowDuplicateInvoiceItems === true;
+
+duplicateSwitch.addEventListener("change", function(){
+
+    const current = JSON.parse(
+        localStorage.getItem(permissionKey) || "{}"
+    );
+
+    current.allowDuplicateInvoiceItems =
+        duplicateSwitch.checked;
+
+    localStorage.setItem(
+        permissionKey,
+        JSON.stringify(current)
+    );
+
+});
+
+</script>
+
+</body>
+</html>
