@@ -2,11 +2,13 @@ package com.hisabak.app
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
 
@@ -16,10 +18,18 @@ class MainActivity : ComponentActivity() {
 
         webView = WebView(this)
 
-        webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true
-        webView.settings.allowFileAccess = true
-        webView.settings.allowContentAccess = true
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            allowFileAccess = true
+            allowContentAccess = true
+
+            cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+
+            databaseEnabled = true
+            loadsImagesAutomatically = true
+            blockNetworkImage = false
+        }
 
         webView.webViewClient = WebViewClient()
 
@@ -32,7 +42,9 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
+
                 override fun handleOnBackPressed() {
+
                     if (webView.canGoBack()) {
                         webView.goBack()
                     } else {
