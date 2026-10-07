@@ -915,7 +915,91 @@ function saveInvoice(clearAfter = false) {
     );
     return;
   }
+  // التحقق من رصيد المخزون قبل البيع
+  if (data.type === 'sale') {
 
+    const permissions = JSON.parse(
+      localStorage.getItem('hisabak_permissions') || '{}'
+    );
+
+    const allowSaleWithoutStock =
+      permissions.allowSaleWithoutStock === true;
+
+    const itemsMaster = JSON.parse(
+      localStorage.getItem('hisabak_items_master') || '[]'
+    );
+
+    if (!allowSaleWithoutStock) {
+
+      for (const invoiceItem of data.items) {
+
+        const stockItem = itemsMaster.find(
+          item =>
+            String(item.id) === String(invoiceItem.itemId)
+        );
+
+        const available = Number(
+          stockItem?.stock || 0
+        );
+
+        const quantity = Number(
+          invoiceItem.quantity || 0
+        );
+
+        if (!stockItem) {
+          showNotice(
+            'الصنف غير موجود في المخزون',
+            'error'
+          );
+          return;
+        }
+
+        if (quantity <= 0) {
+          showNotice(
+            'كمية البيع يجب أن تكون أكبر من صفر',
+            'error'
+          );
+          return;
+        }
+
+        if (quantity > available) {
+          showNotice(
+            'لا يمكن البيع. رصيد ' +
+            invoiceItem.name +
+            ' هو ' +
+            available +
+            ' فقط.',
+            'error'
+          );
+          return;
+        }
+      }
+    }
+
+    if (data.type === 'sale') {
+      
+    // خصم الكمية من المخزون
+    data.items.forEach(invoiceItem => {
+
+      const stockItem = itemsMaster.find(
+        item =>
+          String(item.id) === String(invoiceItem.itemId)
+      );
+    }
+
+      if (stockItem) {
+        stockItem.stock =
+          Number(stockItem.stock || 0) -
+          Number(invoiceItem.quantity || 0);
+      }
+    });
+  }
+
+    localStorage.setItem(
+      'hisabak_items_master',
+      JSON.stringify(itemsMaster)
+    );
+  }
   const invoices = JSON.parse(
     localStorage.getItem(INVOICE_KEY) || '[]'
   );
