@@ -271,6 +271,29 @@ duplicateSwitch.addEventListener("change", function(){
 
 });
 
+// هنا الصق الكود الجديد
+const saleStockSwitch =
+    document.getElementById("allowSaleWithoutStock");
+
+saleStockSwitch.checked =
+    permissions.allowSaleWithoutStock === true;
+
+saleStockSwitch.addEventListener("change", function(){
+
+    const current = JSON.parse(
+        localStorage.getItem(permissionKey) || "{}"
+    );
+
+    current.allowSaleWithoutStock =
+        saleStockSwitch.checked;
+
+    localStorage.setItem(
+        permissionKey,
+        JSON.stringify(current)
+    );
+
+});
+ 
 </script>
 
 </body>
