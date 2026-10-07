@@ -99,8 +99,26 @@ function currencyName(c){
   const currency = currencies.find(x => x.symbol === c);
   return currency ? `${currency.name}` : 'ريال يمني';
 }
+function loadStores(){
+  const select = document.getElementById('fStore');
+
+  const stores = JSON.parse(
+    localStorage.getItem('hisabak_stores_master') || '[]'
+  );
+
+  select.innerHTML = '';
+
+  stores.forEach(store => {
+    const option = document.createElement('option');
+    option.value = store.id;
+    option.textContent = store.name;
+    select.appendChild(option);
+  });
+}
+
 function loadCurrencies(){
   const select = document.getElementById('fCurrency');
+
   const currencies = JSON.parse(
     localStorage.getItem('hisabak_currencies') || '[]'
   );
@@ -113,6 +131,7 @@ function loadCurrencies(){
     option.textContent = `${currency.name} (${currency.symbol})`;
     select.appendChild(option);
   });
+}
 }
 function render(){
  const q=(document.getElementById('search').value||'').trim().toLowerCase();
@@ -168,6 +187,7 @@ function notice(t){const n=document.getElementById('notice');n.textContent=t;n.s
 document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeModal()});
 render();
   loadCurrencies();
+loadStores();
 </script>
   <script>
 history.pushState(null, '', location.href);
