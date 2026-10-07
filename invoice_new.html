@@ -758,6 +758,20 @@ function addItem() {
     }
   }
 
+  const permissions = JSON.parse(
+  localStorage.getItem('hisabak_permissions') || '{}'
+);
+
+if (permissions.allowDuplicateInvoiceItems !== true) {
+  const alreadyExists = invoiceItems.some(
+    item => String(item.itemId) === String(selected.id)
+  );
+
+  if (alreadyExists) {
+    showNotice('هذا الصنف موجود بالفعل في الفاتورة', 'error');
+    return;
+  }
+}
   invoiceItems.push({
     id: Date.now(),
     itemId: String(selected.id),
