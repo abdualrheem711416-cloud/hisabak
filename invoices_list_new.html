@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>فواتير المبيعات - المحاسب الاحترافي بلس</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ font-family:Tahoma,Arial,sans-serif
+}
+
+body{
+ background:#f3f6fa;
+ color:#172033;
+ min-height:100vh
+}
+
+button,input,select{
+ font:inherit
+}
+
+button{
+ border:0;
+ cursor:pointer
+}
+
+/* الرأس */
+.header{
+ background:linear-gradient(135deg,#0753b8,#1976e8);
+ color:#fff;
+ padding:15px 18px;
+ box-shadow:0 4px 16px #0b4da733
+}
+
+.header-row{
+ display:flex;
+ align-items:center;
+ gap:12px
+}
+
+.back{
+ width:42px;
+ height:42px;
+ border-radius:12px;
+ background:#ffffff22;
+ color:#fff;
+ font-size:25px
+}
+
+.header-icon{
+ width:44px;
+ height:44px;
+ border-radius:12px;
+ background:#ffffff22;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:23px
+}
+
+.title{
+ flex:1
+}
+
+.title h1{
+ font-size:21px;
+ margin-bottom:4px
+}
+
+.title p{
+ font-size:11px;
+ opacity:.85
+}
+
+.new-btn{
+ background:#fff;
+ color:#0757bd;
+ padding:11px 14px;
+ border-radius:11px;
+ font-weight:800
+}
+
+/* البطاقات */
+.summary{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ padding:14px
+}
+
+.card{
+ background:#fff;
+ border-radius:15px;
+ padding:13px 8px;
+ text-align:center;
+ border:1px solid #e5ebf3;
+ box-shadow:0 3px 12px #17365d10
+}
+
+.card .icon{
+ font-size:21px;
+ margin-bottom:5px
+}
+
+.card .num{
+ font-size:20px;
+ font-weight:900;
+ margin-bottom:4px
+}
+
+.card .label{
+ font-size:10px;
+ color:#718096
+}
+
+.blue .num{color:#1264d9}
+.green .num{color:#159765}
+.red .num{color:#dc3636}
+.orange .num{color:#dd8a0b}
+
+/* الفلاتر */
+.filters{
+ background:#fff;
+ margin:0 14px 14px;
+ padding:12px;
+ border-radius:15px;
+ box-shadow:0 3px 12px #17365d10;
+ border:1px solid #e5ebf3
+}
+
+.search{
+ position:relative;
+ margin-bottom:10px
+}
+
+.search input{
+ width:100%;
+ height:46px;
+ border:1px solid #d8e1ed;
+ border-radius:11px;
+ padding:0 42px 0 12px;
+ outline:none;
+ background:#f9fbfd
+}
+
+.search span{
+ position:absolute;
+ right:14px;
+ top:12px;
+ font-size:18px;
+ color:#7b8798
+}
+
+.filter-row{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px
+}
+
+.filter-row select{
+ height:42px;
+ border:1px solid #d8e1ed;
+ border-radius:10px;
+ padding:0 8px;
+ background:#fff;
+ color:#344054
+}
+
+/* الجدول */
+.table-panel{
+ background:#fff;
+ margin:0 14px 20px;
+ border-radius:15px;
+ border:1px solid #e5ebf3;
+ overflow:hidden;
+ box-shadow:0 3px 12px #17365d10
+}
+
+.table-wrap{
+ overflow:auto
+}
+
+table{
+ width:100%;
+ min-width:850px;
+ border-collapse:collapse
+}
+
+thead{
+ background:#edf4fb
+}
+
+th{
+ color:#526176;
+ font-size:11px;
+ padding:13px 10px;
+ text-align:right;
+ white-space:nowrap
+}
+
+td{
+ padding:11px 10px;
+ border-top:1px solid #edf1f5;
+ font-size:11px;
+ white-space:nowrap
+}
+
+.invoice-no{
+ color:#075bc4;
+ font-weight:900
+}
+
+.customer{
+ font-weight:700
+}
+
+.amount{
+ font-weight:800
+}
+
+.paid{
+ color:#168653;
+ font-weight:800
+}
+
+.remaining{
+ color:#dc3737;
+ font-weight:800
+}
+
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:20px;
+ font-size:9px;
+ font-weight:800
+}
+
+.badge-paid{
+ background:#e6f7ee;
+ color:#168653
+}
+
+.badge-partial{
+ background:#fff2d9;
+ color:#b86b00
+}
+
+.badge-due{
+ background:#ffe8e8;
+ color:#c62828
+}
+
+.actions{
+ display:flex;
+ gap:5px
+}
+
+.action{
+ width:32px;
+ height:32px;
+ border-radius:8px;
+ background:#edf4ff;
+ color:#1260c8;
+ font-size:13px
+}
+
+.action.delete{
+ background:#fff0f0;
+ color:#d22
+}
+
+/* لا يوجد بيانات */
+.empty{
+ text-align:center;
+ padding:45px 15px;
+ color:#8a96a7
+}
+
+.empty-icon{
+ font-size:40px;
+ margin-bottom:10px
+}
+
+.empty b{
+ display:block;
+ color:#596579;
+ margin-bottom:5px
+}
+
+/* لوحة التفاصيل */
+.overlay{
+ position:fixed;
+ inset:0;
+ background:#06142a80;
+ display:none;
+ z-index:50
+}
+
+.overlay.show{
+ display:block
+}
+
+.details{
+ position:absolute;
+ top:0;
+ right:0;
+ height:100%;
+ width:min(470px,94%);
+ background:#fff;
+ box-shadow:-8px 0 30px #06142a35;
+ overflow:auto
+}
+
+.details-head{
+ background:linear-gradient(135deg,#0753b8,#1976e8);
+ color:#fff;
+ padding:17px
+}
+
+.details-top{
+ display:flex;
+ align-items:center;
+ gap:10px
+}
+
+.close{
+ width:38px;
+ height:38px;
+ border-radius:10px;
+ background:#ffffff22;
+ color:#fff;
+ font-size:22px
+}
+
+.details-title{
+ flex:1
+}
+
+.details-title h2{
+ font-size:19px
+}
+
+.details-title p{
+ font-size:11px;
+ opacity:.8;
+ margin-top:3px
+}
+
+.details-body{
+ padding:15px
+}
+
+.info-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:15px
+}
+
+.info{
+ background:#f5f8fc;
+ border-radius:11px;
+ padding:10px
+}
+
+.info label{
+ display:block;
+ font-size:9px;
+ color:#7c8797;
+ margin-bottom:4px
+}
+
+.info strong{
+ font-size:12px
+}
+
+.detail-section{
+ margin-top:15px
+}
+
+.detail-section h3{
+ font-size:14px;
+ margin-bottom:9px
+}
+
+.items-table{
+ width:100%;
+ min-width:0
+}
+
+.items-table th,
+.items-table td{
+ font-size:10px;
+ padding:8px 5px
+}
+
+.totals{
+ margin-top:15px;
+ border-top:1px solid #e4e9ef;
+ padding-top:10px
+}
+
+.total-row{
+ display:flex;
+ justify-content:space-between;
+ padding:6px 0;
+ font-size:12px
+}
+
+.total-row.final{
+ font-size:15px;
+ font-weight:900
+}
+
+.detail-buttons{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ margin-top:18px
+}
+
+.detail-btn{
+ padding:11px 5px;
+ border-radius:10px;
+ color:#fff;
+ font-weight:800;
+ font-size:11px
+}
+
+.print{background:#1264d9}
+.edit{background:#168653}
+.collect{background:#d88a08}
+
+/* الاستجابة */
+@media(max-width:700px){
+
+ .summary{
+  grid-template-columns:repeat(2,1fr)
+ }
+
+ .filter-row{
+  grid-template-columns:1fr
+ }
+
+ .new-btn{
+  padding:9px 10px;
+  font-size:11px
+ }
+
+ .title h1{
+  font-size:18px
+ }
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+ <div class="header-row">
+
+  <button class="back" onclick="location.href='index.html'">‹</button>
+
+  <div class="header-icon">📄</div>
+
+  <div class="title">
+   <h1>قائمة فواتير المبيعات</h1>
+   <p>إدارة وعرض جميع فواتير المبيعات</p>
+  </div>
+
+  <button class="new-btn"
+          onclick="location.href='invoice_new.html'">
+   ＋ فاتورة جديدة
+  </button>
+
+ </div>
+
+</header>
+
+
+<section class="summary">
+
+ <div class="card blue">
+  <div class="icon">📄</div>
+  <div class="num" id="invoiceCount">0</div>
+  <div class="label">عدد الفواتير</div>
+ </div>
+
+ <div class="card blue">
+  <div class="icon">💰</div>
+  <div class="num" id="salesTotal">0</div>
+  <div class="label">إجمالي المبيعات</div>
+ </div>
+
+ <div class="card green">
+  <div class="icon">💵</div>
+  <div class="num" id="paidTotal">0</div>
+  <div class="label">إجمالي المدفوع</div>
+ </div>
+
+ <div class="card red">
+  <div class="icon">✋</div>
+  <div class="num" id="dueTotal">0</div>
+  <div class="label">إجمالي المتبقي</div>
+ </div>
+
+</section>
+
+
+<section class="filters">
+
+ <div class="search">
+
+  <span>🔎</span>
+
+  <input id="search"
+         placeholder="ابحث برقم الفاتورة أو اسم العميل..."
+         oninput="render()">
+
+ </div>
+
+ <div class="filter-row">
+
+  <select id="status" onchange="render()">
+   <option value="">كل الحالات</option>
+   <option value="paid">مدفوعة</option>
+   <option value="partial">مدفوعة جزئيًا</option>
+   <option value="due">آجلة</option>
+  </select>
+
+  <select id="dateFilter" onchange="render()">
+   <option value="">كل التواريخ</option>
+   <option value="today">اليوم</option>
+   <option value="month">هذا الشهر</option>
+  </select>
+
+  <select id="customerFilter" onchange="render()">
+   <option value="">كل العملاء</option>
+  </select>
+
+ </div>
+
+</section>
+
+
+<section class="table-panel">
+
+ <div class="table-wrap">
+
+  <table>
+
+   <thead>
+
+    <tr>
+     <th>#</th>
+     <th>رقم الفاتورة</th>
+     <th>التاريخ</th>
+     <th>اسم العميل</th>
+     <th>الإجمالي</th>
+     <th>المدفوع</th>
+     <th>المتبقي</th>
+     <th>الحالة</th>
+     <th>العمليات</th>
+    </tr>
+
+   </thead>
+
+   <tbody id="invoiceRows"></tbody>
+
+  </table>
+
+ </div>
+
+</section>
+
+
+<!-- تفاصيل الفاتورة -->
+
+<div class="overlay" id="overlay" onclick="closeDetails(event)">
+
+ <aside class="details" onclick="event.stopPropagation()">
+
+  <div class="details-head">
+
+   <div class="details-top">
+
+    <button class="close" onclick="closeDetails()">×</button>
+
+    <div class="details-title">
+     <h2 id="detailNumber">F-0001</h2>
+     <p>تفاصيل الفاتورة</p>
+    </div>
+
+   </div>
+
+  </div>
+
+
+  <div class="details-body">
+
+   <div class="info-grid">
+
+    <div class="info">
+     <label>اسم العميل</label>
+     <strong id="detailCustomer">—</strong>
+    </div>
+
+    <div class="info">
+     <label>التاريخ</label>
+     <strong id="detailDate">—</strong>
+    </div>
+
+    <div class="info">
+     <label>طريقة الدفع</label>
+     <strong id="detailPayment">—</strong>
+    </div>
+
+    <div class="info">
+     <label>تاريخ الاستحقاق</label>
+     <strong id="detailDueDate">—</strong>
+    </div>
+
+   </div>
+
+
+   <div class="detail-section">
+
+    <h3>الأصناف</h3>
+
+    <table class="items-table">
+
+     <thead>
+      <tr>
+       <th>#</th>
+       <th>الصنف</th>
+       <th>الكمية</th>
+       <th>السعر</th>
+       <th>الإجمالي</th>
+      </tr>
+     </thead>
+
+     <tbody id="detailItems"></tbody>
+
+    </table>
+
+   </div>
+
+
+   <div class="totals">
+
+    <div class="total-row">
+     <span>الإجمالي</span>
+     <strong id="detailTotal">0</strong>
+    </div>
+
+    <div class="total-row">
+     <span>الخصم</span>
+     <strong id="detailDiscount">0</strong>
+    </div>
+
+    <div class="total-row">
+     <span>المدفوع</span>
+     <strong id="detailPaid">0</strong>
+    </div>
+
+    <div class="total-row final">
+     <span>المتبقي</span>
+     <strong id="detailRemaining">0</strong>
+    </div>
+
+   </div>
+
+
+   <div class="detail-buttons">
+
+    <button class="detail-btn print"
+            onclick="printInvoice()">
+     🖨 طباعة
+    </button>
+
+    <button class="detail-btn edit"
+            onclick="editCurrent()">
+     ✎ تعديل
+    </button>
+
+    <button class="detail-btn collect"
+            onclick="collectCurrent()">
+     💰 تحصيل
+    </button>
+
+   </div>
+
+  </div>
+
+ </aside>
+
+</div>
+
+
+<script>
+
+const KEY='hisabak_invoices';
+
+let invoices=[];
+let currentInvoice=null;
+
+
+/* تحميل الفواتير */
+
+function loadInvoices(){
+
+ try{
+
+  const data=
+   JSON.parse(localStorage.getItem(KEY)||'[]');
+
+  invoices=
+   Array.isArray(data)?data:[];
+
+ }catch(e){
+
+  invoices=[];
+
+ }
+
+}
+
+
+/* تحويل رقم */
+
+function num(v){
+
+ return Number(v||0);
+
+}
+
+
+/* تنسيق المبلغ */
+
+function money(v){
+
+ return num(v).toLocaleString('ar-YE');
+
+}
+
+
+/* استخراج رقم الفاتورة */
+
+function invoiceNumber(x,i){
+
+ return x.number ||
+        x.invoiceNumber ||
+        x.code ||
+        ('F-'+String(i+1).padStart(4,'0'));
+
+}
+
+
+/* اسم العميل */
+
+function customerName(x){
+
+ return x.customerName ||
+        x.customer ||
+        x.party ||
+        'عميل نقدي';
+
+}
+
+
+/* التاريخ */
+
+function invoiceDate(x){
+
+ return x.date ||
+        x.createdAt ||
+        x.created ||
+        '';
+
+}
+
+
+/* الإجمالي */
+
+function invoiceTotal(x){
+
+ return num(
+  x.total ??
+  x.grandTotal ??
+  x.amount ??
+  x.netTotal
+ );
+
+}
+
+
+/* المدفوع */
+
+function invoicePaid(x){
+
+ return num(
+  x.paid ??
+  x.paidAmount ??
+  x.payment ??
+  0
+ );
+
+}
+
+
+/* المتبقي */
+
+function invoiceDue(x){
+
+ const total=invoiceTotal(x);
+ const paid=invoicePaid(x);
+
+ return Math.max(0,num(x.remaining ?? total-paid));
+
+}
+
+
+/* الحالة */
+
+function statusOf(x){
+
+ const total=invoiceTotal(x);
+ const paid=invoicePaid(x);
+ const due=invoiceDue(x);
+
+ if(due<=0 && total>0)return 'paid';
+
+ if(paid>0)return 'partial';
+
+ return 'due';
+
+}
+
+
+/* نص الحالة */
+
+function statusText(s){
+
+ if(s==='paid')return 'مدفوعة';
+
+ if(s==='partial')return 'جزئي';
+
+ return 'آجلة';
+
+}
+
+
+/* تعبئة العملاء */
+
+function loadCustomers(){
+
+ const select=
+  document.getElementById('customerFilter');
+
+ const names=[...new Set(
+  invoices.map(x=>customerName(x))
+ )];
+
+ select.innerHTML=
+  '<option value="">كل العملاء</option>';
+
+ names.forEach(name=>{
+
+  const option=document.createElement('option');
+
+  option.value=name;
+
+  option.textContent=name;
+
+  select.appendChild(option);
+
+ });
+
+}
+
+
+/* فلترة التاريخ */
+
+function dateMatch(x,type){
+
+ if(!type)return true;
+
+ const d=new Date(invoiceDate(x));
+
+ if(isNaN(d.getTime()))return true;
+
+ const now=new Date();
+
+ if(type==='today'){
+
+  return d.toDateString()===now.toDateString();
+
+ }
+
+ if(type==='month'){
+
+  return d.getFullYear()===now.getFullYear()
+      &&d.getMonth()===now.getMonth();
+
+ }
+
+ return true;
+
+}
+
+
+/* عرض الفواتير */
+
+function render(){
+
+ const q=
+  document.getElementById('search')
+   .value.trim().toLowerCase();
+
+ const status=
+  document.getElementById('status').value;
+
+ const date=
+  document.getElementById('dateFilter').value;
+
+ const customer=
+  document.getElementById('customerFilter').value;
+
+
+ const filtered=invoices.filter(x=>{
+
+  const number=invoiceNumber(x,0).toLowerCase();
+
+  const name=customerName(x).toLowerCase();
+
+  return (!q ||
+          number.includes(q) ||
+          name.includes(q))
+      &&(!status || statusOf(x)===status)
+      &&(!customer || customerName(x)===customer)
+      &&dateMatch(x,date);
+
+ });
+
+
+ let sales=0;
+ let paid=0;
+ let due=0;
+
+ invoices.forEach(x=>{
+
+  sales+=invoiceTotal(x);
+  paid+=invoicePaid(x);
+  due+=invoiceDue(x);
+
+ });
+
+
+ document.getElementById('invoiceCount').textContent=
+  invoices.length;
+
+ document.getElementById('salesTotal').textContent=
+  money(sales);
+
+ document.getElementById('paidTotal').textContent=
+  money(paid);
+
+ document.getElementById('dueTotal').textContent=
+  money(due);
+
+
+ const rows=
+  document.getElementById('invoiceRows');
+
+
+ if(!filtered.length){
+
+  rows.innerHTML=`
+   <tr>
+    <td colspan="9">
+     <div class="empty">
+      <div class="empty-icon">📄</div>
+      <b>لا توجد فواتير</b>
+      <span>ستظهر الفواتير هنا بعد حفظ أول فاتورة</span>
+     </div>
+    </td>
+   </tr>
+  `;
+
+  return;
+
+ }
+
+
+ rows.innerHTML=
+  filtered.map((x,i)=>{
+
+   const total=invoiceTotal(x);
+   const p=invoicePaid(x);
+   const d=invoiceDue(x);
+   const s=statusOf(x);
+
+   return`
+    <tr>
+
+     <td>${i+1}</td>
+
+     <td class="invoice-no">
+      ${escapeHtml(invoiceNumber(x,i))}
+     </td>
+
+     <td>
+      ${escapeHtml(invoiceDate(x)||'—')}
+     </td>
+
+     <td class="customer">
+      ${escapeHtml(customerName(x))}
+     </td>
+
+     <td class="amount">
+      ${money(total)}
+     </td>
+
+     <td class="paid">
+      ${money(p)}
+     </td>
+
+     <td class="remaining">
+      ${money(d)}
+     </td>
+
+     <td>
+      <span class="badge ${
+       s==='paid'
+        ?'badge-paid'
+        :s==='partial'
+        ?'badge-partial'
+        :'badge-due'
+      }">
+       ${statusText(s)}
+      </span>
+     </td>
+
+     <td>
+      <div class="actions">
+
+       <button class="action"
+               onclick="showDetails('${x.id||i}')">
+        👁
+       </button>
+
+       <button class="action"
+               onclick="printById('${x.id||i}')">
+        🖨
+       </button>
+
+       <button class="action delete"
+               onclick="deleteInvoice('${x.id||i}')">
+        🗑
+       </button>
+
+      </div>
+     </td>
+
+    </tr>
+   `;
+
+  }).join('');
+
+}
+
+
+/* تفاصيل الفاتورة */
+
+function showDetails(id){
+
+ const index=invoices.findIndex(
+  (x,i)=>String(x.id||i)===String(id)
+ );
+
+ if(index<0)return;
+
+ currentInvoice=invoices[index];
+
+ const x=currentInvoice;
+
+ document.getElementById('detailNumber').textContent=
+  invoiceNumber(x,index);
+
+ document.getElementById('detailCustomer').textContent=
+  customerName(x);
+
+ document.getElementById('detailDate').textContent=
+  invoiceDate(x)||'—';
+
+ document.getElementById('detailPayment').textContent=
+  x.paymentMethod||
+  x.payment||
+  '—';
+
+ document.getElementById('detailDueDate').textContent=
+  x.dueDate||'—';
+
+
+ const items=
+  x.items||
+  x.invoiceItems||
+  x.lines||
+  [];
+
+
+ document.getElementById('detailItems').innerHTML=
+  items.length
+  ?items.map((item,i)=>{
+
+    const qty=num(item.quantity||item.qty||1);
+    const price=num(item.price||item.unitPrice||0);
+
+    return`
+     <tr>
+      <td>${i+1}</td>
+      <td>${escapeHtml(item.name||item.itemName||'صنف')}</td>
+      <td>${qty}</td>
+      <td>${money(price)}</td>
+      <td>${money(qty*price)}</td>
+     </tr>
+    `;
+
+   }).join('')
+  :`
+   <tr>
+    <td colspan="5" style="text-align:center">
+     لا توجد أصناف
+    </td>
+   </tr>
+  `;
+
+
+ const total=invoiceTotal(x);
+ const paid=invoicePaid(x);
+ const due=invoiceDue(x);
+
+
+ document.getElementById('detailTotal').textContent=
+  money(total);
+
+ document.getElementById('detailDiscount').textContent=
+  money(x.discount||0);
+
+ document.getElementById('detailPaid').textContent=
+  money(paid);
+
+ document.getElementById('detailRemaining').textContent=
+  money(due);
+
+
+ document.getElementById('overlay')
+  .classList.add('show');
+
+}
+
+
+/* إغلاق التفاصيل */
+
+function closeDetails(){
+
+ document.getElementById('overlay')
+  .classList.remove('show');
+
+}
+
+
+/* طباعة */
+
+function printInvoice(){
+
+ if(!currentInvoice)return;
+
+ const x=currentInvoice;
+
+ const w=window.open('','_blank');
+
+ w.document.write(`
+  <html dir="rtl">
+  <head>
+   <title>${invoiceNumber(x,0)}</title>
+   <style>
+    body{font-family:Tahoma;padding:30px}
+    h2{text-align:center}
+    table{width:100%;border-collapse:collapse;margin-top:20px}
+    th,td{border:1px solid #ccc;padding:8px}
+   </style>
+  </head>
+  <body>
+   <h2>المحاسب الاحترافي بلس</h2>
+   <h3>فاتورة مبيعات</h3>
+   <p>رقم الفاتورة: ${invoiceNumber(x,0)}</p>
+   <p>العميل: ${customerName(x)}</p>
+   <p>التاريخ: ${invoiceDate(x)||'—'}</p>
+   <hr>
+   <h3>الإجمالي: ${money(invoiceTotal(x))}</h3>
+   <h3>المدفوع: ${money(invoicePaid(x))}</h3>
+   <h3>المتبقي: ${money(invoiceDue(x))}</h3>
+  </body>
+  </html>
+ `);
+
+ w.document.close();
+ w.print();
+
+}
+
+
+/* طباعة من الجدول */
+
+function printById(id){
+
+ const index=invoices.findIndex(
+  (x,i)=>String(x.id||i)===String(id)
+ );
+
+ if(index<0)return;
+
+ currentInvoice=invoices[index];
+
+ printInvoice();
+
+}
+
+
+/* تعديل */
+
+function editCurrent(){
+
+ if(!currentInvoice)return;
+
+ location.href='invoice_new.html';
+
+}
+
+
+/* تحصيل */
+
+function collectCurrent(){
+
+ if(!currentInvoice)return;
+
+ alert('سيتم ربط التحصيل بسند القبض في المرحلة التالية.');
+
+}
+
+
+/* حذف */
+
+function deleteInvoice(id){
+
+ const index=invoices.findIndex(
+  (x,i)=>String(x.id||i)===String(id)
+ );
+
+ if(index<0)return;
+
+ const x=invoices[index];
+
+ if(!confirm(
+  'هل تريد حذف الفاتورة '+invoiceNumber(x,index)+'؟'
+ ))return;
+
+ invoices.splice(index,1);
+
+ localStorage.setItem(
+  KEY,
+  JSON.stringify(invoices)
+ );
+
+ render();
+
+}
+
+
+/* حماية النص */
+
+function escapeHtml(v){
+
+ return String(v).replace(
+  /[&<>"']/g,
+  m=>({
+   '&':'&amp;',
+   '<':'&lt;',
+   '>':'&gt;',
+   '"':'&quot;',
+   "'":'&#039;'
+  }[m])
+ );
+
+}
+
+
+/* تشغيل */
+
+loadInvoices();
+loadCustomers();
+render();
+
+</script>
+
+</body>
+  </html>
