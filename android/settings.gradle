@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Hisabak"
 include(":app")
-project(":app").projectDir = file("برنامج")
+project(":app").projectDir = file("app")
