@@ -517,10 +517,15 @@ button{
       <div class="item-row">
 
         <input
-          class="item-name"
-          type="text"
-          placeholder="اسم الصنف"
-        >
+  id="itemSearch"
+  class="item-name"
+  type="text"
+  list="invoiceItemsList"
+  placeholder="اكتب اسم الصنف أو الباركود..."
+  autocomplete="off"
+>
+
+<datalist id="invoiceItemsList"></datalist>
 
         <input
           class="item-qty"
@@ -1034,6 +1039,139 @@ document.addEventListener(
     }
   }
 );
+/* ===== ربط أصناف الفاتورة بالمخزون ===== */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const search = document.getElementById('itemSearch');
+  const itemsBody = document.getElementById('itemsBody');
+  const list = document.getElementById('invoiceItemsList');
+
+  if (!search || !itemsBody || !list) return;
+
+  /* نقل حقل البحث خارج منطقة الأصناف حتى لا يختفي عند تحديث الفاتورة */
+  itemsBody.parentNode.insertBefore(search, itemsBody);
+  itemsBody.parentNode.insertBefore(list, itemsBody);
+
+  /* قراءة أصناف المخزون */
+  let stockItems = [];
+
+  try {
+    stockItems = JSON.parse(
+      localStorage.getItem('hisabak_items_master') || '[]'
+    );
+  } catch (e) {
+    stockItems = [];
+  }
+
+  /* إنشاء قائمة الاقتراحات */
+  list.innerHTML = '';
+
+  stockItems.forEach(function (item) {
+
+    if (item.name) {
+      const option = document.createElement('option');
+      option.value = item.name;
+      list.appendChild(option);
+    }
+
+    if (item.barcode) {
+      const option = document.createElement('option');
+      option.value = item.barcode;
+      list.appendChild(option);
+    }
+
+  });
+
+  /* البحث عن الصنف */
+  search.addEventListener('input', function () {
+
+    const value = search.value.trim();
+
+    const found = stockItems.find(function (item) {
+      return String(item.name || '').trim() === value ||
+             String(item.barcode || '').trim() === value;
+    });
+
+    if (found) {
+
+      search.dataset.itemId = found.id;
+      search.dataset.itemName = found.name;
+      search.dataset.itemPrice = found.price || 0;
+      search.dataset.itemStock = found.stock || 0;
+
+      search.title =
+        'المخزون: ' + (found.stock || 0) +
+        ' | السعر: ' + (found.price || 0);
+
+    } else {
+
+      delete search.dataset.itemId;
+      delete search.dataset.itemName;
+      delete search.dataset.itemPrice;
+      delete search.dataset.itemStock;
+
+    }
+
+  });
+
+});
+
+
+/* إضافة الصنف من المخزون إلى الفاتورة */
+window.addItem = function () {
+
+  const search = document.getElementById('itemSearch');
+
+  if (!search) return;
+
+  const value = search.value.trim();
+
+  if (!value) {
+    showNotice('اكتب اسم الصنف أو الباركود أولاً', 'error');
+    return;
+  }
+
+  let stockItems = [];
+
+  try {
+    stockItems = JSON.parse(
+      localStorage.getItem('hisabak_items_master') || '[]'
+    );
+  } catch (e) {
+    stockItems = [];
+  }
+
+  const found = stockItems.find(function (item) {
+    return String(item.name || '').trim() === value ||
+           String(item.barcode || '').trim() === value;
+  });
+
+  if (!found) {
+    showNotice('الصنف غير موجود في المخزون', 'error');
+    return;
+  }
+
+  invoiceItems.push({
+    id: Date.now(),
+    itemId: found.id,
+    name: found.name,
+    quantity: 1,
+    price: Number(found.price || 0)
+  });
+
+  search.value = '';
+
+  delete search.dataset.itemId;
+  delete search.dataset.itemName;
+  delete search.dataset.itemPrice;
+  delete search.dataset.itemStock;
+
+  renderItems();
+  calculateTotals();
+
+  showNotice('تم إضافة الصنف من المخزون', 'success');
+};
 </script>
 
 </body>
