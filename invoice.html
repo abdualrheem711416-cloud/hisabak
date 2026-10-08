@@ -522,42 +522,6 @@ button{
 
 <datalist id="invoiceItemsList"></datalist>
 <div id="itemsBody">
-
-      <div class="item-row">
-
-        
-        <input
-          class="item-qty"
-          type="number"
-          value="1"
-          min="1"
-          oninput="calculateTotals()"
-        >
-
-        <input
-          class="item-price"
-          type="number"
-          value="0"
-          min="0"
-          oninput="calculateTotals()"
-        >
-
-        <input
-          class="item-total"
-          type="number"
-          value="0"
-          readonly
-        >
-
-        <button
-          class="delete-item"
-          onclick="deleteItem(this)"
-        >
-          ×
-        </button>
-
-      </div>
-
     </div>
 
     <button type="button" class="add-item" onclick="window.addItem()">
