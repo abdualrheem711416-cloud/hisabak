@@ -1130,7 +1130,7 @@ window.addItem = function () {
   const value = search.value.trim();
 
   if (!value) {
-    showNotice('اكتب اسم الصنف أو الباركود أولاً', 'error');
+    alert('اكتب اسم الصنف أو الباركود أولاً');
     return;
   }
 
@@ -1138,23 +1138,24 @@ window.addItem = function () {
 
   try {
     stockItems = JSON.parse(
-      localStorage.getItem('hisabak_items_master') || '[]'
+      localStorage.getItem('hisabak_items_master') ||
+      localStorage.getItem('hisabak_items') ||
+      '[]'
     );
   } catch (e) {
     stockItems = [];
   }
 
-  const found = stockItems.find(function (item) {
+  const found = stockItems.find(function(item) {
 
     const name = String(item.name || '').trim().toLowerCase();
     const barcode = String(item.barcode || '').trim();
 
     return name === value.toLowerCase() || barcode === value;
-
   });
 
   if (!found) {
-    showNotice('الصنف غير موجود في المخزون', 'error');
+    alert('الصنف غير موجود في المخزون');
     return;
   }
 
@@ -1171,6 +1172,8 @@ window.addItem = function () {
   renderItems();
   calculateTotals();
 
+  alert('تم إضافة الصنف بنجاح');
+};
   showNotice('تم إضافة الصنف من المخزون', 'success');
 };
 </script>
