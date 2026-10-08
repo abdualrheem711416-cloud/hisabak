@@ -913,7 +913,31 @@ function saveInvoice(clearAfter = false) {
     INVOICE_KEY,
     JSON.stringify(invoices)
   );
+// خصم الكمية من المخزون بعد حفظ فاتورة البيع
+if (invoiceType === 'sale') {
+  let stockItems = JSON.parse(
+    localStorage.getItem('hisabak_items_master') || '[]'
+  );
 
+  invoiceItems.forEach(function (soldItem) {
+    const stockItem = stockItems.find(function (item) {
+      return String(item.id) === String(soldItem.itemId);
+    });
+
+    if (stockItem) {
+      stockItem.stock = Number(stockItem.stock || 0) - Number(soldItem.quantity || 0);
+
+      if (stockItem.stock < 0) {
+        stockItem.stock = 0;
+      }
+    }
+  });
+
+  localStorage.setItem(
+    'hisabak_items_master',
+    JSON.stringify(stockItems)
+  );
+        }
   showNotice(
     'تم حفظ الفاتورة بنجاح',
     'success'
