@@ -1122,7 +1122,10 @@ window.addItem = function () {
 
   const search = document.getElementById('itemSearch');
 
-  if (!search) return;
+  if (!search) {
+    alert('حقل الصنف غير موجود');
+    return;
+  }
 
   const value = search.value.trim();
 
@@ -1142,8 +1145,12 @@ window.addItem = function () {
   }
 
   const found = stockItems.find(function (item) {
-    return String(item.name || '').trim() === value ||
-           String(item.barcode || '').trim() === value;
+
+    const name = String(item.name || '').trim().toLowerCase();
+    const barcode = String(item.barcode || '').trim();
+
+    return name === value.toLowerCase() || barcode === value;
+
   });
 
   if (!found) {
@@ -1160,11 +1167,6 @@ window.addItem = function () {
   });
 
   search.value = '';
-
-  delete search.dataset.itemId;
-  delete search.dataset.itemName;
-  delete search.dataset.itemPrice;
-  delete search.dataset.itemStock;
 
   renderItems();
   calculateTotals();
