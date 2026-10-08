@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hisabak-v2026-offline-v2';
+const CACHE_NAME = 'hisabak-v2026-offline-v3';
 
 const APP_FILES = [
   './',
