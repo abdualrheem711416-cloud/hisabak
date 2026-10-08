@@ -521,7 +521,7 @@ button{
 >
 
 <datalist id="invoiceItemsList"></datalist>
-    <div id="itemsBody">
+<div id="itemsBody">
 
       <div class="item-row">
 
@@ -1119,16 +1119,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* إضافة الصنف من المخزون إلى الفاتورة */
 window.addItem = function () {
-
   const search = document.getElementById('itemSearch');
-
-  if (!search) {
-    alert('حقل الصنف غير موجود');
-    return;
-  }
+  if (!search) return;
 
   const value = search.value.trim();
-
   if (!value) {
     alert('اكتب اسم الصنف أو الباركود أولاً');
     return;
@@ -1138,20 +1132,15 @@ window.addItem = function () {
 
   try {
     stockItems = JSON.parse(
-      localStorage.getItem('hisabak_items_master') ||
-      localStorage.getItem('hisabak_items') ||
-      '[]'
+      localStorage.getItem('hisabak_items_master') || '[]'
     );
   } catch (e) {
     stockItems = [];
   }
 
-  const found = stockItems.find(function(item) {
-
-    const name = String(item.name || '').trim().toLowerCase();
-    const barcode = String(item.barcode || '').trim();
-
-    return name === value.toLowerCase() || barcode === value;
+  const found = stockItems.find(function (item) {
+    return String(item.name || '').trim().toLowerCase() === value.toLowerCase()
+      || String(item.barcode || '').trim() === value;
   });
 
   if (!found) {
@@ -1172,7 +1161,7 @@ window.addItem = function () {
   renderItems();
   calculateTotals();
 
-  alert('تم إضافة الصنف بنجاح');
+  alert('تمت إضافة الصنف بنجاح');
 };
 </script>
 
