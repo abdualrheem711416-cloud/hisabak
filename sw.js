@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hisabak-v2026-offline-v3';
+const CACHE_NAME = 'hisabak-v2026-offline-v4';
 
 const APP_FILES = [
   './',
@@ -53,28 +53,28 @@ self.addEventListener('fetch', event => {
   }
 
   event.respondWith(
-    fetch(request)
-      .then(response => {
-        if (
-          response &&
-          response.status === 200 &&
-          response.type === 'basic'
-        ) {
-          const copy = response.clone();
+    caches.match(request).then(cached => {
+      if (cached) {
+        return cached;
+      }
 
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, copy);
-          });
-        }
+      return fetch(request)
+        .then(response => {
+          if (
+            response &&
+            response.status === 200 &&
+            response.type === 'basic'
+          ) {
+            const copy = response.clone();
 
-        return response;
-      })
-      .catch(() =>
-        caches.match(request).then(cached => {
-          if (cached) {
-            return cached;
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, copy);
+            });
           }
 
+          return response;
+        })
+        .catch(() => {
           if (request.mode === 'navigate') {
             return caches.match('./index.html');
           }
@@ -83,7 +83,7 @@ self.addEventListener('fetch', event => {
             status: 503,
             statusText: 'Offline'
           });
-        })
-      )
+        });
+    })
   );
 });
