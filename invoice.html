@@ -750,7 +750,7 @@ function renderItems() {
 
 function changeItem(id, field, value) {
   const item = invoiceItems.find(
-    item => item.id === id
+    item => String(item.id) === String(id)
   );
 
   if (!item) {
@@ -759,6 +759,7 @@ function changeItem(id, field, value) {
 
   item[field] = Number(value || 0);
 
+  calculateTotals();
   renderItems();
   calculateTotals();
 }
