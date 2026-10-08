@@ -798,12 +798,12 @@ function calculateTotals() {
 
   const grandTotal = afterDiscount + tax;
 
-  if ($('subtotal')) {
-    $('subtotal').textContent = money(subtotal);
+  if ($('sub')) {
+    $('sub').textContent = money(subtotal);
   }
 
-  if ($('grandTotal')) {
-    $('grandTotal').textContent = money(grandTotal);
+  if ($('grand')) {
+    $('grand').textContent = money(grandTotal);
   }
 
   return {
