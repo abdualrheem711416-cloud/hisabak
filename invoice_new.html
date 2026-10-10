@@ -846,7 +846,7 @@ function calculateTotals() {
 
   const grandTotal = afterDiscount + tax;
 
-  if ($('grandTotal')) {
+  if ($('grandTotal') && $('grandTotal').textContent !== money(grandTotal)) {
   $('grandTotal').textContent = money(grandTotal);
   }
   
