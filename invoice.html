@@ -798,13 +798,9 @@ function calculateTotals() {
 
   const grandTotal = afterDiscount + tax;
 
-  if ($('sub')) {
-    $('sub').textContent = money(subtotal);
-  }
-
-  if ($('grand')) {
-    $('grand').textContent = money(grandTotal);
-  }
+  if ($('grandTotal')) {
+  $('grandTotal').textContent = money(grandTotal);
+}
 
   return {
     subtotal,
