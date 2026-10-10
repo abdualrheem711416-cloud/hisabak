@@ -737,35 +737,101 @@ function saveInvoice(clearAfter = false) {
     return;
   }
 
-  const invoices = JSON.parse(localStorage.getItem(INVOICE_KEY) || '[]');
-  invoices.push(data);
-  localStorage.setItem(INVOICE_KEY, JSON.stringify(invoices));
+  let invoices = [];
+  let stockItems = [];
 
-  // تحديث المخزون في حال كانت الفاتورة بيع
-  if (invoiceType === 'sale') {
-    let stockItems = JSON.parse(localStorage.getItem('hisabak_items_master') || '[]');
-
-    invoiceItems.forEach(function (soldItem) {
-      const stockItem = stockItems.find(function (item) {
-        return String(item.id) === String(soldItem.itemId);
-      });
-
-      if (stockItem) {
-        stockItem.stock = Number(stockItem.stock || 0) - Number(soldItem.quantity || 0);
-        if (stockItem.stock < 0) stockItem.stock = 0;
-      }
-    });
-
-    localStorage.setItem('hisabak_items_master', JSON.stringify(stockItems));
+  try {
+    invoices = JSON.parse(localStorage.getItem(INVOICE_KEY) || '[]');
+    stockItems = JSON.parse(
+      localStorage.getItem('hisabak_items_master') || '[]'
+    );
+  } catch (e) {
+    showNotice('تعذر قراءة بيانات الفواتير أو المخزون', 'error');
+    return;
   }
 
-  showNotice('تم حفظ الفاتورة بنجاح', 'success');
+  if (!Array.isArray(invoices) || !Array.isArray(stockItems)) {
+    showNotice('بيانات الفواتير أو المخزون غير صحيحة', 'error');
+    return;
+  }
+
+  // منع تكرار الفاتورة المحفوظة بالرقم نفسه
+  const duplicate = invoices.some(inv =>
+    String(inv.invoiceNo || inv.invoiceNumber || '') ===
+    String(data.invoiceNo)
+  );
+
+  if (duplicate) {
+    showNotice('رقم الفاتورة مستخدم مسبقًا، غيّر رقم الفاتورة أولًا', 'error');
+    return;
+  }
+
+  // التحقق من وجود الأصناف وكفاية الرصيد قبل البيع
+  if (invoiceType === 'sale') {
+    for (const soldItem of data.items) {
+      const stockItem = stockItems.find(
+        item => String(item.id) === String(soldItem.itemId)
+      );
+
+      if (!stockItem) {
+        showNotice('الصنف ' + soldItem.name + ' غير موجود في المخزون', 'error');
+        return;
+      }
+
+      const available = Number(stockItem.stock || 0);
+      const requested = Number(soldItem.quantity || 0);
+
+      if (requested <= 0 || requested > available) {
+        showNotice(
+          'الرصيد غير كافٍ للصنف: ' + soldItem.name +
+          '، المتوفر: ' + available,
+          'error'
+        );
+        return;
+      }
+    }
+  }
+
+  // تسجيل الفاتورة
+  data.paid = data.paymentMethod === 'cash' ? data.grandTotal : 0;
+  data.remaining = Math.max(0, data.grandTotal - data.paid);
+  data.total = data.grandTotal;
+
+  // تحديد نوع الحركة على المخزون
+  for (const invoiceItem of data.items) {
+    const stockItem = stockItems.find(
+      item => String(item.id) === String(invoiceItem.itemId)
+    );
+
+    if (!stockItem) continue;
+
+    const quantity = Number(invoiceItem.quantity || 0);
+
+    if (invoiceType === 'sale' || invoiceType === 'purchase_return') {
+      stockItem.stock = Number(stockItem.stock || 0) - quantity;
+    } else if (
+      invoiceType === 'purchase' ||
+      invoiceType === 'sales_return'
+    ) {
+      stockItem.stock = Number(stockItem.stock || 0) + quantity;
+    }
+  }
+
+  try {
+    localStorage.setItem('hisabak_items_master', JSON.stringify(stockItems));
+    invoices.push(data);
+    localStorage.setItem(INVOICE_KEY, JSON.stringify(invoices));
+  } catch (e) {
+    showNotice('تعذر حفظ البيانات على الجهاز', 'error');
+    return;
+  }
+
+  showNotice('تم حفظ الفاتورة وتحديث المخزون بنجاح', 'success');
 
   if (clearAfter) {
     newInvoice();
   }
 }
-
 function saveAndPrint() {
   saveInvoice(false);
   setTimeout(() => {
