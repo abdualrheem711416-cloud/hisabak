@@ -228,6 +228,7 @@ button{
   background:#fff;
   font-size:11px;
   align-items:center;
+  text-align:center;
 }
 
 .item-row input{
@@ -352,156 +353,102 @@ button{
 
 <header class="header">
   <div class="header-top">
-
     <button class="back-btn" onclick="history.back()">‹</button>
-
     <div class="header-title">
-      <b>فاتورة المبيعات</b>
+      <b id="invoiceTitle">فاتورة المبيعات</b>
       <small>المحاسب الاحترافي بلس</small>
     </div>
-
     <div class="header-icon">🧾</div>
-
   </div>
 </header>
 
 <div class="tabs">
-
-  <button class="tab active" onclick="setInvoiceType('sale',this)">
-    فاتورة بيع
-  </button>
-
-  <button class="tab" onclick="setInvoiceType('purchase',this)">
-    فاتورة شراء
-  </button>
-
-  <button class="tab" onclick="setInvoiceType('sales_return',this)">
-    مرتجع بيع
-  </button>
-
-  <button class="tab" onclick="setInvoiceType('purchase_return',this)">
-    مرتجع شراء
-  </button>
-
+  <button class="tab active" data-type="sale" onclick="setInvoiceType('sale')">فاتورة بيع</button>
+  <button class="tab" data-type="purchase" onclick="setInvoiceType('purchase')">فاتورة شراء</button>
+  <button class="tab" data-type="sales_return" onclick="setInvoiceType('sales_return')">مرتجع بيع</button>
+  <button class="tab" data-type="purchase_return" onclick="setInvoiceType('purchase_return')">مرتجع شراء</button>
 </div>
 
 <main class="container">
 
   <!-- معلومات الفاتورة -->
   <section class="section">
-
-    <div class="section-title">
-      📄 معلومات الفاتورة
-    </div>
-
+    <div class="section-title">📄 معلومات الفاتورة</div>
     <div class="grid-2">
-
       <div class="field">
         <label>رقم الفاتورة</label>
         <input id="invoiceNo" type="text" value="1001">
       </div>
-
       <div class="field">
         <label>التاريخ</label>
         <input id="invoiceDate" type="date">
       </div>
-
       <div class="field">
         <label>نوع الفاتورة</label>
-        <select id="invoiceType">
+        <select id="invoiceType" onchange="setInvoiceType(this.value)">
           <option value="sale">بيع</option>
           <option value="purchase">شراء</option>
           <option value="sales_return">مرتجع بيع</option>
           <option value="purchase_return">مرتجع شراء</option>
         </select>
       </div>
-
       <div class="field">
         <label>المستودع</label>
         <select id="warehouse">
           <option value="main">المستودع الرئيسي</option>
         </select>
       </div>
-
     </div>
-
   </section>
 
   <!-- العميل / المورد -->
   <section class="section">
-
-    <div class="section-title">
-      👤 الطرف
-    </div>
-
+    <div class="section-title">👤 الطرف</div>
     <div class="grid-2">
-
       <div class="field full">
         <label id="partyLabel">العميل</label>
-
         <div class="account-box">
-
-          <select id="party">
+          <select id="customer">
             <option value="">اختر العميل</option>
             <option value="cash">عميل نقدي</option>
           </select>
-
-          <button class="add-btn" onclick="addParty()">+</button>
-
+          <button class="add-btn" type="button" onclick="addParty()">+</button>
         </div>
       </div>
-
       <div class="field">
         <label>العملة</label>
-
         <select id="currency">
           <option value="YER">ريال يمني</option>
           <option value="SAR">ريال سعودي</option>
           <option value="USD">دولار</option>
         </select>
       </div>
-
       <div class="field">
         <label>سعر الصرف</label>
         <input id="exchangeRate" type="number" value="1">
       </div>
-
     </div>
-
   </section>
 
   <!-- طريقة الدفع -->
   <section class="section">
-
-    <div class="section-title">
-      💳 طريقة الدفع
-    </div>
-
+    <div class="section-title">💳 طريقة الدفع</div>
     <div class="payment-row">
-
-      <button
-        class="payment-option active"
-        onclick="selectPayment('cash',this)"
-      >
-        💵 نقدًا
-      </button>
-
-      <button
-        class="payment-option"
-        onclick="selectPayment('credit',this)"
-      >
-        🧾 آجل
-      </button>
-
+      <button type="button" class="payment-option active" onclick="selectPayment('cash', this)">💵 نقدًا</button>
+      <button type="button" class="payment-option" onclick="selectPayment('credit', this)">🧾 آجل</button>
     </div>
-
+    <input type="hidden" id="paymentMethod" value="cash">
   </section>
 
   <!-- الأصناف -->
   <section class="section">
+    <div class="section-title">📦 أصناف الفاتورة</div>
 
-    <div class="section-title">
-      📦 أصناف الفاتورة
+    <!-- حقل البحث والقائمة الخاصة بالمخزون -->
+    <div class="field" style="margin-bottom: 8px;">
+      <label>بحث عن صنف</label>
+      <input id="itemSearch" type="text" list="invoiceItemsList" placeholder="اكتب اسم الصنف أو الباركود..." autocomplete="off">
+      <datalist id="invoiceItemsList"></datalist>
     </div>
 
     <div class="items-header">
@@ -511,120 +458,53 @@ button{
       <div>الإجمالي</div>
       <div></div>
     </div>
-<input
-  id="itemSearch"
-  class="item-name"
-  type="text"
-  list="invoiceItemsList"
-  placeholder="اكتب اسم الصنف أو الباركود..."
-  autocomplete="off"
->
 
-<datalist id="invoiceItemsList"></datalist>
-<div id="itemsBody">
-    </div>
+    <div id="itemsBody"></div>
 
-    <button type="button" class="add-item" onclick="window.addItem()">
+    <button type="button" class="add-item" onclick="addItem()">
       ＋ إضافة صنف إلى الفاتورة
     </button>
-
   </section>
 
   <!-- الخصم والضريبة -->
   <section class="section">
-
-    <div class="section-title">
-      🧮 الخصم والضريبة
-    </div>
-
+    <div class="section-title">🧮 الخصم والضريبة</div>
     <div class="summary">
-
       <div class="summary-box">
         <label>الخصم</label>
-        <input
-          id="discount"
-          type="number"
-          value="0"
-          min="0"
-          oninput="calculateTotals()"
-        >
+        <input id="discount" type="number" value="0" min="0" oninput="calculateTotals()">
       </div>
-
       <div class="summary-box">
         <label>الضريبة</label>
-        <input
-          id="tax"
-          type="number"
-          value="0"
-          min="0"
-          oninput="calculateTotals()"
-        >
+        <input id="tax" type="number" value="0" min="0" oninput="calculateTotals()">
       </div>
-
     </div>
-
     <div class="total-box">
-
       <span>صافي الفاتورة</span>
-
-      <strong id="grandTotal">
-        0.00
-      </strong>
-
+      <strong id="grandTotal">0.00</strong>
     </div>
-
   </section>
 
   <!-- البيان -->
   <section class="section">
-
-    <div class="section-title">
-      📝 البيان والملاحظات
-    </div>
-
+    <div class="section-title">📝 البيان والملاحظات</div>
     <div class="field">
-
-      <textarea
-        id="notes"
-        rows="3"
-        placeholder="اكتب ملاحظات الفاتورة هنا..."
-      ></textarea>
-
+      <textarea id="notes" rows="3" placeholder="اكتب ملاحظات الفاتورة هنا..."></textarea>
     </div>
-
   </section>
 
 </main>
 
 <div class="bottom-actions">
-
-  <button
-    class="action-btn save"
-    onclick="saveInvoice()"
-  >
-    💾 حفظ الفاتورة
-  </button>
-
-  <button
-    class="action-btn print"
-    onclick="saveAndPrint()"
-  >
-    🖨 حفظ وطباعة
-  </button>
-
-  <button
-    class="action-btn new"
-    onclick="newInvoice()"
-  >
-    ＋ حفظ و جديد
-  </button>
-
+  <button class="action-btn save" type="button" onclick="saveInvoice(false)">💾 حفظ الفاتورة</button>
+  <button class="action-btn print" type="button" onclick="saveAndPrint()">🖨 حفظ وطباعة</button>
+  <button class="action-btn new" type="button" onclick="newInvoice()">＋ حفظ و جديد</button>
 </div>
+
 <script>
 'use strict';
 
 const INVOICE_KEY = 'hisabak_invoices';
-
 let invoiceItems = [];
 let invoiceType = 'sale';
 
@@ -642,106 +522,147 @@ function today() {
 
 function setInvoiceType(type) {
   invoiceType = type;
+  if ($('invoiceType'))$('invoiceType').value = type;
 
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.remove('active');
+    if (tab.getAttribute('data-type') === type) {
+      tab.classList.add('active');
+    }
   });
 
-  const active = document.querySelector(
-    `.tab[data-type="${type}"]`
-  );
-
-  if (active) {
-    active.classList.add('active');
-  }
-
   const title = $('invoiceTitle');
-
   if (title) {
     const titles = {
       sale: 'فاتورة مبيعات',
       purchase: 'فاتورة مشتريات',
-      salesReturn: 'مرتجع مبيعات',
-      purchaseReturn: 'مرتجع مشتريات'
+      sales_return: 'مرتجع مبيعات',
+      purchase_return: 'مرتجع مشتريات'
     };
-
     title.textContent = titles[type] || 'فاتورة';
   }
 }
 
-function addItem() {
-  const nameInput = $('itemSearch');
-  const name = nameInput ? nameInput.value.trim() : '';
+function selectPayment(method, btn) {
+  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  if ($('paymentMethod'))$('paymentMethod').value = method;
+}
 
-  if (!name) {
-    showNotice('اكتب اسم الصنف أولاً', 'error');
+function addParty() {
+  alert('ميزة إضافة عميل/مورد جديد');
+}
+
+/* تحميل وربط الأصناف من المخزون */
+document.addEventListener('DOMContentLoaded', function () {
+  if ($('invoiceDate'))$('invoiceDate').value = today();
+  if ($('invoiceNo'))$('invoiceNo').value = 'INV-' + Date.now();
+
+  loadStockList();
+  renderItems();
+  calculateTotals();
+});
+
+function loadStockList() {
+  const list = $('invoiceItemsList');
+  if (!list) return;
+
+  let stockItems = [];
+  try {
+    stockItems = JSON.parse(localStorage.getItem('hisabak_items_master') || '[]');
+  } catch (e) {
+    stockItems = [];
+  }
+
+  list.innerHTML = '';
+  stockItems.forEach(function (item) {
+    if (item.name) {
+      const option = document.createElement('option');
+      option.value = item.name;
+      list.appendChild(option);
+    }
+    if (item.barcode) {
+      const option = document.createElement('option');
+      option.value = item.barcode;
+      list.appendChild(option);
+    }
+  });
+}
+
+function addItem() {
+  const search = $('itemSearch');
+  if (!search) return;
+
+  const value = search.value.trim();
+  if (!value) {
+    showNotice('اكتب اسم الصنف أو الباركود أولاً', 'error');
     return;
   }
 
-  invoiceItems.push({
-    id: Date.now(),
-    name: name,
-    quantity: 1,
-    price: 0
-  });
-
-  if (nameInput) {
-    nameInput.value = '';
+  let stockItems = [];
+  try {
+    stockItems = JSON.parse(localStorage.getItem('hisabak_items_master') || '[]');
+  } catch (e) {
+    stockItems = [];
   }
 
+  const found = stockItems.find(function (item) {
+    return String(item.name || '').trim().toLowerCase() === value.toLowerCase() ||
+           String(item.barcode || '').trim() === value;
+  });
+
+  if (!found) {
+    showNotice('الصنف غير موجود في المخزون', 'error');
+    return;
+  }
+
+  // التحقق إذا كان الصنف مضافاً مسبقاً لزيادة الكمية بدلاً من تكراره
+  const existing = invoiceItems.find(i => String(i.itemId) === String(found.id));
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    invoiceItems.push({
+      id: Date.now() + Math.random(),
+      itemId: found.id,
+      name: found.name,
+      quantity: 1,
+      price: Number(found.price || 0)
+    });
+  }
+
+  search.value = '';
   renderItems();
   calculateTotals();
+  showNotice('تمت إضافة الصنف بنجاح', 'success');
 }
 
 function renderItems() {
   const body = $('itemsBody');
-
-  if (!body) {
-    return;
-  }
+  if (!body) return;
 
   body.innerHTML = '';
 
+  if (invoiceItems.length === 0) {
+    body.innerHTML = `<div style="text-align:center; padding:15px; color:#888; font-size:12px;">لا توجد أصناف مضافة حالياً</div>`;
+    return;
+  }
+
   invoiceItems.forEach((item, index) => {
-    const row = document.createElement('tr');
+    const row = document.createElement('div');
+    row.className = 'item-row';
 
     row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${item.name}</td>
-
-      <td>
-        <input
-          class="qty"
-          type="number"
-          min="0"
-          value="${item.quantity}"
-          oninput="changeItem(${item.id}, 'quantity', this.value)"
-        >
-      </td>
-
-      <td>
-        <input
-          class="price"
-          type="number"
-          min="0"
-          value="${item.price}"
-          oninput="changeItem(${item.id}, 'price', this.value)"
-        >
-      </td>
-
-      <td>
-        ${money(item.quantity * item.price)}
-      </td>
-
-      <td>
-        <button
-          class="delete"
-          type="button"
-          onclick="deleteItem(${item.id})"
-        >
-          حذف
-        </button>
-      </td>
+      <div style="text-align:right; padding-right:4px; font-weight:600;">${item.name}</div>
+      <div>
+        <input type="number" min="1" value="${item.quantity}" oninput="changeItem(${item.id}, 'quantity', this.value)">
+      </div>
+      <div>
+        <input type="number" min="0" step="any" value="${item.price}" oninput="changeItem(${item.id}, 'price', this.value)">
+      </div>
+      <div class="row-total" style="font-weight:bold; color:#1556c0;">${money(item.quantity * item.price)}</div>
+      <div>
+        <button class="delete-item" type="button" onclick="deleteItem(${item.id})">×</button>
+      </div>
     `;
 
     body.appendChild(row);
@@ -749,61 +670,33 @@ function renderItems() {
 }
 
 function changeItem(id, field, value) {
-  const item = invoiceItems.find(
-    item => String(item.id) === String(id)
-  );
-
-  if (!item) {
-    return;
-  }
+  const item = invoiceItems.find(i => Number(i.id) === Number(id));
+  if (!item) return;
 
   item[field] = Number(value || 0);
-
-  calculateTotals();
   renderItems();
   calculateTotals();
 }
 
 function deleteItem(id) {
-  invoiceItems = invoiceItems.filter(
-    item => item.id !== id
-  );
-
+  invoiceItems = invoiceItems.filter(i => Number(i.id) !== Number(id));
   renderItems();
   calculateTotals();
 }
 
 function calculateTotals() {
   const subtotal = invoiceItems.reduce(
-    (total, item) =>
-      total + (
-        Number(item.quantity || 0) *
-        Number(item.price || 0)
-      ),
+    (total, item) => total + (Number(item.quantity || 0) * Number(item.price || 0)),
     0
   );
 
-  const discount = Number(
-    $('discount')?.value || 0
-  );
+  const discount = Number($('discount')?.value || 0);
+  const tax = Number($('tax')?.value || 0);
 
-  const tax = Number(
-    $('tax')?.value || 0
-  );
-
-  const afterDiscount = Math.max(
-    subtotal - discount,
-    0
-  );
-
+  const afterDiscount = Math.max(subtotal - discount, 0);
   const grandTotal = afterDiscount + tax;
 
-  if ($('sub')) {
-    $('sub').textContent = money(subtotal);
-  }
-
-  if ($('grand')) {
-    $('grand').textContent = money(grandTotal);
+  if ($('grandTotal')) {$('grandTotal').textContent = money(grandTotal);
   }
 
   return {
@@ -819,40 +712,19 @@ function getInvoiceData() {
 
   return {
     id: 'inv_' + Date.now(),
-    invoiceNo:
-      $('invoiceNo')?.value ||
-      ('INV-' + Date.now()),
-
-    date:
-      $('invoiceDate')?.value ||
-      today(),
-
+    invoiceNo: $('invoiceNo')?.value || ('INV-' + Date.now()),
+    date: $('invoiceDate')?.value || today(),
     type: invoiceType,
-
-    customer:
-      $('customer')?.value || '',
-
-    paymentMethod:
-      $('paymentMethod')?.value || '',
-
-    warehouse:
-      $('warehouse')?.value || '',
-
-    currency:
-      $('currency')?.value || '',
-
-    items: invoiceItems.map(item => ({
-      ...item
-    })),
-
-    notes:
-      $('notes')?.value || '',
-
+    customer: $('customer')?.value || '',
+    paymentMethod: $('paymentMethod')?.value || 'cash',
+    warehouse: $('warehouse')?.value || 'main',
+    currency: $('currency')?.value || 'YER',
+    items: invoiceItems.map(item => ({ ...item })),
+    notes: $('notes')?.value || '',
     subtotal: totals.subtotal,
     discount: totals.discount,
     tax: totals.tax,
     grandTotal: totals.grandTotal,
-
     createdAt: new Date().toISOString()
   };
 }
@@ -861,52 +733,33 @@ function saveInvoice(clearAfter = false) {
   const data = getInvoiceData();
 
   if (!data.items.length) {
-    showNotice(
-      'أضف صنفًا واحدًا على الأقل',
-      'error'
-    );
+    showNotice('أضف صنفًا واحدًا على الأقل', 'error');
     return;
   }
 
-  const invoices = JSON.parse(
-    localStorage.getItem(INVOICE_KEY) || '[]'
-  );
-
+  const invoices = JSON.parse(localStorage.getItem(INVOICE_KEY) || '[]');
   invoices.push(data);
+  localStorage.setItem(INVOICE_KEY, JSON.stringify(invoices));
 
-  localStorage.setItem(
-    INVOICE_KEY,
-    JSON.stringify(invoices)
-  );
-// خصم الكمية من المخزون بعد حفظ فاتورة البيع
-if (invoiceType === 'sale') {
-  let stockItems = JSON.parse(
-    localStorage.getItem('hisabak_items_master') || '[]'
-  );
+  // تحديث المخزون في حال كانت الفاتورة بيع
+  if (invoiceType === 'sale') {
+    let stockItems = JSON.parse(localStorage.getItem('hisabak_items_master') || '[]');
 
-  invoiceItems.forEach(function (soldItem) {
-    const stockItem = stockItems.find(function (item) {
-      return String(item.id) === String(soldItem.itemId);
+    invoiceItems.forEach(function (soldItem) {
+      const stockItem = stockItems.find(function (item) {
+        return String(item.id) === String(soldItem.itemId);
+      });
+
+      if (stockItem) {
+        stockItem.stock = Number(stockItem.stock || 0) - Number(soldItem.quantity || 0);
+        if (stockItem.stock < 0) stockItem.stock = 0;
+      }
     });
 
-    if (stockItem) {
-      stockItem.stock = Number(stockItem.stock || 0) - Number(soldItem.quantity || 0);
+    localStorage.setItem('hisabak_items_master', JSON.stringify(stockItems));
+  }
 
-      if (stockItem.stock < 0) {
-        stockItem.stock = 0;
-      }
-    }
-  });
-
-  localStorage.setItem(
-    'hisabak_items_master',
-    JSON.stringify(stockItems)
-  );
-        }
-  showNotice(
-    'تم حفظ الفاتورة بنجاح',
-    'success'
-  );
+  showNotice('تم حفظ الفاتورة بنجاح', 'success');
 
   if (clearAfter) {
     newInvoice();
@@ -915,7 +768,6 @@ if (invoiceType === 'sale') {
 
 function saveAndPrint() {
   saveInvoice(false);
-
   setTimeout(() => {
     window.print();
   }, 300);
@@ -923,50 +775,24 @@ function saveAndPrint() {
 
 function newInvoice() {
   invoiceItems = [];
-
-  if ($('invoiceNo')) {
-    $('invoiceNo').value =
-      'INV-' + Date.now();
-  }
-
-  if ($('invoiceDate')) {
-    $('invoiceDate').value = today();
-  }
-
-  if ($('customer')) {
-    $('customer').value = '';
-  }
-
-  if ($('notes')) {
-    $('notes').value = '';
-  }
-
-  if ($('discount')) {
-    $('discount').value = '0';
-  }
-
-  if ($('tax')) {
-    $('tax').value = '0';
-  }
+  if ($('invoiceNo'))$('invoiceNo').value = 'INV-' + Date.now();
+  if ($('invoiceDate'))$('invoiceDate').value = today();
+  if ($('customer'))$('customer').value = '';
+  if ($('notes'))$('notes').value = '';
+  if ($('discount'))$('discount').value = '0';
+  if ($('tax'))$('tax').value = '0';
+  if ($('itemSearch'))$('itemSearch').value = '';
 
   renderItems();
   calculateTotals();
 }
 
 function showNotice(message, type = 'success') {
-  const old = document.querySelector(
-    '.hisabak-notice'
-  );
-
-  if (old) {
-    old.remove();
-  }
+  const old = document.querySelector('.hisabak-notice');
+  if (old) old.remove();
 
   const notice = document.createElement('div');
-
-  notice.className =
-    'hisabak-notice';
-
+  notice.className = 'hisabak-notice';
   notice.textContent = message;
 
   notice.style.cssText = `
@@ -980,21 +806,9 @@ function showNotice(message, type = 'success') {
     font-size:14px;
     font-weight:700;
     box-shadow:0 8px 25px rgba(0,0,0,.12);
-    background:${
-      type === 'error'
-        ? '#fff0f0'
-        : '#eaf7ee'
-    };
-    color:${
-      type === 'error'
-        ? '#c62828'
-        : '#28743a'
-    };
-    border:1px solid ${
-      type === 'error'
-        ? '#f3caca'
-        : '#ccebd5'
-    };
+    background:${type === 'error' ? '#fff0f0' : '#eaf7ee'};
+    color:${type === 'error' ? '#c62828' : '#28743a'};
+    border:1px solid ${type === 'error' ? '#f3caca' : '#ccebd5'};
   `;
 
   document.body.appendChild(notice);
@@ -1003,155 +817,6 @@ function showNotice(message, type = 'success') {
     notice.remove();
   }, 2200);
 }
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-    if ($('invoiceDate')) {
-      $('invoiceDate').value = today();
-    }
-
-    if ($('invoiceNo')) {
-      $('invoiceNo').value =
-        'INV-' + Date.now();
-    }
-
-    renderItems();
-    calculateTotals();
-
-    const firstTab =
-      document.querySelector('.tab');
-
-    if (firstTab) {
-      firstTab.classList.add('active');
-    }
-  }
-);
-/* ===== ربط أصناف الفاتورة بالمخزون ===== */
-
-document.addEventListener('DOMContentLoaded', function () {
-
-  const search = document.getElementById('itemSearch');
-  const itemsBody = document.getElementById('itemsBody');
-  const list = document.getElementById('invoiceItemsList');
-
-  if (!search || !itemsBody || !list) return;
-
-  /* نقل حقل البحث خارج منطقة الأصناف حتى لا يختفي عند تحديث الفاتورة */
-  itemsBody.parentNode.insertBefore(search, itemsBody);
-  itemsBody.parentNode.insertBefore(list, itemsBody);
-
-  /* قراءة أصناف المخزون */
-  let stockItems = [];
-
-  try {
-    stockItems = JSON.parse(
-      localStorage.getItem('hisabak_items_master') || '[]'
-    );
-  } catch (e) {
-    stockItems = [];
-  }
-
-  /* إنشاء قائمة الاقتراحات */
-  list.innerHTML = '';
-
-  stockItems.forEach(function (item) {
-
-    if (item.name) {
-      const option = document.createElement('option');
-      option.value = item.name;
-      list.appendChild(option);
-    }
-
-    if (item.barcode) {
-      const option = document.createElement('option');
-      option.value = item.barcode;
-      list.appendChild(option);
-    }
-
-  });
-
-  /* البحث عن الصنف */
-  search.addEventListener('input', function () {
-
-    const value = search.value.trim();
-
-    const found = stockItems.find(function (item) {
-      return String(item.name || '').trim() === value ||
-             String(item.barcode || '').trim() === value;
-    });
-
-    if (found) {
-
-      search.dataset.itemId = found.id;
-      search.dataset.itemName = found.name;
-      search.dataset.itemPrice = found.price || 0;
-      search.dataset.itemStock = found.stock || 0;
-
-      search.title =
-        'المخزون: ' + (found.stock || 0) +
-        ' | السعر: ' + (found.price || 0);
-
-    } else {
-
-      delete search.dataset.itemId;
-      delete search.dataset.itemName;
-      delete search.dataset.itemPrice;
-      delete search.dataset.itemStock;
-
-    }
-
-  });
-
-});
-
-
-/* إضافة الصنف من المخزون إلى الفاتورة */
-window.addItem = function () {
-  const search = document.getElementById('itemSearch');
-  if (!search) return;
-
-  const value = search.value.trim();
-  if (!value) {
-    alert('اكتب اسم الصنف أو الباركود أولاً');
-    return;
-  }
-
-  let stockItems = [];
-
-  try {
-    stockItems = JSON.parse(
-      localStorage.getItem('hisabak_items_master') || '[]'
-    );
-  } catch (e) {
-    stockItems = [];
-  }
-
-  const found = stockItems.find(function (item) {
-    return String(item.name || '').trim().toLowerCase() === value.toLowerCase()
-      || String(item.barcode || '').trim() === value;
-  });
-
-  if (!found) {
-    alert('الصنف غير موجود في المخزون');
-    return;
-  }
-
-  invoiceItems.push({
-    id: Date.now(),
-    itemId: found.id,
-    name: found.name,
-    quantity: 1,
-    price: Number(found.price || 0)
-  });
-
-  search.value = '';
-
-  renderItems();
-  calculateTotals();
-
-  alert('تمت إضافة الصنف بنجاح');
-};
 </script>
 
 </body>
