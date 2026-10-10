@@ -207,15 +207,6 @@
         var data = [];
         var active = null;
         try { data = JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){}
-        if(!data.length){
-            data = [
-                {id:'1', name:'احمد', phone:'', balance:0, type:'debit', v:[]},
-                {id:'2', name:'عميل نقدي عام', phone:'', balance:50000, type:'credit', v:[]},
-                {id:'3', name:'شركة النور', phone:'', balance:150000, type:'credit', v:[]},
-                {id:'4', name:'عبد الرحيم', phone:'776332929', balance:400000, type:'debit', v:[]}
-            ];
-            localStorage.setItem(KEY, JSON.stringify(data));
-        }
         function render(){
             var c = document.getElementById('list');
             c.innerHTML = '';
