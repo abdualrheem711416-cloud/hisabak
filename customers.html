@@ -47,9 +47,48 @@
     /* بطاقات ملخص العملاء */
 .customers-dashboard {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    padding: 10px;
+    background: #f5f7fb;
+}
+
+.dashboard-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 4px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #e5eaf0;
+    min-width: 0;
+}
+
+.dashboard-card div {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.dashboard-card strong {
+    display: block;
+    font-size: 19px;
+    color: #1976D2;
+    margin-bottom: 5px;
+}
+
+.dashboard-card span {
+    display: block;
+    font-size: 10px;
+    color: #667085;
+}
+
+@media (max-width: 420px) {
+    .dashboard-card strong {
+        font-size: 17px;
+    }
+
+    .dashboard-card span {
+        font-size: 9px;
+    }
 }
 
 .dashboard-card {
