@@ -563,6 +563,76 @@ var tableHead = aging
 
     refreshReport();
         }
+        function openCustomerReport(type) {
+    var old = document.getElementById('customerReportScreen');
+    if (old) old.remove();
+
+    var aging = type === 'aging';
+    var title = aging ? 'كشف أعمار الديون' : 'كشف حساب العملاء';
+
+    var screen = document.createElement('div');
+    screen.id = 'customerReportScreen';
+    screen.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#f3f6fb;overflow:auto;direction:rtl;font-family:Arial,sans-serif;color:#263447';
+
+    screen.innerHTML = `
+      <div style="background:#1976d2;color:white;padding:18px;display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">${title}</h3>
+        <div>
+          <button id="reportPrint" style="padding:10px;border:0;border-radius:8px">طباعة / PDF</button>
+          <button id="reportClose" style="padding:10px;border:0;border-radius:8px">رجوع</button>
+        </div>
+      </div>
+      <div style="padding:15px">
+        <input id="reportSearch" placeholder="بحث باسم العميل أو الهاتف" style="padding:12px;width:100%;box-sizing:border-box;border:1px solid #ccc;border-radius:9px">
+        <div id="reportSummary" style="background:white;padding:18px;margin-top:14px;border-radius:12px">عدد العملاء: <b id="reportCount">0</b> — إجمالي المدين: <b id="reportDebit">0</b> — إجمالي الدائن: <b id="reportCredit">0</b></div>
+        <div style="overflow:auto;background:white;margin-top:14px;border-radius:12px">
+          <table style="width:100%;border-collapse:collapse;white-space:nowrap;text-align:center">
+            <thead id="reportHead"></thead>
+            <tbody id="reportRows"></tbody>
+          </table>
+        </div>
+        <p id="reportEmpty" style="text-align:center;padding:20px;color:#667085">لا توجد بيانات عملاء لعرضها.</p>
+        ${aging ? '<p style="color:#667085">تنبيه: أعمار الديون الفعلية تحتاج ربط الفواتير بتواريخ استحقاقها.</p>' : ''}
+      </div>`;
+
+    document.body.appendChild(screen);
+
+    document.getElementById('reportHead').innerHTML = aging
+      ? '<tr style="background:#eaf3ff"><th>م</th><th>اسم العميل</th><th>الرصيد</th><th>0-15 يوم</th><th>16-30</th><th>31-45</th><th>46-60</th><th>أكثر من 60</th></tr>'
+      : '<tr style="background:#eaf3ff"><th>م</th><th>اسم العميل</th><th>الهاتف</th><th>نوع الرصيد</th><th>الرصيد</th></tr>';
+
+    function refreshReport() {
+      var q = document.getElementById('reportSearch').value.trim().toLowerCase();
+      var rows = '';
+      var count = 0, debit = 0, credit = 0;
+
+      data.forEach(function(item) {
+        var name = String(item.name || '');
+        var phone = String(item.phone || '');
+        if (q && !name.toLowerCase().includes(q) && !phone.includes(q)) return;
+
+        var balance = Number(item.balance) || 0;
+        count++;
+        if (item.type === 'credit') credit += balance;
+        else debit += balance;
+
+        rows += aging
+          ? '<tr><td>' + count + '</td><td>' + name + '</td><td>' + balance.toLocaleString() + '</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>'
+          : '<tr><td>' + count + '</td><td>' + name + '</td><td>' + phone + '</td><td>' + (item.type === 'credit' ? 'دائن' : 'مدين') + '</td><td>' + balance.toLocaleString() + '</td></tr>';
+      });
+
+      document.getElementById('reportRows').innerHTML = rows;
+      document.getElementById('reportCount').textContent = count;
+      document.getElementById('reportDebit').textContent = debit.toLocaleString();
+      document.getElementById('reportCredit').textContent = credit.toLocaleString();
+      document.getElementById('reportEmpty').style.display = count ? 'none' : 'block';
+    }
+
+    document.getElementById('reportSearch').addEventListener('input', refreshReport);
+    document.getElementById('reportClose').onclick = function() { screen.remove(); };
+    document.getElementById('reportPrint').onclick = function() { window.print(); };
+    refreshReport();
+        }
         
     </script>
 </body>
