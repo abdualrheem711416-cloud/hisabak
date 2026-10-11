@@ -381,11 +381,183 @@
         }
         window.onclick = function(){ var m = document.getElementById('topMenu'); if(m) m.style.display = 'none'; };
         render();
-        function openCustomerReport(type) {
-    alert(type === 'statement'
-        ? 'سيتم تجهيز كشف حساب العملاء'
-        : 'سيتم تجهيز كشف أعمار الديون');
+        
+function openCustomerReport(type) {
+    var old = document.getElementById('customerReportScreen');
+    if (old) old.remove();
+
+    var aging = type === 'aging';
+    var title = aging ? 'كشف أعمار الديون' : 'كشف حساب العملاء';
+
+    var screen = document.createElement('div');
+    screen.id = 'customerReportScreen';
+    screen.style.cssText = [
+        'position:fixed',
+        'inset:0',
+        'z-index:99999',
+        'background:#f3f6fb',
+        'overflow:auto',
+        'direction:rtl',
+        'font-family:Arial,sans-serif',
+        'color:#263447'
+    ].join(';');
+
+    var css = `
+      <style>
+        #customerReportScreen *{box-sizing:border-box}
+        #customerReportScreen .report-head{
+          background:#1976d2;color:white;padding:18px 16px;
+          display:flex;align-items:center;justify-content:space-between;
+          gap:10px;flex-wrap:wrap;box-shadow:0 3px 12px #0002
         }
+        #customerReportScreen .report-head h2{margin:0;font-size:22px}
+        #customerReportScreen button{
+          border:0;border-radius:10px;padding:12px 16px;
+          font-size:15px;cursor:pointer
+        }
+        #customerReportScreen .report-actions{display:flex;gap:8px;flex-wrap:wrap}
+        #customerReportScreen .report-body{padding:16px;max-width:1500px;margin:auto}
+        #customerReportScreen .report-tools{
+          background:white;border-radius:14px;padding:14px;margin-bottom:14px;
+          display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+          box-shadow:0 2px 9px #0001
+        }
+        #customerReportScreen input{
+          padding:12px;border:1px solid #ccd5e0;border-radius:9px;
+          font-size:15px;min-width:150px;max-width:100%
+        }
+        #customerReportScreen .report-summary{
+          display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+          gap:12px;margin-bottom:14px
+        }
+        #customerReportScreen .summary-card{
+          background:white;padding:18px;border-radius:14px;
+          box-shadow:0 2px 9px #0001
+        }
+        #customerReportScreen .summary-card span{display:block;color:#64748b;margin-bottom:9px}
+        #customerReportScreen .summary-card strong{font-size:23px;color:#1976d2}
+        #customerReportScreen .table-wrap{
+          overflow-x:auto;background:white;border-radius:14px;
+          box-shadow:0 2px 9px #0001
+        }
+        #customerReportScreen table{border-collapse:collapse;width:100%;min-width:700px}
+        #customerReportScreen th,#customerReportScreen td{
+          padding:14px 12px;text-align:center;border-bottom:1px solid #e7edf4;
+          white-space:nowrap
+        }
+        #customerReportScreen th{background:#eaf3ff;color:#155ba0}
+        #customerReportScreen tbody tr:nth-child(even){background:#f8fafc}
+        #customerReportScreen .empty{padding:35px;text-align:center;color:#64748b}
+        @media(max-width:600px){
+          #customerReportScreen .report-head h2{font-size:19px}
+          #customerReportScreen .report-body{padding:10px}
+          #customerReportScreen .summary-card{padding:14px}
+        }
+        @media print{
+          body>*{display:none!important}
+          #customerReportScreen{position:static!important;overflow:visible!important;background:white!important}
+          #customerReportScreen .no-print{display:none!important}
+          #customerReportScreen .report-body{max-width:none;padding:0}
+          #customerReportScreen .table-wrap{overflow:visible;box-shadow:none}
+          #customerReportScreen table{min-width:0;font-size:10px}
+          #customerReportScreen th,#customerReportScreen td{padding:6px 4px;white-space:normal}
+        }
+      </style>`;
+
+    var tools = aging
+      ? '<input id="agingDate" type="date" aria-label="تاريخ التقرير">'
+      : '<input id="reportSearch" type="search" placeholder="بحث باسم العميل أو الهاتف">';
+
+    var tableHead = aging
+      ? '<tr><th>م</th><th>اسم العميل</th><th>إجمالي المديونية</th><th>0–15 يوم</th><th>16–30 يوم</th><th>31–45 يوم</th><th>46–60 يوم</th><th>أكثر من 60 يوم</th></tr>'
+      : '<tr><th>م</th><th>اسم العميل</th><th>الهاتف</th><th>نوع الرصيد</th><th>الرصيد</th></tr>';
+
+    screen.innerHTML = css + `
+      <div class="report-head">
+        <h2>${title}</h2>
+        <div class="report-actions no-print">
+          <button id="reportPrint" style="background:white;color:#155ba0">طباعة / PDF</button>
+          <button id="reportClose" style="background:#0d47a1;color:white">رجوع</button>
+        </div>
+      </div>
+      <div class="report-body">
+        <div class="report-tools no-print">
+          ${tools}
+          <span>تاريخ التقرير: ${new Date().toLocaleDateString('en-GB')}</span>
+        </div>
+        <div class="report-summary">
+          <div class="summary-card"><span>عدد العملاء</span><strong id="reportCount">0</strong></div>
+          <div class="summary-card"><span>إجمالي الأرصدة المدينة</span><strong id="reportDebit">0</strong></div>
+          <div class="summary-card"><span>إجمالي الأرصدة الدائنة</span><strong id="reportCredit">0</strong></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>${tableHead}</thead>
+            <tbody id="reportRows"></tbody>
+          </table>
+          <div id="reportEmpty" class="empty" style="display:none">لا توجد بيانات عملاء لعرضها.</div>
+        </div>
+        ${aging ? '<p style="color:#64748b;font-size:13px;margin-top:12px">تنبيه: توزيع الديون حسب العمر يحتاج إلى ربط فواتير العملاء وتواريخ استحقاقها. لا تُعرض مبالغ تقديرية على أنها أرصدة فعلية.</p>' : ''}
+      </div>`;
+
+    document.body.appendChild(screen);
+
+    function refreshReport() {
+        var q = (document.getElementById('reportSearch')?.value || '').trim().toLowerCase();
+        var rows = '';
+        var count = 0, debit = 0, credit = 0;
+
+        (Array.isArray(data) ? data : []).forEach(function(item, index) {
+            var name = String(item.name || '');
+            var phone = String(item.phone || '');
+            if (q && !name.toLowerCase().includes(q) && !phone.includes(q)) return;
+
+            var balance = Number(item.balance || 0);
+            if (!Number.isFinite(balance)) balance = 0;
+            count++;
+
+            if (item.type === 'credit') credit += balance;
+            else debit += balance;
+
+            if (aging) {
+                rows += '<tr><td>' + count + '</td><td>' + escapeReport(name) +
+                    '</td><td>' + balance.toLocaleString() +
+                    '</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>';
+            } else {
+                rows += '<tr><td>' + count + '</td><td>' + escapeReport(name) +
+                    '</td><td>' + escapeReport(phone) +
+                    '</td><td>' + (item.type === 'credit' ? 'دائن' : 'مدين') +
+                    '</td><td>' + balance.toLocaleString() + '</td></tr>';
+            }
+        });
+
+        document.getElementById('reportRows').innerHTML = rows;
+        document.getElementById('reportCount').textContent = count.toLocaleString();
+        document.getElementById('reportDebit').textContent = debit.toLocaleString();
+        document.getElementById('reportCredit').textContent = credit.toLocaleString();
+        document.getElementById('reportEmpty').style.display = count ? 'none' : 'block';
+    }
+
+    function escapeReport(value) {
+        return String(value).replace(/[&<>"']/g, function(ch) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+        });
+    }
+
+    document.getElementById('reportClose').onclick = function() {
+        screen.remove();
+    };
+    document.getElementById('reportPrint').onclick = function() {
+        window.print();
+    };
+
+    if (!aging) {
+        document.getElementById('reportSearch').addEventListener('input', refreshReport);
+    }
+
+    refreshReport();
+        }
+        
     </script>
 </body>
 </html>
