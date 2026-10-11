@@ -598,7 +598,7 @@ var tableHead = aging
     document.body.appendChild(screen);
 
     document.getElementById('reportHead').innerHTML = aging
-    ? '<tr style="background:#eaf3ff"><th>م</th><th>اسم العميل</th><th>الرصيد</th><th>0-15 يوم</th><th>16-30</th><th>31-45</th><th>46-60</th><th>60&lt;</th></tr>'
+    ? '<tr style="background:#eaf3ff"><th>م</th><th>اسم العميل</th><th>الرصيد</th><th>15-0</th><th>30-16</th><th>45-31</th><th>60-46</th><th>>60</th><th>إجمالي المبلغ المستحق</th></tr>'
     : '<tr style="background:#eaf3ff"><th>م</th><th>اسم العميل</th><th>الهاتف</th><th>نوع الرصيد</th><th>الرصيد</th></tr>';
             
     function refreshReport() {
