@@ -236,6 +236,22 @@
             document.getElementById('totC').innerText = sC.toLocaleString();
             document.getElementById('totD').innerText = sD.toLocaleString();
             document.getElementById('totN').innerText = (sD - sC).toLocaleString();
+                        document.getElementById('totalCustomers').innerText = data.length;
+
+            document.getElementById('activeCustomers').innerText =
+                data.filter(function(x) {
+                    return parseFloat(x.balance || 0) !== 0;
+                }).length;
+
+            document.getElementById('inactiveCustomers').innerText =
+                data.filter(function(x) {
+                    return parseFloat(x.balance || 0) === 0;
+                }).length;
+
+            document.getElementById('debitCustomers').innerText =
+                data.filter(function(x) {
+                    return x.type === 'debit' && parseFloat(x.balance || 0) > 0;
+                }).length;
         }
         function openAdd(){ document.getElementById('addModal').style.display = 'flex'; }
         function closeAdd(){ document.getElementById('addModal').style.display = 'none'; }
