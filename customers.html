@@ -520,10 +520,16 @@ var tableHead = aging
             else debit += balance;
 
             if (aging) {
-                rows += '<tr><td>' + count + '</td><td>' + escapeReport(name) +
-                    '</td><td>' + balance.toLocaleString() +
-                    '</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>';
-            } else {
+    rows += '<tr><td>' + count +
+        '</td><td>' + escapeReport(name) +
+        '</td><td>—</td>' +
+        '<td>' + balance.toLocaleString() + '</td>' +
+        '<td>—</td><td>—</td><td>—</td>' +
+        '<td>—</td><td>—</td>' +
+        '<td>' + (item.type === 'debit' ? balance.toLocaleString() : '0') +
+        '</td></tr>';
+            }
+             else {
                 rows += '<tr><td>' + count + '</td><td>' + escapeReport(name) +
                     '</td><td>' + escapeReport(phone) +
                     '</td><td>' + (item.type === 'credit' ? 'دائن' : 'مدين') +
