@@ -881,6 +881,35 @@ function saveInvoice(clearAfter = false) {
   );
 
   invoices.push(data);
+  // ربط الفاتورة الآجلة بحساب العميل
+if (data.paymentMethod === 'credit' && data.customer) {
+    const customers = JSON.parse(
+        localStorage.getItem('hisabak_customers') || '[]'
+    );
+
+    const customer = customers.find(
+        c => c.name.trim() === data.customer.trim()
+    );
+
+    if (customer) {
+        customer.balance = (Number(customer.balance) || 0)
+            + (Number(data.grandTotal) || 0);
+
+        customer.v = customer.v || [];
+        customer.v.push({
+            k: 'فاتورة آجلة',
+            d: data.invoiceNo,
+            a: Number(data.grandTotal) || 0,
+            date: data.date,
+            currency: data.currency
+        });
+
+        localStorage.setItem(
+            'hisabak_customers',
+            JSON.stringify(customers)
+        );
+    }
+}
 
   localStorage.setItem(
     INVOICE_KEY,
