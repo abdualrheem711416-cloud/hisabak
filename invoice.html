@@ -810,6 +810,18 @@ function calculateTotals() {
   };
 }
 
+function addParty() {
+    const customers = JSON.parse(localStorage.getItem('hisabak_customers') || '[]');
+    const names = customers.slice().reverse().map(c => c.name).filter(Boolean);
+    const name = prompt('اكتب اسم العميل:\n' + names.join('\n'));
+    if (!name) return;
+    const field = document.getElementById('party');
+    if (field) {
+        field.value = name.trim();
+    } else {
+        alert('حقل العميل غير موجود');
+    }
+  }
 function getInvoiceData() {
   const totals = calculateTotals();
 
