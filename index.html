@@ -41,6 +41,37 @@ body { background: var(--bg); min-height: 100vh; padding-bottom: 70px; direction
 .bottom-footer { background: var(--p); color: #fff; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
 .footer-socials { display: flex; gap: 14px; font-size: 16px; }
 </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * {
+    font-family: 'Cairo', system-ui, sans-serif !important;
+  }
+  body, button, input, select, textarea, table, th, td, div, span, h2, h3, h4, label {
+    font-family: 'Cairo', sans-serif !important;
+  }
+  /* توضيح الخط في البطاقات والقوائم والأزرار */
+  .card, .btn-action, button {
+    font-weight: 800 !important;
+  }
+  /* توضيح وتكبير عناصر نافذة الإعدادات */
+  #general-settings-modal * {
+    font-family: 'Cairo', sans-serif !important;
+  }
+  #general-settings-modal input, 
+  #general-settings-modal select, 
+  #general-settings-modal table {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+  }
+  #general-settings-modal button {
+    font-weight: 800 !important;
+    letter-spacing: 0.3px;
+  }
+</style>
+
 </head>
 <body>
 
